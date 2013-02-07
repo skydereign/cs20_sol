@@ -6,6 +6,13 @@
   </head>
   <meta charset="UTF-8"></meta>
   <body onload="start()">
-    <canvas id="canvas" width="640" height="480"></canvas>
+    <div style="position: relative;">
+      <canvas id="shadowCanvas" width="640" height="480" style="position: absolute;
+      left: 0; top: 0; z_index: 0;"></canvas>
+      <canvas id="colCanvas" width="640" height="480" style="position: absolute;
+      left: 0; top: 0; z_index: 1;"></canvas>
+      <canvas id="canvas" width="640" height="480" style="position: absolute;
+      left: 0; top: 0; z_index: 2;"></canvas>
+    </div>
   </body>
 </html>
