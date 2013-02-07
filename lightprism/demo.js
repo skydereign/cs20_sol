@@ -9,29 +9,34 @@ function Game () {
     this.colCtx = colCanvas.getContext("2d");
 
     this.canvas.addEventListener('click', function(e) { 
-	var x = (Math.floor((e.pageX-10)/20))*20;
-	var y = (Math.floor((e.pageY-10)/20))*20;
-	for(var i=0; i<20; i++) {
-	    for(var j=0; j<20; j++) {
-		col_map[x+i][y+j]=1-col_map[x+i][y+j];
+	if(light==0) {
+	    var x = (Math.floor((e.pageX-10)/20))*20;
+	    var y = (Math.floor((e.pageY-10)/20))*20;
+	    for(var i=0; i<20; i++) {
+		for(var j=0; j<20; j++) {
+		    col_map[x+i][y+j]=1-col_map[x+i][y+j];
+		}
 	    }
-	}
-
-	var ctx = colCanvas.getContext("2d");
-	if(col_map[x][y]===1) {
-	    ctx.fillStyle = 'rgba(255, 255, 255, 1)';
-	    ctx.fillRect(x, y, 20, 20);
+	    
+	    var ctx = colCanvas.getContext("2d");
+	    if(col_map[x][y]===1) {
+		ctx.fillStyle = 'rgba(255, 255, 255, 1)';
+		ctx.fillRect(x, y, 20, 20);
+	    } else {
+		ctx.clearRect(x, y, 20, 20);
+	    }
 	} else {
-	    ctx.clearRect(x, y, 20, 20);
+	    lm.lights.push(new Light(e.pageX, e.pageY, 0, 50, 360, 'rgba(0, 255, 0, 1)'));
 	}
-	
+	    
 	lm.draw();
     }, false);
 
-    
+    var light = 0;
     document.addEventListener('keydown', function(e) {
 	switch(e.keyCode) {
 	case 49: // 1
+	    light=1;
 	    //lm.lights[0].angle = e.pageX;
 	    break;
 
@@ -40,6 +45,15 @@ function Game () {
 
 	default:
 	    console.log("keycode {x}", e.keyCode, e.keyCode);
+	    break;
+	}
+    }, true);
+
+    document.addEventListener('keyup', function(e) {
+	switch(e.keyCode) {
+	case 49: // 1
+	    light=0;
+	    //lm.lights[0].angle = e.pageX;
 	    break;
 	}
     }, true);
