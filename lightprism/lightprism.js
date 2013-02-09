@@ -26,6 +26,15 @@ function distance (x1, y1, x2, y2) {
     return Math.sqrt(x*x+y*y);
 }
 
+LightManager.prototype.remove = function (idx) {
+    if(idx > this.lights.length) {
+	return false;
+    }
+    
+    this.lights.splice(idx, 1);
+    return true;
+}
+
 LightManager.prototype.draw = function () {
     this.lightCtx.clearRect(0, 0, this.width, this.height);
     this.lightCtx.globalCompositeOperation='lighter';
@@ -56,6 +65,8 @@ LightManager.prototype.draw = function () {
 	// could also check angles
 	// if the light is within range
 	var max_dist = light.radius+distance(x1, y1, x2, y2)/2;
+	var onScreen = (light.x>=0 && light.x<this.width && light.y>=0 && light.y<this.width);
+
 	if(this.drawAll || distance(xc, yc, xl, yl)<max_dist) {
 	    var ang_start = light.angle-light.spread/2;
 	    var ang_end = light.angle+light.spread/2;
@@ -83,21 +94,45 @@ LightManager.prototype.draw = function () {
 		var dist = undefined;
 		var x = xl;
 		var y = yl;
-		while(x>=x1 && x<x2 && y>=y1 && y<y2) {
-		    var x_col = Math.floor(x);
-		    var y_col = Math.floor(y);
-		    var t_dist = distance(xl, yl, x, y); // improve?
 
-		    // can be optimized to prevent checking radius
-		    if(t_dist<=light.radius && this.col_map[x_col][y_col]!=undefined && this.col_map[x_col][y_col]!=0) { // hit a wall
-			dist = t_dist;
-			x_hit = x;
-			y_hit = y;
-			break;
+		if(onScreen) { // optimized to prevent calculations out of screen
+		    while(x>=x1 && x<x2 && y>=y1 && y<y2) {
+			var x_col = Math.floor(x);
+			var y_col = Math.floor(y);
+			var t_dist = distance(xl, yl, x, y); // improve?
+			
+			// can be optimized to prevent checking radius
+			if(t_dist<=light.radius && this.col_map[x_col][y_col]!=undefined && this.col_map[x_col][y_col]!=0) { // hit a wall
+			    dist = t_dist;
+			    x_hit = x;
+			    y_hit = y;
+			    break;
+			}
+			x+=cos;
+			y-=sin;
 		    }
-		    x+=cos;
-		    y-=sin;
+		} else { // the light was offscreen
+		    // TODO: fix this, so lights off screen still work
+		    // problem is col_map is directly tied to canvas right now
+		    // not always the case
+		    var t_dist = 0;
+		    do {
+			var x_col = Math.floor(x);
+			var y_col = Math.floor(y);
+			t_dist = distance(xl, yl, x, y); // improve?
+			
+			// can be optimized to prevent checking radius
+			if(this.col_map[x_col][y_col]!=undefined && this.col_map[x_col][y_col]!=0) { // hit a wall
+			    dist = t_dist;
+			    x_hit = x;
+			    y_hit = y;
+			    break;
+			}
+			x+=cos;
+			y-=sin;
+		    } while(t_dist<=light.radius);
 		}
+
 		if(dist===undefined) {
 		    x_hit = xl + cos*light.radius;
 		    y_hit = yl - sin*light.radius;
