@@ -1,0 +1,36 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <script src="brine.js"></script>
+        <script src="Level.js"></script>
+        <script src="Player.js"></script>
+        <script src="Camera.js"></script>
+        <script src="Tile.js"></script>
+        <script src="Environment.js"></script>
+       	<script>
+       	//camera displays a level of 30x20; 30x30p squares)
+       	use2d=true;
+       	var cwidth = 900;
+       	var cheight = 600;
+       	var cols = 40;
+       	var rows = 20;
+       	var size = 30;
+       	var Camera = new Camera(cols*size, rows*size, cwidth, cheight, 0, rows*size - cheight, cols, rows, size);
+       	var firstLevel = new Level(cols, rows, size, Camera);
+      	world.addChild(firstLevel);
+       	var Player = new Player(firstLevel, 100, rows*size - cheight);
+     	world.addChild(Player);       	
+       	world.init = function() {}
+		world.update = function(d) {
+			this.updateChildren(d);
+		}
+        </script>
+        <title>The Yet Unnamed Platformer</title>
+    </head>
+    <body onload="initGame('canvas');" height="800">
+        <canvas id="canvas" width="900" height="600" style="border: solid black;">
+            Seeing this is bad, mmkay.
+        </canvas>
+</html>
