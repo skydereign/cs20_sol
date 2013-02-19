@@ -1,14 +1,17 @@
 function Game () {
     this.canvas = document.getElementById("canvas");
     this.ctx = this.canvas.getContext("2d");
-		
-    this.shadowCanvas = document.getElementById("shadowCanvas");
-    this.shadowCtx = this.shadowCanvas.getContext("2d");
 
-    var colCanvas = document.getElementById("colCanvas");
-    this.colCtx = colCanvas.getContext("2d");
-
-
+		// uses colGrid instead of colCanvas
+		var size = 20;
+		var colGrid = [];
+		for(var i=0; i<this.canvas.height/size; i++) {
+				colGrid[i] = [];
+				for(var j=0; j<this.canvas.width/size; j++) {
+						colGrid[i][j]=0;
+				}
+		}
+				
     var lastKey = 0; // used to determine what action
 		var selectedLight;
 		var keys = [];
@@ -16,20 +19,17 @@ function Game () {
     this.canvas.addEventListener('click', function(e) { 
 				switch(lastKey) {
 				case 0: // no key
-						var x = (Math.floor((e.pageX-10)/20))*20;
-						var y = (Math.floor((e.pageY-10)/20))*20;
+						var x = Math.floor((e.pageX-10)/20);
+						var y = Math.floor((e.pageY-10)/20);
+						colGrid[x][y] = 1-colGrid[x][y]; // used for drawing
+
+						// TODO: clean this up to use just the tiles
+						x*=20;
+						y*=20;
 						for(var i=0; i<20; i++) {
 								for(var j=0; j<20; j++) {
 										col_map[x+i][y+j]=1-col_map[x+i][y+j];
 								}
-						}
-						
-						var ctx = colCanvas.getContext("2d");
-						if(col_map[x][y]===1) {
-								ctx.fillStyle = 'rgba(255, 255, 255, 1)';
-								ctx.fillRect(x, y, 20, 20);
-						} else {
-								ctx.clearRect(x, y, 20, 20);
 						}
 						break;
 						
@@ -105,7 +105,6 @@ function Game () {
     this.lightManager = new LightManager(canvas.width, canvas.height);
 		
     this.lightManager.lightCtx = this.ctx;
-    this.lightManager.shadowCtx = this.shadowCtx;
 
     this.col_map = [];
     for(var x=0; x<canvas.width; x++) {
@@ -174,7 +173,25 @@ function Game () {
 
 		}
 
+		function draw_col () {
+				lm.lightCtx.clearRect(0, 0, lm.width, lm.height);
+				lm.lightCtx.fillStyle = "rgba(0, 0, 0, 1.0)";
+				lm.lightCtx.fillRect(0, 0, lm.width, lm.height);
+
+				for(var i = 0; i<lm.width/20; i++) {
+						for(var j=0; j<lm.height/20; j++) {
+								var x = j*20;
+								var y = i*20;
+								if(colGrid[j][i]===1) {
+										lm.lightCtx.fillStyle = 'rgba(255, 255, 255, 1.0)';
+										lm.lightCtx.fillRect(x, y, 20, 20);
+								}
+						}
+				}
+		}
+
     this.main = function () {
+				draw_col();
 				update();
 				lm.draw();
     }

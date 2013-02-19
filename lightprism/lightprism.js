@@ -13,7 +13,6 @@ function LightManager (w, h) {
     this.y = 0;
     this.lights = [];
     this.lightCtx;
-    this.shadowCtx;
     this.width = w;
     this.height = h;
     this.drawAll = false; // used to determine if lights are drawn out of view
@@ -36,14 +35,7 @@ LightManager.prototype.remove = function (idx) {
 }
 
 LightManager.prototype.draw = function () {
-    this.lightCtx.clearRect(0, 0, this.width, this.height);
     this.lightCtx.globalCompositeOperation='lighter';
-
-    this.shadowCtx.clearRect(0, 0, this.width, this.height);
-    this.shadowCtx.fillStyle = 'rgba(0, 0, 0, 1.0)';
-    this.shadowCtx.fillRect(0, 0, this.width, this.height);
-    this.shadowCtx.fillStyle = 'rgba(255, 255, 255, 1.0)';
-    
 
     var xc = this.x+this.width/2; // center of screen
     var yc = this.y+this.height/2; // center of screen
@@ -60,7 +52,6 @@ LightManager.prototype.draw = function () {
 	var yl = light.y;
 
 	this.lightCtx.save();
-	this.shadowCtx.save();
 
 	// could also check angles
 	// if the light is within range
@@ -78,9 +69,6 @@ LightManager.prototype.draw = function () {
 	    this.lightCtx.fillStyle = light.color;
 	    this.lightCtx.beginPath();
 	    this.lightCtx.moveTo(xl, yl);
-
-	    this.shadowCtx.beginPath();
-	    this.shadowCtx.moveTo(xl, yl);
 
 	    for(var i=ang_start; i<ang_end; i+=step) {
 		// ang is in radians
@@ -139,15 +127,10 @@ LightManager.prototype.draw = function () {
 		}
 
 		this.lightCtx.lineTo(x_hit-this.x, y_hit-this.y); 
-		this.shadowCtx.lineTo(x_hit-this.x, y_hit-this.y); 
 	    }
 	    this.lightCtx.closePath();
 	    this.lightCtx.fill();
 	    this.lightCtx.restore();
-
-	    this.shadowCtx.closePath();
-	    this.shadowCtx.fill();
-	    this.shadowCtx.restore();
 	}
     }
 }
