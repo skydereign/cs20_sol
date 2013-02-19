@@ -104,7 +104,7 @@ function Game () {
 		
     this.lightManager = new LightManager(canvas.width, canvas.height);
 		
-    this.lightManager.lightCtx = this.ctx;
+    this.lightManager.ctx = this.ctx;
 
     this.col_map = [];
     for(var x=0; x<canvas.width; x++) {
@@ -174,17 +174,17 @@ function Game () {
 		}
 
 		function draw_col () {
-				lm.lightCtx.clearRect(0, 0, lm.width, lm.height);
-				lm.lightCtx.fillStyle = "rgba(0, 0, 0, 1.0)";
-				lm.lightCtx.fillRect(0, 0, lm.width, lm.height);
+				lm.ctx.clearRect(0, 0, lm.width, lm.height);
+				lm.ctx.fillStyle = "rgba(0, 0, 0, 1.0)";
+				lm.ctx.fillRect(0, 0, lm.width, lm.height);
 
 				for(var i = 0; i<lm.width/20; i++) {
 						for(var j=0; j<lm.height/20; j++) {
 								var x = j*20;
 								var y = i*20;
 								if(colGrid[j][i]===1) {
-										lm.lightCtx.fillStyle = 'rgba(255, 255, 255, 1.0)';
-										lm.lightCtx.fillRect(x, y, 20, 20);
+										lm.ctx.fillStyle = 'rgba(255, 255, 255, 1.0)';
+										lm.ctx.fillRect(x, y, 20, 20);
 								}
 						}
 				}
