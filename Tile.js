@@ -2,8 +2,8 @@ function Tile(level, x, y, tile_size) {
 	Sprite.call(this);
 	this.level = level;
 	this.camera = level.camera;
-	this.absx = x;
-	this.absy = y;
+	this.x_abs = x;
+	this.y_abs = y;
 	this.width = tile_size;
 	this.height = tile_size;
 	this.x = x;
@@ -13,6 +13,6 @@ function Tile(level, x, y, tile_size) {
 Tile.prototype = new Sprite();
 
 Tile.prototype.update = function(d) {
-	this.x =  this.absx - this.camera.xpos;
-	this.y =  this.absy - this.camera.ypos;
+	this.x =  this.x_abs - this.camera.xpos;
+	this.y =  this.y_abs - this.camera.ypos;
 }

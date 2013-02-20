@@ -38,7 +38,7 @@ Camera.prototype.checkToMovex = function(x, x_velocity) {
 }
 
 Camera.prototype.checkToMovey = function(y, y_velocity) {
-		if(this.ypos + this.camera_height + y_velocity < this.level_height && this.ypos + y_velocity > 0) {
+	if(this.ypos + this.camera_height + y_velocity < this.level_height && this.ypos + y_velocity > 0) {
 		if(y_velocity > 0) {
 			if(y - this.camera_move_threshold_y > 0) {
 				return true;

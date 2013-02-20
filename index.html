@@ -12,16 +12,17 @@
        	<script>
        	//camera displays a level of 30x20; 30x30p squares)
        	use2d=true;
-       	var cwidth = 900;
-       	var cheight = 600;
+       	var canvas_width = 900;
+       	var canvas_height = 600;
        	var cols = 40;
-       	var rows = 20;
+       	var rows = 30;
        	var size = 30;
-       	var Camera = new Camera(cols*size, rows*size, cwidth, cheight, 0, rows*size - cheight, cols, rows, size);
+       	var Camera = new Camera(cols*size, rows*size, canvas_width, canvas_height, 0, 0, cols, rows, size);
+       	//rows*size - canvas_height
        	var firstLevel = new Level(cols, rows, size, Camera);
       	world.addChild(firstLevel);
-       	var Player = new Player(firstLevel, 100, rows*size - cheight);
-     	world.addChild(Player);       	
+       	var Player = new Player(firstLevel, 100, 0);
+     	world.addChild(Player);
        	world.init = function() {}
 		world.update = function(d) {
 			this.updateChildren(d);
@@ -29,7 +30,7 @@
         </script>
         <title>The Yet Unnamed Platformer</title>
     </head>
-    <body onload="initGame('canvas');" height="800">
+    <body onload="initGame('canvas');" height="600">
         <canvas id="canvas" width="900" height="600" style="border: solid black;">
             Seeing this is bad, mmkay.
         </canvas>
