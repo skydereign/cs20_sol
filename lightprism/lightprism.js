@@ -9,15 +9,16 @@ function Light (x, y, a, r, s, c) {
 
 
 function LightManager (w, h) {
+    Sprite.call(this);
     this.x = 0;
     this.y = 0;
     this.lights = [];
-    this.ctx;
     this.width = w;
     this.height = h;
     this.drawAll = false; // used to determine if lights are drawn out of view
     this.col_map = null;
 }
+LightManager.prototype = new Sprite();
 
 function distance (x1, y1, x2, y2) {
     var x = x1-x2;
@@ -34,8 +35,8 @@ LightManager.prototype.remove = function (idx) {
     return true;
 }
 
-LightManager.prototype.draw = function () {
-    this.ctx.globalCompositeOperation='lighter';
+LightManager.prototype.draw = function (ctx) {
+    ctx.globalCompositeOperation='lighter';
 
     var xc = this.x+this.width/2; // center of screen
     var yc = this.y+this.height/2; // center of screen
@@ -51,7 +52,7 @@ LightManager.prototype.draw = function () {
 	var xl = light.x;
 	var yl = light.y;
 
-	this.ctx.save();
+	ctx.save();
 
 	// could also check angles
 	// if the light is within range
@@ -66,9 +67,9 @@ LightManager.prototype.draw = function () {
 	    var x_hit; // used to detect where collisions happen
 	    var y_hit;
 
-	    this.ctx.fillStyle = light.color;
-	    this.ctx.beginPath();
-	    this.ctx.moveTo(xl, yl);
+	    ctx.fillStyle = light.color;
+	    ctx.beginPath();
+	    ctx.moveTo(xl, yl);
 
 	    for(var i=ang_start; i<ang_end; i+=step) {
 		// ang is in radians
@@ -126,11 +127,11 @@ LightManager.prototype.draw = function () {
 		    y_hit = yl - sin*light.radius;
 		}
 
-		this.ctx.lineTo(x_hit-this.x, y_hit-this.y); 
+		ctx.lineTo(x_hit-this.x, y_hit-this.y); 
 	    }
-	    this.ctx.closePath();
-	    this.ctx.fill();
-	    this.ctx.restore();
+	    ctx.closePath();
+	    ctx.fill();
+	    ctx.restore();
 	}
     }
 }
