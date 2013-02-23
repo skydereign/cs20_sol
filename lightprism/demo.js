@@ -111,11 +111,11 @@ Game.prototype.draw = function (ctx) {
 		ctx.fillStyle = "rgba(0, 0, 0, 1.0)";
 		ctx.fillRect(0, 0, lm.width, lm.height);
 
-		for(var i = 0; i<lm.width/20; i++) {
-				for(var j=0; j<lm.height/20; j++) {
+		for(var i = 0; i<lm.height/20; i++) {
+				for(var j=0; j<lm.width/20; j++) {
 						var x = j*20;
 						var y = i*20;
-						if(colGrid[j][i]===1) {
+						if(colGrid[i][j]===1) {
 								ctx.fillStyle = 'rgba(255, 255, 255, 1.0)';
 								ctx.fillRect(x, y, 20, 20);
 						}
@@ -129,7 +129,8 @@ gInput.addLBtnFunc(function() {
 		case 0: // no key
 				var x = Math.floor((gInput.mouse.x-10)/20);
 				var y = Math.floor((gInput.mouse.y-10)/20);
-				colGrid[x][y] = 1-colGrid[x][y]; // used for drawing
+				console.log("click: x=",x,", y=",y);
+				colGrid[y][x] = 1-colGrid[y][x]; // used for drawing
 
 				// TODO: clean this up to use just the tiles
 				x*=20;
