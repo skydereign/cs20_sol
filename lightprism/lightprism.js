@@ -57,7 +57,7 @@ LightManager.prototype.draw = function (ctx) {
 	// could also check angles
 	// if the light is within range
 	var max_dist = light.radius+distance(x1*20, y1*20, x2*20, y2*20)/2;
-	var onScreen = (light.x>=0 && light.x<this.width && light.y>=0 && light.y<this.width);
+	var onScreen = true;//(light.x>=this.x && light.x<this.x+this.width && light.y>=this.y && light.y<this.y+this.height);
 
 	if(this.drawAll || distance(xc, yc, xl, yl)<max_dist) {
 	    var ang_start = light.angle-light.spread/2;
@@ -69,7 +69,8 @@ LightManager.prototype.draw = function (ctx) {
 
 	    ctx.fillStyle = light.color;
 	    ctx.beginPath();
-	    ctx.moveTo(light.x, light.y);
+	    ctx.moveTo(light.x-this.x*2, light.y-this.y*2);
+	    // note must use times 2 because light positions are relative
 
 	    for(var i=ang_start; i<ang_end; i+=step) {
 		// ang is in radians
@@ -129,7 +130,7 @@ LightManager.prototype.draw = function (ctx) {
 		    y_hit = yl - sin*light.radius/20;
 		}
 
-		ctx.lineTo(x_hit*20-this.x, y_hit*20-this.y); 
+		ctx.lineTo(x_hit*20-this.x*2, y_hit*20-this.y*2); 
 	    }
 	    ctx.closePath();
 	    ctx.fill();

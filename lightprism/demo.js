@@ -1,11 +1,13 @@
 // TODO: clean up use of global variables
 use2D = true;
 var colGrid = [];
+var map_width = 100;
+var map_height = 30;
+
 var size = 20;				
 var lastKey = 0; // used to determine what action
 var selectedLight;
 var keys = [];
-var col_map;
 var lm;
 
 var canvas = {width:640, height:480};
@@ -13,9 +15,9 @@ var canvas = {width:640, height:480};
 function Game () {
 		Sprite.call(this);
 		// uses colGrid instead of colCanvas
-		for(var i=0; i<canvas.height/size; i++) {
+		for(var i=0; i<map_height; i++) {
 				colGrid[i] = [];
-				for(var j=0; j<canvas.width/size; j++) {
+				for(var j=0; j<map_width; j++) {
 						colGrid[i][j]=0;
 				}
 		}
@@ -34,22 +36,37 @@ function Game () {
 		
     this.lightManager = new LightManager(canvas.width, canvas.height);
 		
-    this.col_map = [];
-    for(var x=0; x<canvas.width; x++) {
-				this.col_map[x] = [];
-				for(var y=0; y<canvas.height; y++) {
-						this.col_map[x][y] = 0;
-				}
-    }
-		
     this.lightManager.col_map = colGrid;
-
-    col_map = this.col_map;
     lm = this.lightManager;
 }
 Game.prototype = new Sprite();
 
 Game.prototype.update = function (d) {
+		if(keys[74]) { // j - move screen left
+				lm.x-=2;
+				if(lm.x<0) {
+						lm.x = 0;
+				}
+		}
+		if(keys[76]) { // l - move screen right
+				lm.x+=2;
+				if(lm.x>=map_width*size-lm.width) {
+						lm.x = map_width*size-lm.width-1;
+				}
+		}
+		if(keys[73]) { // i - move screen up
+				lm.y-=2;
+				if(lm.y<0) {
+						lm.y = 0;
+				}
+		}
+		if(keys[75]) { // l - move screen down
+				lm.y+=2;
+				if(lm.y>=map_height*size-lm.height) {
+						lm.y = map_height*size-lm.height-1;
+				}
+		}
+
 		if(selectedLight) {
 				if(keys[37]) { // left - rotate
 						selectedLight.angle+=2;
@@ -86,8 +103,8 @@ Game.prototype.update = function (d) {
 				}
 				if(keys[68]) { // d - right
 						selectedLight.x+=2;
-						if(selectedLight.x>=lm.width) {
-								selectedLight.x=lm.width-1;
+						if(selectedLight.x>=map_width*size) {
+								selectedLight.x=map_width*size-1;
 						}
 				}
 				if(keys[87]) { // w - up
@@ -98,8 +115,8 @@ Game.prototype.update = function (d) {
 				}
 				if(keys[83]) { // s - down
 						selectedLight.y+=2;
-						if(selectedLight.y>=lm.height) {
-								selectedLight.y=lm.height-1;
+						if(selectedLight.y>=map_height*size) {
+								selectedLight.y=map_height*size-1;
 						}
 				}
 		}
@@ -111,13 +128,13 @@ Game.prototype.draw = function (ctx) {
 		ctx.fillStyle = "rgba(0, 0, 0, 1.0)";
 		ctx.fillRect(0, 0, lm.width, lm.height);
 
-		for(var i = 0; i<lm.height/20; i++) {
-				for(var j=0; j<lm.width/20; j++) {
+		for(var i = 0; i<map_height; i++) {
+				for(var j=0; j<map_width; j++) {
 						var x = j*20;
 						var y = i*20;
 						if(colGrid[i][j]===1) {
 								ctx.fillStyle = 'rgba(255, 255, 255, 1.0)';
-								ctx.fillRect(x, y, 20, 20);
+								ctx.fillRect(x-lm.x, y-lm.y, 20, 20);
 						}
 				}
 		}
@@ -127,59 +144,50 @@ Game.prototype.draw = function (ctx) {
 gInput.addLBtnFunc(function() { 
 		switch(lastKey) {
 		case 0: // no key
-				var x = Math.floor((gInput.mouse.x-10)/20);
-				var y = Math.floor((gInput.mouse.y-10)/20);
+				var x = Math.floor((gInput.mouse.x-10+lm.x)/20);
+				var y = Math.floor((gInput.mouse.y-10+lm.y)/20);
 				colGrid[y][x] = 1-colGrid[y][x]; // used for drawing
-
-				// TODO: clean this up to use just the tiles
-				x*=20;
-				y*=20;
-				for(var i=0; i<20; i++) {
-						for(var j=0; j<20; j++) {
-								col_map[x+i][y+j]=1-col_map[x+i][y+j];
-						}
-				}
 				break;
 				
 		case 49: // 1 - red
-				selectedLight = new Light(gInput.mouse.x, gInput.mouse.y, 0, 200, 45, 'rgba(255, 0, 0, 1)');
+				selectedLight = new Light(gInput.mouse.x+lm.x, gInput.mouse.y+lm.y, 0, 200, 45, 'rgba(255, 0, 0, 1)');
 				lm.lights.push(selectedLight);
 				break;
 				
 		case 50: // 2 - green
-				selectedLight = new Light(gInput.mouse.x, gInput.mouse.y, 0, 200, 45, 'rgba(0, 255, 0, 1)');
+				selectedLight = new Light(gInput.mouse.x+lm.x, gInput.mouse.y+lm.y, 0, 200, 45, 'rgba(0, 255, 0, 1)');
 				lm.lights.push(selectedLight);
 				break;
 				
 		case 51: // 3 - blue
-				selectedLight = new Light(gInput.mouse.x, gInput.mouse.y, 0, 200, 45, 'rgba(0, 0, 255, 1)')
+				selectedLight = new Light(gInput.mouse.x+lm.x, gInput.mouse.y+lm.y, 0, 200, 45, 'rgba(0, 0, 255, 1)')
 				lm.lights.push(selectedLight);
 				break;
 				
 		case 52: // 4 - magenta
-				selectedLight = new Light(gInput.mouse.x, gInput.mouse.y, 0, 200, 45, 'rgba(255, 0, 255, 1)')
+				selectedLight = new Light(gInput.mouse.x+lm.x, gInput.mouse.y+lm.y, 0, 200, 45, 'rgba(255, 0, 255, 1)')
 				lm.lights.push(selectedLight);
 				break;
 				
 		case 53: // 5 - yellow
-				selectedLight = new Light(gInput.mouse.x, gInput.mouse.y, 0, 200, 45, 'rgba(255, 255, 0, 1)');
+				selectedLight = new Light(gInput.mouse.x+lm.x, gInput.mouse.y+lm.y, 0, 200, 45, 'rgba(255, 255, 0, 1)');
 				lm.lights.push(selectedLight);
 				break;
 				
 		case 54: // 6 - cyan
-				selectedLight = new Light(gInput.mouse.x, gInput.mouse.y, 0, 200, 45, 'rgba(0, 255, 255, 1)');
+				selectedLight = new Light(gInput.mouse.x+lm.x, gInput.mouse.y+lm.y, 0, 200, 45, 'rgba(0, 255, 255, 1)');
 				lm.lights.push(selectedLight);
 				break;
 				
 		case 55: // 7 - white
-				selectedLight = new Light(gInput.mouse.x, gInput.mouse.y, 0, 200, 45, 'rgba(255, 255, 255, 1)');
+				selectedLight = new Light(gInput.mouse.x+lm.x, gInput.mouse.y+lm.y, 0, 200, 45, 'rgba(255, 255, 255, 1)');
 				lm.lights.push(selectedLight);
 				break;
 				
 		case 88: // x - delete local lights
 				for(var i=0; i<lm.lights.length; i++) {
 						var light = lm.lights[i];
-						if(Math.abs(light.x - gInput.mouse.x)<30 && Math.abs(light.y - gInput.mouse.y)<30) {
+						if(Math.abs(light.x-gInput.mouse.x-lm.x)<30 && Math.abs(light.y-gInput.mouse.y-lm.y)<30) {
 								lm.remove(i);
 								i--; // removed a light, so adjust
 						}
@@ -189,7 +197,7 @@ gInput.addLBtnFunc(function() {
 		case 90: // z - select local light
 				for(var i=0; i<lm.lights.length; i++) {
 						var light = lm.lights[i];
-						if(Math.abs(light.x - gInput.mouse.x)<30 && Math.abs(light.y - gInput.mouse.y)<30) {
+						if(Math.abs(light.x-gInput.mouse.x-lm.x)<30 && Math.abs(light.y-gInput.mouse.y-lm.y)<30) {
 								selectedLight = light;
 								break;
 						}
