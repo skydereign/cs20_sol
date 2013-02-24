@@ -42,7 +42,7 @@ function Game () {
 				}
     }
 		
-    this.lightManager.col_map = this.col_map;
+    this.lightManager.col_map = colGrid;
 
     col_map = this.col_map;
     lm = this.lightManager;
@@ -129,7 +129,6 @@ gInput.addLBtnFunc(function() {
 		case 0: // no key
 				var x = Math.floor((gInput.mouse.x-10)/20);
 				var y = Math.floor((gInput.mouse.y-10)/20);
-				console.log("click: x=",x,", y=",y);
 				colGrid[y][x] = 1-colGrid[y][x]; // used for drawing
 
 				// TODO: clean this up to use just the tiles

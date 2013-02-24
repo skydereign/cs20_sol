@@ -41,22 +41,22 @@ LightManager.prototype.draw = function (ctx) {
     var xc = this.x+this.width/2; // center of screen
     var yc = this.y+this.height/2; // center of screen
 
-    var x1 = this.x;
-    var y1 = this.y;
-    var x2 = this.x+this.width;
-    var y2 = this.y+this.height;
+    var x1 = this.x/20;
+    var y1 = this.y/20;
+    var x2 = (this.x+this.width)/20;
+    var y2 = (this.y+this.height)/20;
 
     for(var idx=0; idx<this.lights.length; idx++) {
 	var light = this.lights[idx];
 	var radius = light.radius;
-	var xl = light.x;
-	var yl = light.y;
+	var xl = light.x/20;
+	var yl = light.y/20;
 
 	ctx.save();
 
 	// could also check angles
 	// if the light is within range
-	var max_dist = light.radius+distance(x1, y1, x2, y2)/2;
+	var max_dist = light.radius+distance(x1*20, y1*20, x2*20, y2*20)/2;
 	var onScreen = (light.x>=0 && light.x<this.width && light.y>=0 && light.y<this.width);
 
 	if(this.drawAll || distance(xc, yc, xl, yl)<max_dist) {
@@ -69,7 +69,7 @@ LightManager.prototype.draw = function (ctx) {
 
 	    ctx.fillStyle = light.color;
 	    ctx.beginPath();
-	    ctx.moveTo(xl, yl);
+	    ctx.moveTo(light.x, light.y);
 
 	    for(var i=ang_start; i<ang_end; i+=step) {
 		// ang is in radians
@@ -91,7 +91,7 @@ LightManager.prototype.draw = function (ctx) {
 			var t_dist = distance(xl, yl, x, y); // improve?
 			
 			// can be optimized to prevent checking radius
-			if(t_dist<=light.radius && this.col_map[x_col][y_col]!=undefined && this.col_map[x_col][y_col]!=0) { // hit a wall
+			if(t_dist<=light.radius/20 && this.col_map[y_col][x_col]!=undefined && this.col_map[y_col][x_col]!=0) { // hit a wall
 			    dist = t_dist;
 			    x_hit = x;
 			    y_hit = y;
@@ -111,7 +111,7 @@ LightManager.prototype.draw = function (ctx) {
 			t_dist = distance(xl, yl, x, y); // improve?
 			
 			// can be optimized to prevent checking radius
-			if(this.col_map[x_col][y_col]!=undefined && this.col_map[x_col][y_col]!=0) { // hit a wall
+			if(this.col_map[y_col][x_col]!=undefined && this.col_map[y_col][x_col]!=0) { // hit a wall
 			    dist = t_dist;
 			    x_hit = x;
 			    y_hit = y;
@@ -119,15 +119,15 @@ LightManager.prototype.draw = function (ctx) {
 			}
 			x+=cos;
 			y-=sin;
-		    } while(t_dist<=light.radius);
+		    } while(t_dist<=light.radius/20);
 		}
 
 		if(dist===undefined) {
-		    x_hit = xl + cos*light.radius;
-		    y_hit = yl - sin*light.radius;
+		    x_hit = xl + cos*light.radius/20;
+		    y_hit = yl - sin*light.radius/20;
 		}
 
-		ctx.lineTo(x_hit-this.x, y_hit-this.y); 
+		ctx.lineTo(x_hit*20-this.x, y_hit*20-this.y); 
 	    }
 	    ctx.closePath();
 	    ctx.fill();
