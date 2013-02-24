@@ -8,64 +8,73 @@
 window.onload = function() {
 	var canvas = document.getElementById('canvas');
 	var ctx = canvas.getContext('2d');
+	var p = document.getElementById("para");
 	
 	var cellSize = 40;
 	
-	var grid = new Array(canvas.width/cellSize);
-	for(i=0; i < grid.length; i++){
-		grid[i] = new Array(canvas.height/cellSize);
+	var background = new Array(canvas.width/cellSize);
+	for(i=0; i < background.length; i++){
+		background[i] = new Array(canvas.height/cellSize);
+	}
+	var foreground = new Array(canvas.width/cellSize);
+	for(i=0; i < foreground.length; i++){
+		foreground[i] = new Array(canvas.height/cellSize);
 	}
 	//tileNum corresponds to which tile within the tilesheet is being used.
 	var tileNum;
-/* 	window.addEventListener('keydown', function(event){
+ 	window.addEventListener('keydown', function(event){
 		if(event.keyCode === 49){
-			tileNum = 1;
-		}else if(event.keyCode === 50){
-			tileNum = 2;
-		}else if(event.keyCode === 51){
+			onBackground = false;
+			p.innerHTML = "On Foreground";
+		}
+		else if(event.keyCode === 50){
+			onBackground = true;
+			p.innerHTML = "On Background";
+		}
+		/*else if(event.keyCode === 51){
 			tileNum = 3;
 		}else if(event.keyCode === 52){
 			tileNum = 4;
-		}
+		}*/
 	});
-*/
+
 	
 	//when mouse button is down, set grid cell to current tileNum
-	var flag = false;
+	var mouseFlag = false;
+	var onBackground = true;
+	
 	canvas.onmousedown = function(e){
-		flag = true;
-
+		mouseFlag = true;
 		for(i = 0; i < tileTotal; i++){
-			if(tileNum == i){
-				grid[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)] = i;
+			if(tileNum == i && onBackground){
+				background[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)] = i;
+			}else if(tileNum == i && !onBackground){
+				foreground[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)] = i;
 			}
 		}
 	}
 	document.onmouseup = function(){
-		flag = false;
+		mouseFlag = false;
 	}
 
 	//if mouse is dragged, then change all grid cells that the mouse touches to current tileNum
 	canvas.onmousemove = function(e){
-		if(flag){
+		if(mouseFlag){
 			for(i = 0; i < tileTotal; i++){
-				if(tileNum == i){
-					grid[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)] = i;
+				if(tileNum == i && onBackground){
+					background[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)] = i;
+				}else if(tileNum == i && !onBackground){
+					foreground[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)] = i;				
 				}
 			}
 		}
 	}
 	//Store tiles into Array
 	var  image = document.getElementById("tiles");
-	image.crossOrigin = "anonymous";
-	ctx.drawImage(image, 0, 0);
-	var imgArray = new Array();
-	var tileTotal = (image.height/cellSize) * (image.width/cellSize);
-	for(y = 0; y < image.height; y += 40){
-		for(x = 0; x < image.width; x += 40){
-			imgArray.push(ctx.getImageData(x, y, 40, 40));
-		}
-	}
+	var tilesPerRow = image.width/cellSize;
+	var tilesPerCol = image.height/cellSize;
+	var tileTotal = (tilesPerRow) * (tilesPerCol);
+	
 	//Clicking on image will set tileNum to corresponding tile that was clicked
 	image.onclick = function(e){
 		clickX = e.clientX-this.offsetLeft + document.body.scrollLeft;
@@ -77,7 +86,6 @@ window.onload = function() {
 					tileNum = (i+(j*image.width/40))/40;
 			}
 		}
-		console.log(tileNum);
 	}
 	setInterval(drawLevel, 50);
 	//Compares each grid cell with a possible tile number and if there is a match, draw that tile inside the the cell.
@@ -86,8 +94,13 @@ window.onload = function() {
 		for(i = 0; i < canvas.width/cellSize; i++){
 			for(j = 0; j < canvas.height/cellSize; j++){
 				for(t = 0; t <= tileTotal; t++){
-					if(grid[i][j] == t){
-						ctx.putImageData(imgArray[t], i*cellSize, j*cellSize)
+					if(background[i][j] == t){
+						ctx.drawImage(image, 40*(t%tilesPerRow), Math.floor(t/tilesPerRow)*40, 40, 40, i*cellSize, j*cellSize, 40, 40);
+					}
+				}
+				for(t=0; t<=tileTotal; t++){
+					if(foreground[i][j] == t){
+						ctx.drawImage(image, 40*(t%tilesPerRow), Math.floor(t/tilesPerRow)*40, 40, 40, i*cellSize, j*cellSize, 40, 40);				
 					}
 				}
 
@@ -100,6 +113,10 @@ window.onload = function() {
 <body>
 <canvas id = "canvas" width = "800" height = "560" style = "border:solid black;">
 </canvas>
-<img id = "tiles" src = "tiles_concept.png">
+<img id = "tiles" src = "tiles_concept_01.png">
+<p>Key 1 for ForeGround</p>
+<p>Key 2 for Background</p>
+<p id = "para">On Background</p>
+
 </body>
 </html>
