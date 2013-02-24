@@ -97,8 +97,10 @@ LightManager.prototype.draw = function (ctx) {
 			    y_hit = y;
 			    break;
 			}
-			x+=cos;
-			y-=sin;
+			while(x_col === Math.floor(x) && y_col === Math.floor(y)) {
+			    x+=cos/20;
+			    y-=sin/20;
+			}
 		    }
 		} else { // the light was offscreen
 		    // TODO: fix this, so lights off screen still work
