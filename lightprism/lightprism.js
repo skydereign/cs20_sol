@@ -92,7 +92,7 @@ LightManager.prototype.draw = function (ctx) {
 			var t_dist = distance(xl, yl, x, y); // improve?
 			
 			// can be optimized to prevent checking radius
-			if(t_dist<=light.radius/20 && this.col_map[x_col][y_col]!=undefined && this.col_map[x_col][y_col]!=0) { // hit a wall
+			if(t_dist<=light.radius/20 && this.col_map[x_col][y_col]!=undefined && this.col_map[x_col][y_col]!=-1) { // hit a wall
 			    dist = t_dist;
 			    x_hit = x;
 			    y_hit = y;
@@ -114,7 +114,7 @@ LightManager.prototype.draw = function (ctx) {
 			t_dist = distance(xl, yl, x, y); // improve?
 			
 			// can be optimized to prevent checking radius
-			if(this.col_map[x_col][y_col]!=undefined && this.col_map[x_col][y_col]!=0) { // hit a wall
+			if(this.col_map[x_col][y_col]!=undefined && this.col_map[x_col][y_col]!=-1) { // hit a wall
 			    dist = t_dist;
 			    x_hit = x;
 			    y_hit = y;

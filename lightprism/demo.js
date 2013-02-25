@@ -18,7 +18,7 @@ function Game () {
 		for(var i=0; i<map_width; i++) {
 				colGrid[i] = [];
 				for(var j=0; j<map_height; j++) {
-						colGrid[i][j]=0;
+						colGrid[i][j]=-1;
 				}
 		}
 
@@ -132,7 +132,7 @@ Game.prototype.draw = function (ctx) {
 				for(var j=0; j<map_height; j++) {
 						var x = i*20;
 						var y = j*20;
-						if(colGrid[i][j]===1) {
+						if(colGrid[i][j]===0) {
 								ctx.fillStyle = 'rgba(255, 255, 255, 1.0)';
 								ctx.fillRect(x-lm.x, y-lm.y, 20, 20);
 						}
@@ -146,7 +146,7 @@ gInput.addLBtnFunc(function() {
 		case 0: // no key
 				var x = Math.floor((gInput.mouse.x-10+lm.x)/20);
 				var y = Math.floor((gInput.mouse.y-10+lm.y)/20);
-				colGrid[x][y] = 1-colGrid[x][y]; // used for drawing
+				colGrid[x][y] = colGrid[x][y]===-1 ? 0 : -1; // used for drawing
 				break;
 				
 		case 49: // 1 - red
