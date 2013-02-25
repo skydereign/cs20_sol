@@ -59,7 +59,7 @@ LightManager.prototype.draw = function (ctx) {
 	var max_dist = light.radius+distance(x1*20, y1*20, x2*20, y2*20)/2;
 	var onScreen = true;//(light.x>=this.x && light.x<this.x+this.width && light.y>=this.y && light.y<this.y+this.height);
 
-	if(this.drawAll || distance(xc, yc, xl, yl)<max_dist) {
+	if(this.drawAll || distance(xc, yc, this.x+xl, this.y+yl)<max_dist) {
 	    var ang_start = light.angle-light.spread/2;
 	    var ang_end = light.angle+light.spread/2;
 	    var step = 0.1; // TODO: fix this, should be based off radius
