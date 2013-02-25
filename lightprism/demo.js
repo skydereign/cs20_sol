@@ -15,9 +15,9 @@ var canvas = {width:640, height:480};
 function Game () {
 		Sprite.call(this);
 		// uses colGrid instead of colCanvas
-		for(var i=0; i<map_height; i++) {
+		for(var i=0; i<map_width; i++) {
 				colGrid[i] = [];
-				for(var j=0; j<map_width; j++) {
+				for(var j=0; j<map_height; j++) {
 						colGrid[i][j]=0;
 				}
 		}
@@ -128,10 +128,10 @@ Game.prototype.draw = function (ctx) {
 		ctx.fillStyle = "rgba(0, 0, 0, 1.0)";
 		ctx.fillRect(0, 0, lm.width, lm.height);
 
-		for(var i = 0; i<map_height; i++) {
-				for(var j=0; j<map_width; j++) {
-						var x = j*20;
-						var y = i*20;
+		for(var i = 0; i<map_width; i++) {
+				for(var j=0; j<map_height; j++) {
+						var x = i*20;
+						var y = j*20;
 						if(colGrid[i][j]===1) {
 								ctx.fillStyle = 'rgba(255, 255, 255, 1.0)';
 								ctx.fillRect(x-lm.x, y-lm.y, 20, 20);
@@ -146,7 +146,7 @@ gInput.addLBtnFunc(function() {
 		case 0: // no key
 				var x = Math.floor((gInput.mouse.x-10+lm.x)/20);
 				var y = Math.floor((gInput.mouse.y-10+lm.y)/20);
-				colGrid[y][x] = 1-colGrid[y][x]; // used for drawing
+				colGrid[x][y] = 1-colGrid[x][y]; // used for drawing
 				break;
 				
 		case 49: // 1 - red
