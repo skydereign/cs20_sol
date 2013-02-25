@@ -20,20 +20,25 @@ window.onload = function() {
 	for(i=0; i < foreground.length; i++){
 		foreground[i] = new Array(canvas.height/cellSize);
 	}
+	var middleground = new Array(canvas.width/cellSize);
+	for(i=0; i < middleground.length; i++){
+		middleground[i] = new Array(canvas.height/cellSize);
+	}
 	//tileNum corresponds to which tile within the tilesheet is being used.
 	var tileNum;
  	window.addEventListener('keydown', function(event){
 		if(event.keyCode === 49){
-			onBackground = false;
+			ground = "f";
 			p.innerHTML = "On Foreground";
 		}
 		else if(event.keyCode === 50){
-			onBackground = true;
+			ground = "b";
 			p.innerHTML = "On Background";
 		}
-		/*else if(event.keyCode === 51){
-			tileNum = 3;
-		}else if(event.keyCode === 52){
+		else if(event.keyCode === 51){
+			ground = "m";
+			p.innerHTML = "On Middleground";
+		}/*else if(event.keyCode === 52){
 			tileNum = 4;
 		}*/
 	});
@@ -41,15 +46,17 @@ window.onload = function() {
 	
 	//when mouse button is down, set grid cell to current tileNum
 	var mouseFlag = false;
-	var onBackground = true;
+	var ground = "b";
 	
 	canvas.onmousedown = function(e){
 		mouseFlag = true;
 		for(i = 0; i < tileTotal; i++){
-			if(tileNum == i && onBackground){
+			if(tileNum == i && ground == "b"){
 				background[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)] = i;
-			}else if(tileNum == i && !onBackground){
+			}else if(tileNum == i && ground == "f"){
 				foreground[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)] = i;
+			}else if(tileNum == i && ground == "m"){
+				middleground[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)] = i;
 			}
 		}
 	}
@@ -61,10 +68,12 @@ window.onload = function() {
 	canvas.onmousemove = function(e){
 		if(mouseFlag){
 			for(i = 0; i < tileTotal; i++){
-				if(tileNum == i && onBackground){
+				if(tileNum == i && ground == "b"){
 					background[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)] = i;
-				}else if(tileNum == i && !onBackground){
+				}else if(tileNum == i && ground == "f"){
 					foreground[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)] = i;				
+				}else if(tileNum == i && ground == "m"){
+					middleground[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)] = i;				
 				}
 			}
 		}
@@ -99,6 +108,11 @@ window.onload = function() {
 					}
 				}
 				for(t=0; t<=tileTotal; t++){
+					if(middleground[i][j] == t){
+						ctx.drawImage(image, 40*(t%tilesPerRow), Math.floor(t/tilesPerRow)*40, 40, 40, i*cellSize, j*cellSize, 40, 40);				
+					}
+				}
+				for(t=0; t<=tileTotal; t++){
 					if(foreground[i][j] == t){
 						ctx.drawImage(image, 40*(t%tilesPerRow), Math.floor(t/tilesPerRow)*40, 40, 40, i*cellSize, j*cellSize, 40, 40);				
 					}
@@ -116,7 +130,9 @@ window.onload = function() {
 <img id = "tiles" src = "tiles_concept_01.png">
 <p>Key 1 for ForeGround</p>
 <p>Key 2 for Background</p>
+<p>Key 3 for MiddleGround</p>
 <p id = "para">On Background</p>
+<button>Save</button> <button>Load</button>
 
 </body>
 </html>
