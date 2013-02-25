@@ -5,23 +5,20 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <script src="brine.js"></script>
         <script src="Level.js"></script>
+        <script src="Level_Object.js"></script>
         <script src="Player.js"></script>
         <script src="Camera.js"></script>
-        <script src="Tile.js"></script>
-        <script src="Environment.js"></script>
-       	<script>
-       	//camera displays a level of 30x20; 30x30p squares)
+        <script>
        	use2d=true;
        	var canvas_width = 900;
        	var canvas_height = 600;
        	var cols = 40;
        	var rows = 30;
        	var size = 30;
-       	var Camera = new Camera(cols*size, rows*size, canvas_width, canvas_height, 0, 0, cols, rows, size);
-       	//rows*size - canvas_height
+       	var Camera = new Camera(cols*size, rows*size, canvas_width, canvas_height, 0, 300);
        	var firstLevel = new Level(cols, rows, size, Camera);
       	world.addChild(firstLevel);
-       	var Player = new Player(firstLevel, 100, 0);
+       	var Player = new Player(200, 0, firstLevel, "images/Player_Example.png");
      	world.addChild(Player);
        	world.init = function() {}
 		world.update = function(d) {
