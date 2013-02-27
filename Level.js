@@ -17,6 +17,8 @@ function Level(cols, rows, tile_size, camera) {
 	this.lightManager = new LightManager(camera.camera_width, camera.camera_height, tile_size);
 	this.lightManager.col_map = this.tile_array;
 	this.lightManager.lights.push(new Light(100, 100, 270, 500, 45, 'rgba(255, 0, 0, 1)'));
+	this.lightManager.lights.push(new Light(100, 500, 270, 500, 45, 'rgba(0, 0, 255, 1)'));
+	this.lightManager.lights.push(new Light(500, 540, 200, 400, 45, 'rgba(0, 255, 0, 1)'));
 }
 
 Level.prototype = new Sprite();
@@ -179,7 +181,8 @@ Level.prototype.draw = function(ctx) {
 	//draws the tile in all its spots.
 	this.lightManager.x = this.camera.x; // TODO: put in Level.update
 	this.lightManager.y = this.camera.y;    
-
+	ctx.fillStyle = 'rgba(127, 127, 127, 1.0)';
+	ctx.fillRect(0, 0, this.camera.camera_width, this.camera.camera_height);
 	for(var i = 0; i < cols; i++) {
 		for(var j = 0; j < rows; j++) {
 			if(this.tile_array[i][j] > -1) {
