@@ -20,8 +20,8 @@
        	var firstLevel = new Level(cols, rows, size, Camera);
 
       	world.addChild(firstLevel);
-       	var Player = new Player(200, 0, firstLevel, "images/Player_Example.png");
-     	world.addChild(Player);
+	var Player = new Player(200, 0, firstLevel, "images/Player_Example.png");
+	world.addChild(Player);
 
 	world.addChild(firstLevel.lightManager);
        	world.init = function() {}

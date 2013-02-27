@@ -14,9 +14,9 @@ function Level(cols, rows, tile_size, camera) {
 	tile.image;
 	this.tile = tile;
 	this.addChild(this.tile);
-	this.lightManager = new LightManager(camera.camera_width, camera.camera_height);
+	this.lightManager = new LightManager(camera.camera_width, camera.camera_height, tile_size);
 	this.lightManager.col_map = this.tile_array;
-	this.lightManager.lights.push(new Light(100, 100, 270, 1000, 45, 'rgba(255, 0, 0, 1)'));
+	this.lightManager.lights.push(new Light(100, 100, 270, 500, 45, 'rgba(255, 0, 0, 1)'));
 }
 
 Level.prototype = new Sprite();
@@ -90,6 +90,12 @@ Level.prototype.buildLevel = function() {
 	this.tile_array[30][20] = 0;
 	this.tile_array[31][20] = 0;
 	this.tile_array[32][20] = 0;
+
+	this.tile_array[0][12] = 0;
+	this.tile_array[1][12] = 0;
+	this.tile_array[2][12] = 0;
+	this.tile_array[3][12] = 0;
+	this.tile_array[4][12] = 0;
 }
 
 Level.prototype.initArrays = function() {
