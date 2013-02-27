@@ -58,7 +58,7 @@ LightManager.prototype.draw = function (ctx) {
 	// could also check angles
 	// if the light is within range
 	var max_dist = light.radius+distance(x1*this.tile_size, y1*this.tile_size, x2*this.tile_size, y2*this.tile_size)/2;
-	var onScreen = true;//(light.x>=this.x && light.x<this.x+this.width && light.y>=this.y && light.y<this.y+this.height);
+	var onScreen = (light.x>=this.x && light.x<this.x+this.width && light.y>=this.y && light.y<this.y+this.height);
 
 	if(this.drawAll || distance(xc, yc, this.x+xl, this.y+yl)<max_dist) {
 	    var ang_start = light.angle-light.spread/2;
@@ -105,24 +105,27 @@ LightManager.prototype.draw = function (ctx) {
 			}
 		    }
 		} else { // the light was offscreen
-		    // TODO: fix this, so lights off screen still work
-		    // problem is col_map is directly tied to canvas right now
-		    // not always the case
 		    var t_dist = 0;
 		    do {
 			var x_col = Math.floor(x);
 			var y_col = Math.floor(y);
 			t_dist = distance(xl, yl, x, y); // improve?
 			
+			if(x_col<0 || y_col<0) { // out of bounds
+			    break;
+			}
+
 			// can be optimized to prevent checking radius
-			if(this.col_map[x_col][y_col]!=undefined && this.col_map[x_col][y_col]!=-1) { // hit a wall
+			if(t_dist<=light.radius/this.tile_size && this.col_map[x_col][y_col]!=undefined && this.col_map[x_col][y_col]!=-1) {
 			    dist = t_dist;
 			    x_hit = x;
 			    y_hit = y;
 			    break;
 			}
-			x+=cos;
-			y-=sin;
+			while(x_col === Math.floor(x) && y_col === Math.floor(y)) {
+			    x+=cos/this.tile_size;
+			    y-=sin/this.tile_size;
+			}
 		    } while(t_dist<=light.radius/this.tile_size);
 		}
 
