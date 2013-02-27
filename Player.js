@@ -41,12 +41,12 @@ Player.prototype.update = function(d) {
 		this.x_level = collisions.x;
 		this.x_velocity = 0;
 	}
-	console.log(collisions.y);
+	//console.log(collisions.y);
 	if(collisions.y == -1) {
 		this.y_level += this.y_velocity;
 		this.y_velocity += this.y_acceleration;
 	} else {
-		console.log(collisions.y);
+		//console.log(collisions.y);
 		this.y_level = collisions.y;
 		this.y_velocity = 0;
 	}
