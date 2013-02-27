@@ -8,7 +8,7 @@ function Light (x, y, a, r, s, c) {
 }
 
 
-function LightManager (w, h) {
+function LightManager (w, h, ts) {
     Sprite.call(this);
     this.x = 0;
     this.y = 0;
@@ -17,6 +17,7 @@ function LightManager (w, h) {
     this.height = h;
     this.drawAll = false; // used to determine if lights are drawn out of view
     this.col_map = null;
+    this.tile_size = ts;
 }
 LightManager.prototype = new Sprite();
 
@@ -41,22 +42,22 @@ LightManager.prototype.draw = function (ctx) {
     var xc = this.x+this.width/2; // center of screen
     var yc = this.y+this.height/2; // center of screen
 
-    var x1 = this.x/20;
-    var y1 = this.y/20;
-    var x2 = (this.x+this.width)/20;
-    var y2 = (this.y+this.height)/20;
+    var x1 = this.x/this.tile_size;
+    var y1 = this.y/this.tile_size;
+    var x2 = (this.x+this.width)/this.tile_size;
+    var y2 = (this.y+this.height)/this.tile_size;
 
     for(var idx=0; idx<this.lights.length; idx++) {
 	var light = this.lights[idx];
 	var radius = light.radius;
-	var xl = light.x/20;
-	var yl = light.y/20;
+	var xl = light.x/this.tile_size;
+	var yl = light.y/this.tile_size;
 
 	ctx.save();
 
 	// could also check angles
 	// if the light is within range
-	var max_dist = light.radius+distance(x1*20, y1*20, x2*20, y2*20)/2;
+	var max_dist = light.radius+distance(x1*this.tile_size, y1*this.tile_size, x2*this.tile_size, y2*this.tile_size)/2;
 	var onScreen = true;//(light.x>=this.x && light.x<this.x+this.width && light.y>=this.y && light.y<this.y+this.height);
 
 	if(this.drawAll || distance(xc, yc, this.x+xl, this.y+yl)<max_dist) {
@@ -92,15 +93,15 @@ LightManager.prototype.draw = function (ctx) {
 			var t_dist = distance(xl, yl, x, y); // improve?
 			
 			// can be optimized to prevent checking radius
-			if(t_dist<=light.radius/20 && this.col_map[x_col][y_col]!=undefined && this.col_map[x_col][y_col]!=-1) { // hit a wall
+			if(t_dist<=light.radius/this.tile_size && this.col_map[x_col][y_col]!=undefined && this.col_map[x_col][y_col]!=-1) { // hit a wall
 			    dist = t_dist;
 			    x_hit = x;
 			    y_hit = y;
 			    break;
 			}
 			while(x_col === Math.floor(x) && y_col === Math.floor(y)) {
-			    x+=cos/20;
-			    y-=sin/20;
+			    x+=cos/this.tile_size;
+			    y-=sin/this.tile_size;
 			}
 		    }
 		} else { // the light was offscreen
@@ -122,15 +123,15 @@ LightManager.prototype.draw = function (ctx) {
 			}
 			x+=cos;
 			y-=sin;
-		    } while(t_dist<=light.radius/20);
+		    } while(t_dist<=light.radius/this.tile_size);
 		}
 
 		if(dist===undefined) {
-		    x_hit = xl + cos*light.radius/20;
-		    y_hit = yl - sin*light.radius/20;
+		    x_hit = xl + cos*light.radius/this.tile_size;
+		    y_hit = yl - sin*light.radius/this.tile_size;
 		}
 
-		ctx.lineTo(x_hit*20-this.x*2, y_hit*20-this.y*2); 
+		ctx.lineTo(x_hit*this.tile_size-this.x*2, y_hit*this.tile_size-this.y*2); 
 	    }
 	    ctx.closePath();
 	    ctx.fill();

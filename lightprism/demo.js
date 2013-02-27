@@ -34,7 +34,7 @@ function Game () {
 				keys[e.keyCode] = false;
     }, true);
 		
-    this.lightManager = new LightManager(canvas.width, canvas.height);
+    this.lightManager = new LightManager(canvas.width, canvas.height, size);
 		
     this.lightManager.col_map = colGrid;
     lm = this.lightManager;
