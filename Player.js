@@ -21,6 +21,15 @@ gInput.addBool(83, "s"); //s key
 gInput.addBool(32, "spacebar");
 
 Player.prototype.update = function(d) {
+	for(var i=0; i<this.level.lightManager.polygons.length; i++) {
+		var polygon = this.level.lightManager.polygons[i];
+		if(polygon.within(this.x+this.width/2, this.y+this.height/2)) {
+			if(polygon.color == "rgba(255, 0, 0, 1)") {
+				this.y_velocity=-2;
+			}
+		}
+	}		
+
 	if(gInput.a || gInput.left) {
 		this.x_velocity = -3;
 	} else if(gInput.d || gInput.right) {
