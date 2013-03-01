@@ -12,12 +12,15 @@ function LightManager (w, h, ts) {
     Sprite.call(this);
     this.x = 0;
     this.y = 0;
+		this.x_off = 0; // offset used for Level
+		this.y_off = 0;
     this.lights = [];
     this.width = w;
     this.height = h;
     this.drawAll = false; // used to determine if lights are drawn out of view
     this.col_map = null;
     this.tile_size = ts;
+		this.polygons = [];
 }
 LightManager.prototype = new Sprite();
 
@@ -36,8 +39,8 @@ LightManager.prototype.remove = function (idx) {
     return true;
 }
 
-LightManager.prototype.draw = function (ctx) {
-    ctx.globalCompositeOperation='lighter';
+LightManager.prototype.update = function (d) {
+    //ctx.globalCompositeOperation='lighter';
 		
     var xc = this.x+this.width/2; // center of screen
     var yc = this.y+this.height/2; // center of screen
@@ -47,18 +50,18 @@ LightManager.prototype.draw = function (ctx) {
     var x2 = (this.x+this.width)/this.tile_size;
     var y2 = (this.y+this.height)/this.tile_size;
 
+		this.polygons = []; // wipe polygons each frame (can optimize)
+
     for(var idx=0; idx<this.lights.length; idx++) {
 				var light = this.lights[idx];
 				var radius = light.radius;
 				var xl = light.x/this.tile_size;
 				var yl = light.y/this.tile_size;
 
-				ctx.save();
-
 				// could also check angles
 				// if the light is within range
 				var max_dist = light.radius+distance(x1*this.tile_size, y1*this.tile_size, x2*this.tile_size, y2*this.tile_size)/2;
-				var onScreen = (light.x>=this.x && light.x<this.x+this.width && light.y>=this.y && light.y<this.y+this.height);
+				var onScreen = (light.x>=this.x && light.x_off<this.x+this.width && light.y_off>=this.y && light.y_off<this.y+this.height);
 
 				if(this.drawAll || distance(xc, yc, this.x+xl, this.y+yl)<max_dist) {
 						var ang_start = light.angle-light.spread/2;
@@ -68,9 +71,9 @@ LightManager.prototype.draw = function (ctx) {
 						var x_hit; // used to detect where collisions happen
 						var y_hit;
 
-						ctx.fillStyle = light.color;
-						ctx.beginPath();
-						ctx.moveTo(light.x-this.x*2, light.y-this.y*2);
+						this.polygons[idx] = new Polygon();
+						this.polygons[idx].color = light.color;
+						this.polygons[idx].add(light.x-this.x_off, light.y-this.y_off);
 						// note must use times 2 because light positions are relative
 
 						for(var i=ang_start; i<ang_end; i+=step) {
@@ -133,12 +136,26 @@ LightManager.prototype.draw = function (ctx) {
 										x_hit = xl + cos*light.radius/this.tile_size;
 										y_hit = yl - sin*light.radius/this.tile_size;
 								}
-
-								ctx.lineTo(x_hit*this.tile_size-this.x*2, y_hit*this.tile_size-this.y*2); 
+								this.polygons[idx].add(x_hit*this.tile_size-this.x_off, y_hit*this.tile_size-this.y_off);
 						}
-						ctx.closePath();
-						ctx.fill();
-						ctx.restore();
 				}
     }
+}
+
+LightManager.prototype.draw = function (ctx) {
+		ctx.globalCompositeOperation='lighter';
+		for(var i=0; i<this.polygons.length; i++) {
+				ctx.save();
+				ctx.fillStyle = this.polygons[i].color;
+				ctx.beginPath();
+				ctx.moveTo(this.polygons[i].get(0).x, this.polygons[i].get(0).y);
+				for(var j=1; j<this.polygons[i].count; j++) {
+						ctx.lineTo(this.polygons[i].get(j).x, this.polygons[i].get(j).y);
+				}
+				ctx.closePath();
+				ctx.fill();
+				//could use this this.polygons[i].draw_fill(ctx);
+				ctx.restore();
+		}
+		ctx.clearRect(0, 0, 20, 20);
 }
