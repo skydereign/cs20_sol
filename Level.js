@@ -17,6 +17,7 @@ function Level(cols, rows, tile_size, camera) {
 	this.lightManager = new LightManager(camera.camera_width, camera.camera_height, tile_size);
 	this.lightManager.col_map = this.tile_array;
 	this.lightManager.lights.push(new Light(100, 400, 270, 500, 45, 'rgba(255, 0, 0, 1)'));
+	this.lightManager.lights.push(new Light(800, 400, 200, 500, 45, 'rgba(255, 0, 0, 1)'));
 }
 
 Level.prototype = new Sprite();
