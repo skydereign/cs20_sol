@@ -71,4 +71,6 @@ Player.prototype.update = function(d) {
 	}
 	this.x = this.x_level - this.camera.x;
 	this.y = this.y_level - this.camera.y;
+	this.level.lightManager.x_off = Math.floor(this.camera.x); // bit of a hack
+	this.level.lightManager.y_off = Math.floor(this.camera.y);
 }
