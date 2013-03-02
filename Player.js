@@ -7,6 +7,15 @@ function Player(x, y, level, image) {
 	this.y_level = y + this.camera.y;
 	this.width = 40;
 	this.height = 65;
+
+	this.anims = [];
+	this.anims.push(new Animation("images/stand_r.png", 40, 65, 1, 30));
+	this.anims.push(new Animation("images/stand_l.png", 40, 65, 1, 30));
+	this.anims.push(new Animation("images/run_r.png", 50, 65, 4, 5));
+	this.anims.push(new Animation("images/run_l.png", 50, 65, 4, 5));
+	this.anims.push(new Animation("images/jump_r.png", 50, 65, 1, 30));
+	this.anims.push(new Animation("images/jump_l.png", 50, 65, 1, 30));
+	this.changeAnimation(2);
 }
 
 Player.prototype = new Level_Object();
@@ -39,6 +48,7 @@ Player.prototype.update = function(d) {
 	}
 	if(gInput.w || gInput.spacebar || gInput.up) {
 		if(this.y_velocity == 0) {
+			this.changeAnimation(4);
 			this.y_velocity = -6;
 		}
 	}
@@ -73,4 +83,16 @@ Player.prototype.update = function(d) {
 	this.y = this.y_level - this.camera.y;
 	this.level.lightManager.x_off = Math.floor(this.camera.x); // bit of a hack
 	this.level.lightManager.y_off = Math.floor(this.camera.y);
+}
+
+
+// change animation based off of animindex/state
+Player.prototype.changeAnimation = function (index) {
+    this.image = this.anims[index].image;
+    this.frameWidth = this.anims[index].frameWidth;
+    this.frameHeight = this.anims[index].frameHeight;
+    this.frameCount = this.anims[index].frameCount;
+    this.frameRate = this.anims[index].frameRate;
+    this.width = this.frameWidth;
+    this.height = this.frameHeight;
 }
