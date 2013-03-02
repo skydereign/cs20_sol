@@ -28,16 +28,16 @@ window.onload = function() {
 	var tileNum;
  	window.addEventListener('keydown', function(event){
 		if(event.keyCode === 49){
-			ground = "f";
-			p.innerHTML = "On Foreground";
+			ground = "b";
+			p.innerHTML = "On BackGround";
 		}
 		else if(event.keyCode === 50){
-			ground = "b";
-			p.innerHTML = "On Background";
+			ground = "m";
+			p.innerHTML = "On MiddleGround";
 		}
 		else if(event.keyCode === 51){
-			ground = "m";
-			p.innerHTML = "On Middleground";
+			ground = "f";
+			p.innerHTML = "On ForeGround";
 		}/*else if(event.keyCode === 52){
 			tileNum = 4;
 		}*/
@@ -95,6 +95,7 @@ window.onload = function() {
 					tileNum = (i+(j*image.width/40))/40;
 			}
 		}
+		console.log(tileNum);
 	}
 	setInterval(drawLevel, 50);
 	//Compares each grid cell with a possible tile number and if there is a match, draw that tile inside the the cell.
@@ -121,18 +122,74 @@ window.onload = function() {
 			}
 		}
 	}
+	function readSingleFile(evt){
+		var f = evt.target.files[0];
+		
+		if(f){
+			var r = new FileReader();
+			r.onload = function(e){
+				var contents = e.target.result;
+				var line = contents.substr(0, contents.indexOf("\n"));
+				var n = line.split(" ");
+				var gridWidth = parseInt(n[0]);
+				var gridHeight = parseInt(n[1]);
+				canvas.width = gridWidth * cellSize;
+				canvas.height = gridHeight * cellSize;
+
+				line = contents.substring(contents.indexOf('b'), contents.indexOf('m'));
+				n = line.split(" ");
+				console.log(line);
+				//console.log(n);
+				t = 1;
+				for(j=0; j < gridHeight; j++){
+					for(i = 0; i < gridWidth; i++){
+						if(t%(gridWidth + 1) == 0){
+							t++;
+						}
+						background[i][j] = n[t++];
+					}
+				}
+				line = contents.substring(contents.indexOf('m'), contents.indexOf('f'));
+				n = line.split(" ");
+				t = 1;
+				for(j=0; j < gridHeight; j++){
+					for(i = 0; i < gridWidth; i++){
+						if(t%(gridWidth + 1) == 0){
+							t++;
+						}
+						middleground[i][j] = n[t++];
+					}
+				}
+				line = contents.substring(contents.indexOf('f'), contents.indexOf('e'));
+				n = line.split(" ");
+				t = 1;
+				for(j=0; j < gridHeight; j++){
+					for(i = 0; i < gridWidth; i++){
+						if(t%(gridWidth + 1) == 0){
+							t++;
+						}
+						foreground[i][j] = n[t++];
+					}
+				}
+			}
+			r.readAsText(f);
+		}else{
+			alert("Failed to load file");
+		}
+	}
+	document.getElementById('fileinput').addEventListener('change', readSingleFile, false);
 }
 </script>
 </head>
 <body>
 <canvas id = "canvas" width = "800" height = "560" style = "border:solid black;">
 </canvas>
-<img id = "tiles" src = "tiles_concept_01.png">
-<p>Key 1 for ForeGround</p>
-<p>Key 2 for Background</p>
-<p>Key 3 for MiddleGround</p>
-<p id = "para">On Background</p>
-<button>Save</button> <button>Load</button>
+<img id = "tiles" src = "tiles_concept_01.png"><br>
+Key 1 for BackGround<br>
+Key 2 for MiddleGround<br>
+Key 3 for ForeGround<br>
+<p id = "para">On BackGround</p>
+<button onclick="loadMap();">Save</button> <input type="file" id="fileinput" />
 
 </body>
 </html>
