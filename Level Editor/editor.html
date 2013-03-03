@@ -1,6 +1,5 @@
 <html>
 <head>
-
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Level Editor</title>
 
@@ -122,64 +121,70 @@ window.onload = function() {
 			}
 		}
 	}
-	function readSingleFile(evt){
-		var f = evt.target.files[0];
-		
-		if(f){
-			var r = new FileReader();
-			r.onload = function(e){
-				var contents = e.target.result;
-				var line = contents.substr(0, contents.indexOf("\n"));
-				var n = line.split(" ");
-				var gridWidth = parseInt(n[0]);
-				var gridHeight = parseInt(n[1]);
-				canvas.width = gridWidth * cellSize;
-				canvas.height = gridHeight * cellSize;
+	function loadMap(textfile){
+		var contents = textfile;
+		console.log(contents);
+		var line = contents.substr(0, contents.indexOf("\n"));
+		var n = line.split(" ");
+		var gridWidth = parseInt(n[0]);
+		var gridHeight = parseInt(n[1]);
+		canvas.width = gridWidth * cellSize;
+		canvas.height = gridHeight * cellSize;
 
-				line = contents.substring(contents.indexOf('b'), contents.indexOf('m'));
-				n = line.split(" ");
-				console.log(line);
-				//console.log(n);
-				t = 1;
-				for(j=0; j < gridHeight; j++){
-					for(i = 0; i < gridWidth; i++){
-						if(t%(gridWidth + 1) == 0){
-							t++;
-						}
-						background[i][j] = n[t++];
-					}
+		line = contents.substring(contents.indexOf('b'), contents.indexOf('m'));
+		n = line.split(" ");
+		console.log(line);
+		//console.log(n);
+		t = 1;
+		for(j=0; j < gridHeight; j++){
+			for(i = 0; i < gridWidth; i++){
+				if(t%(gridWidth + 1) == 0){
+					t++;
 				}
-				line = contents.substring(contents.indexOf('m'), contents.indexOf('f'));
-				n = line.split(" ");
-				t = 1;
-				for(j=0; j < gridHeight; j++){
-					for(i = 0; i < gridWidth; i++){
-						if(t%(gridWidth + 1) == 0){
-							t++;
-						}
-						middleground[i][j] = n[t++];
-					}
-				}
-				line = contents.substring(contents.indexOf('f'), contents.indexOf('e'));
-				n = line.split(" ");
-				t = 1;
-				for(j=0; j < gridHeight; j++){
-					for(i = 0; i < gridWidth; i++){
-						if(t%(gridWidth + 1) == 0){
-							t++;
-						}
-						foreground[i][j] = n[t++];
-					}
-				}
+				background[i][j] = n[t++];
 			}
-			r.readAsText(f);
-		}else{
-			alert("Failed to load file");
+		}
+		line = contents.substring(contents.indexOf('m'), contents.indexOf('f'));
+		n = line.split(" ");
+		t = 1;
+		for(j=0; j < gridHeight; j++){
+			for(i = 0; i < gridWidth; i++){
+				if(t%(gridWidth + 1) == 0){
+					t++;
+				}
+				middleground[i][j] = n[t++];
+			}
+		}
+		line = contents.substring(contents.indexOf('f'), contents.indexOf('e'));
+		n = line.split(" ");
+		t = 1;
+		for(j=0; j < gridHeight; j++){
+			for(i = 0; i < gridWidth; i++){
+				if(t%(gridWidth + 1) == 0){
+					t++;
+				}
+				foreground[i][j] = n[t++];
+			}
 		}
 	}
-	document.getElementById('fileinput').addEventListener('change', readSingleFile, false);
+
+	//document.getElementById("load").addEventListener("onClick",loadMap());
+	function clickLoad(){
+		var level1 = new XMLHttpRequest();
+		level1.onreadystatechange = function(){
+			loadMap(level1.responseText);
+		}
+		level1.open("GET", "level1.txt", true);
+		level1.send();
+	}
+	var load = document.createElement("BUTTON");
+	var text = document.createTextNode("Load");
+	load.appendChild(text);
+	load.addEventListener("click", clickLoad, true);
+	document.body.appendChild(load);
 }
 </script>
+
 </head>
 <body>
 <canvas id = "canvas" width = "800" height = "560" style = "border:solid black;">
@@ -189,7 +194,8 @@ Key 1 for BackGround<br>
 Key 2 for MiddleGround<br>
 Key 3 for ForeGround<br>
 <p id = "para">On BackGround</p>
-<button onclick="loadMap();">Save</button> <input type="file" id="fileinput" />
+<button onclick="saveMap();">Save</button> 
+<p id = "demo" ></p>
 
 </body>
 </html>
