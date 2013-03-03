@@ -1,10 +1,15 @@
-function Level(cols, rows, tile_size, camera) {
+function Level(cols, rows, tile_size, x_start_camera, y_start_camera, x_start_player, y_start_player) {
 	Sprite.call(this);
 	this.cols = cols;
 	this.rows = rows;
-	this.camera = camera
+	this.camera;
+	this.x_start_camera = x_start_camera;
+	this.y_start_camera = y_start_camera;
+	this.x_start_player = x_start_player;
+	this.y_start_player = y_start_player;
 	this.tile_size = tile_size;
 	this.tile_array;
+	this.image_array;
 	this.object_array;
 	this.initArrays();
 	this.buildLevel();
@@ -14,13 +19,19 @@ function Level(cols, rows, tile_size, camera) {
 	tile.image;
 	this.tile = tile;
 	this.addChild(this.tile);
-	this.lightManager = new LightManager(camera.camera_width, camera.camera_height, tile_size);
+	this.lightManager;
+}
+
+Level.prototype = new Sprite();
+
+Level.prototype.giveCamera = function(camera) {
+	this.camera = camera;
+	this.lightManager = new LightManager(camera.camera_width, camera.camera_height, this.tile_size);
 	this.lightManager.col_map = this.tile_array;
 	this.lightManager.lights.push(new Light(100, 400, 270, 500, 45, 'rgba(255, 0, 0, 1)'));
 	this.lightManager.lights.push(new Light(800, 400, 200, 500, 45, 'rgba(255, 0, 0, 1)'));
 }
 
-Level.prototype = new Sprite();
 
 Level.prototype.getTileByIndex = function(x, y) {
 	//Same as getting the value directly, but adds in a bounds check.
@@ -56,7 +67,7 @@ Level.prototype.insertTile = function(x, y, type) {
 Level.prototype.buildLevel = function() {
 	//Will build based on files
 	//in additon to inserting the various objects
-	for(var i = 0; i < cols; i++) {
+	for(var i = 0; i < this.cols; i++) {
 		for(var j = 29; j > 26; j--) {
 			this.tile_array[i][j] = 0;
 		}
@@ -102,43 +113,29 @@ Level.prototype.buildLevel = function() {
 Level.prototype.initArrays = function() {
 	tile_arr = new Array();
 	object_arr = new Array();
-	for(var i = 0; i < cols; i++) {
+	image_arr = new Array();
+	image_arr.push(Textures.load("images/Black_Tile.png"));
+	for(var i = 0; i < this.cols; i++) {
 		tile_arr.push(new Array());
-		for(var j = 0; j < rows; j++) {
+		for(var j = 0; j < this.rows; j++) {
 			tile_arr[i].push(-1);
 		}
 	}
 	this.tile_array = tile_arr;
 	this.object_array = object_arr;
+	this.image_array = image_arr;
 }
+
 
 
 Level.prototype.getImage = function(type) {
 	//Will be filled out with all the various images
-	switch (type) {
-	case 0:
-		return "images/Black_Tile.png";
-		break;
-	case 1:
-		return "images/Black_Tile.png";
-		break;
-	case 2:
-		return "images/Black_Tile.png";
-		break;
-	case 3:
-		return "images/Black_Tile.png";
-		break;
-	case 4:
-		return "images/Black_Tile.png";
-		break;
-	case 5:
-		return "images/Black_Tile.png";
-		break;
-	default:
-		return null;
+	//return image_array[type];
+	if(type > -1) {
+		return this.image_array[0];
 	}
+	return -1;
 }
-
 
 Level.prototype.checkTilesLeft = function(x, y, width, height) {
 	for(var i = 0; i < Math.floor(height / this.tile_size) + 1; i++) {
@@ -186,12 +183,12 @@ Level.prototype.draw = function(ctx) {
 	//draws the tile in all its spots.
 	ctx.fillStyle = 'rgba(127, 127, 127, 1.0)';
 	ctx.fillRect(0, 0, this.camera.camera_width, this.camera.camera_height);
-	for(var i = 0; i < cols; i++) {
-		for(var j = 0; j < rows; j++) {
+	for(var i = 0; i < this.cols; i++) {
+		for(var j = 0; j < this.rows; j++) {
 			if(this.tile_array[i][j] > -1) {
 				this.tile.x = i*this.tile_size - this.camera.x;
 				this.tile.y = j*this.tile_size - this.camera.y;
-				this.tile.image = Textures.load(this.getImage(this.tile_array[i][j]));
+				this.tile.image = this.getImage(this.tile_array[i][j]);
 				this.drawChildren(ctx);
 			}
 		}

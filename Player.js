@@ -1,13 +1,13 @@
-function Player(x, y, level, image) {
-	Level_Object.call(this, x, y);
-	this.level = level;
-	this.camera = this.level.camera;
+function Player() {
+	Level_Object.call(this);
+	this.level;
+	this.camera;
+	this.x_level;
+	this.y_level;
 	this.image = Textures.load("images/Player_Example.png");
-	this.x_level = x + this.camera.x;
-	this.y_level = y + this.camera.y;
 	this.width = 40;
 	this.height = 65;
-
+	this.grounded = false;
 	this.anims = [];
 	this.anims.push(new Animation("images/stand_r.png", 40, 65, 1, 30));
 	this.anims.push(new Animation("images/stand_l.png", 40, 65, 1, 30));
@@ -19,6 +19,15 @@ function Player(x, y, level, image) {
 }
 
 Player.prototype = new Level_Object();
+
+Player.prototype.changeLevel = function(level) {
+	this.level = level;
+	this.camera = this.level.camera;
+	this.x = level.x_start_player;
+	this.y = level.y_start_player;
+	this.x_level = this.x + this.camera.x;
+	this.y_level = this.y + this.camera.y;
+}
 
 gInput.addBool(37, "left");
 gInput.addBool(38, "up");

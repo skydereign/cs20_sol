@@ -1,15 +1,23 @@
 /* Used primarily for the x and y cooridiantes, which are offsets from the level itself
  */
 
-function Camera(level_width, level_height, camera_width, camera_height, initx, inity) {
-	this.level_width = level_width; //level length
-	this.level_height = level_height;
+function Camera(camera_width, camera_height) {
+	this.x;
+	this.y;
+	this.level_width;
+	this.level_height;
 	this.camera_width = camera_width; //same as canvas width
-	this.camera_height = camera_height //same as canvas height
-	this.x = initx;
-	this.y = inity;	
+	this.camera_height = camera_height; //same as canvas height
 	this.camera_move_threshold_x = 9 * camera_width/20;
 	this.camera_move_threshold_y = 9 * camera_height/20;
+	
+}
+
+Camera.prototype.changeLevel = function(level) {
+	this.level_width = level.cols*level.tile_size;
+	this.level_height = level.rows*level.tile_size;
+	this.x = level.x_start_camera;
+	this.y = level.y_start_camera;
 }
 
 Camera.prototype.move = function(dx, dy) {

@@ -4,32 +4,19 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <script src="brine.js"></script>
-        <script src="../../trunk/lightprism/polygon.js"></script>
-        <script src="../../trunk/lightprism/lightprism.js"></script>
+        <script src="polygon.js"></script>
+        <script src="lightprism.js"></script>
         <script src="Level.js"></script>
         <script src="Level_Object.js"></script>
         <script src="Animation.js"></script>
         <script src="Player.js"></script>
         <script src="Camera.js"></script>
+        <script src="Game_Manager.js"></script>
         <script>
        	use2D=true;
        	var canvas_width = 900;
        	var canvas_height = 600;
-       	var cols = 40;
-       	var rows = 30;
-       	var size = 30;
-       	var Camera = new Camera(cols*size, rows*size, canvas_width, canvas_height, 0, 300);
-       	var firstLevel = new Level(cols, rows, size, Camera);
-
-      	world.addChild(firstLevel);
-	var Player = new Player(200, 0, firstLevel, "images/Player_Example.png");
-	world.addChild(Player);
-
-	world.addChild(firstLevel.lightManager);
-       	world.init = function() {}
-		world.update = function(d) {
-			this.updateChildren(d);
-		}
+      	game_manager = new Game_Manager();
         </script>
         <title>The Yet Unnamed Platformer</title>
     </head>

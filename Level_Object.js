@@ -3,17 +3,17 @@
  * (e.g Player, Block, Switch, Light) all
  * inheret many of their properties from this class
  */
-function Level_Object(x, y) {
+function Level_Object() {
 	Sprite.call(this);
-	this.x = x; //Camera relative for drawing
-	this.y = y;
-	this.x_level = x; //level relative for computing
-	this.y_level = y;
-	this.camera;
+	this.x = 0; //Camera relative for drawing
+	this.y = 0;
+	this.x_level = 0; //level relative for computing
+	this.y_level = 0;
 	this.x_velocity = 0;
 	this.x_acceleration = 0;
 	this.y_velocity = 0;
-	this.y_acceleration = .1;
+	this.y_acceleration = .22;
+	this.camera;
 }
 
 Level_Object.prototype = new Sprite();
