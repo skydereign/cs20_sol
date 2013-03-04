@@ -181,7 +181,7 @@ Level.prototype.update = function (d) {
 
 Level.prototype.draw = function(ctx) {
 	//draws the tile in all its spots.
-	ctx.fillStyle = 'rgba(127, 127, 127, 1.0)';
+	ctx.fillStyle = 'rgba(0, 0, 0, 1.0)';
 	ctx.fillRect(0, 0, this.camera.camera_width, this.camera.camera_height);
 	for(var i = 0; i < this.cols; i++) {
 		for(var j = 0; j < this.rows; j++) {
