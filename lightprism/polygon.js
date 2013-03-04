@@ -16,7 +16,8 @@ Polygon.prototype.get = function (idx) {
 
 Polygon.prototype.draw_fill = function (ctx) {
     if(this.count>0) {
-	//ctx.fillStyle = this.color;
+	ctx.globalCompositeOperation = 'lighter';
+	ctx.fillStyle = this.color;
 	ctx.beginPath();
 	ctx.moveTo(this.get(0).x, this.get(0).y);
 
@@ -105,6 +106,7 @@ Polygon.prototype.intersection = function (other) {
     }
 
     // processes new polygons
+    // this polygon (A case)
     var new_edge_idx; // idx of the edge after intersection
     var cur_edge_idx = 0; // idx of current edge
     var cur_point_idx = 0; // index of point in edge array
@@ -181,10 +183,9 @@ Polygon.prototype.intersection = function (other) {
     polygon.draw_points(document.getElementById("canvas").getContext("2d"));
 
 
-}
-
-/*Polygon.prototype.getIntersection = function (other) {
+    // TODO: clean this up, should right generic function
     // processes new polygons
+    // other polygon (B case)
     var new_edge_idx; // idx of the edge after intersection
     var cur_edge_idx = 0; // idx of current edge
     var cur_point_idx = 0; // index of point in edge array
@@ -194,7 +195,7 @@ Polygon.prototype.intersection = function (other) {
     var new_x;
     var new_y;
 
-    polygon.add(this.get(0).x, this.get(0).y);
+    polygon.add(other.get(0).x, other.get(0).y);
     do {
 	console.log("edge: ", (cur+cur_edge_idx), " idx: ", cur_point_idx+dir);
 	var new_point = edges[cur+cur_edge_idx][cur_point_idx+dir];
@@ -258,8 +259,88 @@ Polygon.prototype.intersection = function (other) {
 	// console.log("checking loop new_x:", new_x, " new_y: ", new_y);
 	// console.log("checking loop (0).x:", polygon.get(0).x, " (0).y: ",polygon.get(0).y);
     } while(polygon.get(0).x!==new_x || polygon.get(0).y!==new_y);
-    polygon.draw_points(document.getElementById("canvas").getContext("2d"));
-}*/
+
+
+    // remaining intersection point polygons
+    for(var i=0; i<points.length; i++) {
+	
+	var new_edge_idx; // idx of the edge after intersection
+	var cur_edge_idx = 0; // idx of current edge
+	var cur_point_idx = 0; // index of point in edge array
+	var dir = 1; // 1 = forward, -1 = backward 
+	var cur = "B"; // current polygon
+	var polygon = new Polygon();
+	var new_x;
+	var new_y;
+
+	polygon.add(other.get(0).x, other.get(0).y);
+	do {
+	    console.log("edge: ", (cur+cur_edge_idx), " idx: ", cur_point_idx+dir);
+	    var new_point = edges[cur+cur_edge_idx][cur_point_idx+dir];
+	    // new_point is cur_edge[next point along edge]
+	    new_x = new_point.x;
+	    new_y = new_point.y
+	    polygon.add(new_x, new_y);
+	    new_point.count++;
+
+	    if(new_point.edge_a === "A" || new_point.edge_b === "B") {
+		// if not a real intersection point and not the end
+		if(polygon.get(0).x!==new_x || polygon.get(0).y!==new_y) {
+		    // note normally edges are A# or B#
+		    //console.log("no intersection");
+		    cur_edge_idx+=dir; // continue along same polygon
+		    if(dir===1) {
+			cur_point_idx = 0; // positive direction starts at 0
+		    } else {
+			console.log("cur_edge_idx: ", cur_edge_idx);
+			cur_point_idx = edges[cur+cur_edge_idx].length();
+		    }
+		}
+	    } else {
+		// real intersection
+		cur = cur === "A" ? "B" : "A";
+
+		// adjust paths taken
+		if(cur==="A") {
+		    if(new_point.edge_a.charAt(1)<new_point.edge_b.charAt(1)) {
+			dir*=-1; // not necesserialy so sir
+		    }
+
+		    new_edge_idx = new_point.edge_a;
+		    if(dir===1) {
+			new_point.ap=1;
+			new_point.bn=1;
+		    } else {
+			new_point.an=1;
+			new_point.bp=1;
+		    }
+		} else {
+		    if(new_point.edge_a.charAt(1)>=new_point.edge_b.charAt(1)) {
+			dir*=-1; // not necesserialy so sir
+		    }
+
+		    new_edge_idx = new_point.edge_b;
+		    if(dir===1) {
+			new_point.an=1;
+			new_point.bp=1;
+		    } else {
+			new_point.ap=1;
+			new_point.bn=1;
+		    }
+		}
+		cur_point_idx = edges[new_edge_idx].indexOf(new_point);
+		console.log("cur_point_idx: ", cur_point_idx);
+		cur_edge_idx = parseInt(new_edge_idx.charAt(1));
+		console.log("BLAH: ", cur_edge_idx);
+	    }
+	    // loop while not at the starting point
+	    // console.log("checking loop new_x:", new_x, " new_y: ", new_y);
+	    // console.log("checking loop (0).x:", polygon.get(0).x, " (0).y: ",polygon.get(0).y);
+	} while(polygon.get(0).x!==new_x || polygon.get(0).y!==new_y);
+	polygon.draw_points(document.getElementById("canvas").getContext("2d"));
+    }
+}
+
 
 // Intersection point, used for calculating new polygons
 function InterPoint (a, b, x, y, t, u) {
@@ -284,6 +365,7 @@ function start() {
     var ctx = canvas.getContext("2d");
 
     var poly = new Polygon();
+    poly.color = 'rgba(255, 0, 0, 0.3)';
     poly.add(0, 0);
     poly.add(200, 0);
     poly.add(0, 200);
@@ -291,6 +373,7 @@ function start() {
     //poly.draw_points(ctx);
 
     var poly2 = new Polygon();
+    poly2.color = 'rgba(0, 255, 0, 0.3)';
     poly2.add(0, 0);
     poly2.add(200, 200);
     poly2.add(0, 200);
