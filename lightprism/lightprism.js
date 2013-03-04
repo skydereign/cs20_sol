@@ -157,5 +157,4 @@ LightManager.prototype.draw = function (ctx) {
 				//could use this this.polygons[i].draw_fill(ctx);
 				ctx.restore();
 		}
-		ctx.clearRect(0, 0, 20, 20);
 }
