@@ -17,7 +17,6 @@ function Player() {
 	this.anims.push(new Animation("images/jump_l.png", 50, 65, 1, 0));
 	this.changeAnimation(2);
     this.initKeys();
-    this.keys = [];
     this.state = 0;
 }
 
@@ -52,7 +51,7 @@ Player.prototype.update = function(d) {
 			}
 		}
 	}		
-	if(gInput.escape) { end(); } // end the game    
+	if(gInput.escape) { end(); } // end the game (insert error...)
 	if(gInput.left || gInput.a) {
 	    this.keyd_left();
 	}
@@ -61,6 +60,10 @@ Player.prototype.update = function(d) {
 	}
 	if(gInput.spacebar || gInput.up || gInput.w) {
 	    this.keyd_jump();
+	}
+	if(this.y_velocity>this.y_acceleration && this.state!=4 && this.state!=5) {
+	    this.state = 4+this.state%2; // change to falling state
+	    this.changeAnimation(this.state);
 	}
 
 	var collisions = this.detectCollisionTile();
@@ -77,7 +80,7 @@ Player.prototype.update = function(d) {
 		this.y_velocity += this.y_acceleration;
 	} else {
 		//console.log(collisions.y);
-		if(this.y_velocity>this.y_acceleration) {
+		if(this.y_velocity>0 && (this.state==4 || this.state==5)) {
 		    this.jump_landing();
 		}
 		this.y_level = collisions.y;
@@ -137,16 +140,10 @@ Player.prototype.keyd_right = function () {
     case 0:
     case 1:
     case 3:
-	this.x_velocity = 3;;
 	this.state = 2; // run right
 	break;
-	
-    case 2:
-    case 4:
-    case 5:
-	this.x_velocity = 3;;
-	break;
     }
+    this.x_velocity = 3;;
     this.changeAnimation(this.state);
 }
 
@@ -155,16 +152,10 @@ Player.prototype.keyd_left = function () {
     case 0:
     case 1:
     case 2:
-	this.x_velocity = -3;
 	this.state = 3; // run left
 	break;
-
-    case 3:
-    case 4:
-    case 5:
-	this.x_velocity = -3;
-	break;
     }
+    this.x_velocity = -3;
     this.changeAnimation(this.state);
 }
 
@@ -204,14 +195,14 @@ Player.prototype.keyd_jump = function () {
     switch(this.state) {
     case 0:
     case 2:
-	this.y_velocity = -6;
+	this.y_velocity = -9;
 	this.state = 4;
 	this.changeAnimation(this.state);
 	break;
 
     case 1:
     case 3:
-	this.y_velocity = -6;
+	this.y_velocity = -9;
 	this.state = 5;
 	this.changeAnimation(this.state);
 	break;

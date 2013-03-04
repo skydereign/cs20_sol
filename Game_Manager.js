@@ -19,7 +19,7 @@ function Game_Manager() {
 Game_Manager.prototype.loadLevels = function() {
 	var cols = 40;
     var rows = 30;
-    var tile_size = 30;
+    var tile_size = 40;
     var x_player_start = 200;
     var y_player_start = 0;
     var x_camera_start = 0;
