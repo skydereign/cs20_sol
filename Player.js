@@ -45,9 +45,17 @@ Player.prototype.update = function(d) {
 	for(var i=0; i<this.level.lightManager.polygons.length; i++) {
 		var polygon = this.level.lightManager.polygons[i];
 		if(polygon.within(this.x+this.width/2, this.y+this.height/2)) {
-			if(polygon.color == "rgba(255, 0, 0, 1)") {
-				this.y_velocity=-2;
-				this.state = 4+this.state%2;
+			switch(polygon.color) {
+			case "rgba(255, 0, 0, 1)":
+			    this.y_velocity=-2;
+			    this.state = 4+this.state%2;
+			    break;
+
+			case "rgba(0, 0, 255, 1)":
+			    var ang = DTR(this.level.lightManager.lights[i].angle);
+			    this.x_velocity += Math.cos(ang)/3;
+			    this.y_velocity -= Math.sin(ang)/3;
+			    break;
 			}
 		}
 	}		
