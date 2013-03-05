@@ -102,22 +102,22 @@ window.onload = function() {
 		ctx.clearRect(0,0,canvas.width,canvas.height);
 		for(i = 0; i < canvas.width/cellSize; i++){
 			for(j = 0; j < canvas.height/cellSize; j++){
-				for(t = 0; t <= tileTotal; t++){
-					if(background[i][j] == t){
-						ctx.drawImage(image, 40*(t%tilesPerRow), Math.floor(t/tilesPerRow)*40, 40, 40, i*cellSize, j*cellSize, 40, 40);
-					}
-				}
-				for(t=0; t<=tileTotal; t++){
-					if(middleground[i][j] == t){
-						ctx.drawImage(image, 40*(t%tilesPerRow), Math.floor(t/tilesPerRow)*40, 40, 40, i*cellSize, j*cellSize, 40, 40);				
-					}
-				}
-				for(t=0; t<=tileTotal; t++){
-					if(foreground[i][j] == t){
-						ctx.drawImage(image, 40*(t%tilesPerRow), Math.floor(t/tilesPerRow)*40, 40, 40, i*cellSize, j*cellSize, 40, 40);				
-					}
-				}
+				       var t = background[i][j];
+				       ctx.drawImage(image, 40*(t%tilesPerRow), Math.floor(t/tilesPerRow)*40, 40, 40, i*cellSize, j*cellSize, 40, 40);
+	     	       }
+		}
+		ctx.fillStyle = "rgba(0, 0, 0, 0.4)";				       
+		ctx.fillRect(0,0,canvas.width,canvas.height);
 
+		for(i = 0; i < canvas.width/cellSize; i++){
+			for(j = 0; j < canvas.height/cellSize; j++){
+
+
+				       t = middleground[i][j];
+				       ctx.drawImage(image, 40*(t%tilesPerRow), Math.floor(t/tilesPerRow)*40, 40, 40, i*cellSize, j*cellSize, 40, 40);				
+
+				       t = foreground[i][j];
+				       ctx.drawImage(image, 40*(t%tilesPerRow), Math.floor(t/tilesPerRow)*40, 40, 40, i*cellSize, j*cellSize, 40, 40);				
 			}
 		}
 	}
