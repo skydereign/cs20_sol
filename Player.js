@@ -52,9 +52,9 @@ Player.prototype.update = function(d) {
 			    break;
 			    
 			case "rgba(0, 255, 0, 1)":
-			    if (this.state == 2) {
+			    if (this.state == 2 || this.state==4) {
 			        this.x_velocity = 12;
-			    } else if (this.state == 3) {
+			    } else if (this.state == 3 || this.state==5) {
 			    	this.x_velocity = -12;
 			    }
 			    break;
@@ -112,8 +112,8 @@ Player.prototype.update = function(d) {
 			this.camera.move(0, this.y_velocity);
 		} 
 	}
-	this.x = this.x_level - this.camera.x;
-	this.y = this.y_level - this.camera.y;
+	this.x = Math.floor(this.x_level - this.camera.x);
+	this.y = Math.floor(this.y_level - this.camera.y);
 	this.level.lightManager.x_off = Math.floor(this.camera.x); // bit of a hack
 	this.level.lightManager.y_off = Math.floor(this.camera.y);
 }
@@ -145,6 +145,36 @@ Player.prototype.initKeys = function () {
 	    break;
 	}
     }, true);
+
+    gInput.addLBtnFunc(function() {
+	var warp = false;
+	for(var i=0; i<player.level.lightManager.polygons.length; i++) {
+	    var polygon = player.level.lightManager.polygons[i];
+	    if(polygon.color == "rgba(255, 255, 0, 0.8)") {
+		if(polygon.within(gInput.mouse.x, gInput.mouse.y)) {
+		    warp = true;
+		    break;
+		}
+	    }
+	}
+	if(warp) {
+	    for(var i=0; i<player.level.lightManager.polygons.length; i++) {
+		var polygon = player.level.lightManager.polygons[i];
+		if(polygon.color == "rgba(255, 255, 0, 0.8)") {
+		    if(polygon.within(player.x+player.width/2, player.y+player.height/2)) {
+			player.x_level = gInput.mouse.x-player.width/2 + player.camera.x;
+			player.y_level = gInput.mouse.y-player.height/2 + player.camera.y;
+			player.camera.x = player.x_level - player.camera.camera_width/2;
+			player.camera.y = player.y_level - player.camera.camera_height/2;
+			if(player.camera.x<0) { player.camera.x = 0; }
+			if(player.camera.y<0) { player.camera.y = 0; }
+			return;
+		    }
+		}
+	    }
+	}
+
+    });
 }
 
 
