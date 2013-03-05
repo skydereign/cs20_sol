@@ -8,7 +8,9 @@ function Level(cols, rows, tile_size, x_start_camera, y_start_camera, x_start_pl
 	this.x_start_player = x_start_player;
 	this.y_start_player = y_start_player;
 	this.tile_size = tile_size;
-	this.tile_array;
+	this.tile_bg; // used for display
+	this.tile_fg; // used for display
+	this.tile_array; // used for collisions
 	this.image_array;
 	this.object_array;
 	this.initArrays();
@@ -111,20 +113,30 @@ Level.prototype.buildLevel = function() {
 		       [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 1,10,10, 9, 9, 9, 9, 9, 9, 9, 9, 2],
 		       [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 1,10,10,10,10,10,10,10,10,10,10,10],
 		       [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 2,10,10,10,10,10,10,10,10,10,10,10]];
+
+
 }
 
 Level.prototype.initArrays = function() {
 	tile_arr = new Array();
+	tile_fg = new Array();
+	tile_bg = new Array();
 	object_arr = new Array();
 	image_arr = new Array();
 	//image_arr.push(Textures.load("images/Black_Tile.png"));
 	for(var i = 0; i < this.cols; i++) {
 		tile_arr.push(new Array());
+		tile_fg.push(new Array());
+		tile_bg.push(new Array());
 		for(var j = 0; j < this.rows; j++) {
 			tile_arr[i].push(-1);
+			tile_fg[i].push(-1);
+			tile_bg[i].push(-1);
 		}
 	}
 	this.tile_array = tile_arr;
+	this.tile_fg = tile_fg;
+	this.tile_bg = tile_bg;
 	this.object_array = object_arr;
 	this.image_array = image_arr;
 }
@@ -197,10 +209,29 @@ Level.prototype.draw = function(ctx) {
     ctx.fillStyle = 'rgba(0, 0, 0, 1.0)';
     ctx.fillRect(0, 0, this.camera.camera_width, this.camera.camera_height);
 
+
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)'; // shading bg tiles
     for(var i = start_x; i < end_x; i++) {
 	for(var j = start_y; j < end_y; j++) {
+	    if(this.tile_bg[i][j] > -1) {
+		var idx = this.tile_bg[i][j];
+		this.tile.x = Math.floor(i*this.tile_size - this.camera.x);
+		this.tile.y = Math.floor(j*this.tile_size - this.camera.y);
+		this.tile.sliceX = (idx%9)*this.tile_size; // <- don't hardcoe
+		this.tile.sliceY = Math.floor(idx/9)*this.tile_size;
+		this.drawChildren(ctx);
+		ctx.fillRect(i*this.tile_size, j*this.tile_size, this.tile_size, this.tile_size);
+	    }
 	    if(this.tile_array[i][j] > -1) {
 		var idx = this.tile_array[i][j];
+		this.tile.x = Math.floor(i*this.tile_size - this.camera.x);
+		this.tile.y = Math.floor(j*this.tile_size - this.camera.y);
+		this.tile.sliceX = (idx%9)*this.tile_size; // <- don't hardcoe
+		this.tile.sliceY = Math.floor(idx/9)*this.tile_size;
+		this.drawChildren(ctx);
+	    }
+	    if(this.tile_fg[i][j] > -1) {
+		var idx = this.tile_fg[i][j];
 		this.tile.x = Math.floor(i*this.tile_size - this.camera.x);
 		this.tile.y = Math.floor(j*this.tile_size - this.camera.y);
 		this.tile.sliceX = (idx%9)*this.tile_size; // <- don't hardcoe
