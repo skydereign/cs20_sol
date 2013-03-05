@@ -10,18 +10,28 @@ window.onload = function() {
 	var p = document.getElementById("para");
 	
 	var cellSize = 40;
+	gridRows = 60;
+	gridCols = 80;
 	
-	var background = new Array(canvas.width/cellSize);
+	var background = new Array(gridCols);
 	for(i=0; i < background.length; i++){
-		background[i] = new Array(canvas.height/cellSize);
+		background[i] = new Array(gridRows);
 	}
-	var foreground = new Array(canvas.width/cellSize);
+	var foreground = new Array(gridCols);
 	for(i=0; i < foreground.length; i++){
-		foreground[i] = new Array(canvas.height/cellSize);
+		foreground[i] = new Array(gridRows);
 	}
-	var middleground = new Array(canvas.width/cellSize);
+	var middleground = new Array(gridCols);
 	for(i=0; i < middleground.length; i++){
-		middleground[i] = new Array(canvas.height/cellSize);
+		middleground[i] = new Array(gridRows);
+	}
+	
+	for(i = 0; i < gridCols; i++){
+		for(j = 0; j < gridRows; j++){
+			background[i][j] = -1;
+			middleground[i][j] = -1;
+			foreground[i][j] = -1;
+		}
 	}
 	//tileNum corresponds to which tile within the tilesheet is being used.
 	var tileNum;
@@ -102,24 +112,56 @@ window.onload = function() {
 		ctx.clearRect(0,0,canvas.width,canvas.height);
 		for(i = 0; i < canvas.width/cellSize; i++){
 			for(j = 0; j < canvas.height/cellSize; j++){
-				       var t = background[i][j];
-				       ctx.drawImage(image, 40*(t%tilesPerRow), Math.floor(t/tilesPerRow)*40, 40, 40, i*cellSize, j*cellSize, 40, 40);
-	     	       }
+				if(background[i][j] != -1){
+					var t = background[i][j];
+					ctx.drawImage(image, 40*(t%tilesPerRow), Math.floor(t/tilesPerRow)*40, 40, 40, i*cellSize, j*cellSize, 40, 40);
+				}
+			}
 		}
 		ctx.fillStyle = "rgba(0, 0, 0, 0.4)";				       
 		ctx.fillRect(0,0,canvas.width,canvas.height);
 
 		for(i = 0; i < canvas.width/cellSize; i++){
 			for(j = 0; j < canvas.height/cellSize; j++){
-
-
-				       t = middleground[i][j];
-				       ctx.drawImage(image, 40*(t%tilesPerRow), Math.floor(t/tilesPerRow)*40, 40, 40, i*cellSize, j*cellSize, 40, 40);				
-
-				       t = foreground[i][j];
-				       ctx.drawImage(image, 40*(t%tilesPerRow), Math.floor(t/tilesPerRow)*40, 40, 40, i*cellSize, j*cellSize, 40, 40);				
+				if(middleground[i][j] != -1){
+					t = middleground[i][j];
+					ctx.drawImage(image, 40*(t%tilesPerRow), Math.floor(t/tilesPerRow)*40, 40, 40, i*cellSize, j*cellSize, 40, 40);
+			   }
+				if(foreground[i][j] != -1){
+					t = foreground[i][j];
+					ctx.drawImage(image, 40*(t%tilesPerRow), Math.floor(t/tilesPerRow)*40, 40, 40, i*cellSize, j*cellSize, 40, 40);
+				}			   
 			}
 		}
+	}
+	function saveMap(){
+		var levelString = gridCols + " " + gridRows + "<br>" + "b<br>"
+		for(i = 0; i < gridRows; i++){
+			levelString += "[ "
+			for(j = 0; j < gridCols; j++){
+				levelString += background[j][i] + " "
+			}
+			levelString += "]<br>"
+		}
+		levelString += "m<br>";
+		for(i = 0; i < gridRows; i++){
+			levelString += "[ "
+			for(j = 0; j < gridCols; j++){
+				levelString += middleground[j][i] + " "
+			}
+			levelString += "]<br>"
+		}
+		levelString += "f<br>";
+		for(i = 0; i < gridRows; i++){
+			levelString += "[ "
+			for(j = 0; j < gridCols; j++){
+				levelString += foreground[j][i] + " "
+			}
+			levelString += "]<br>"
+		}
+		levelString += "e";
+		console.log(levelString);
+		document.getElementById("demo").innerHTML = levelString;
 	}
 	function loadMap(textfile){
 		var contents = textfile;
@@ -167,8 +209,8 @@ window.onload = function() {
 			}
 		}
 	}
+	
 
-	//document.getElementById("load").addEventListener("onClick",loadMap());
 	function clickLoad(){
 		var level1 = new XMLHttpRequest();
 		level1.onreadystatechange = function(){
@@ -177,6 +219,13 @@ window.onload = function() {
 		level1.open("GET", "level1.txt", true);
 		level1.send();
 	}
+	
+	var save = document.createElement("BUTTON");
+	var saveText = document.createTextNode("Save");
+	save.appendChild(saveText);
+	save.addEventListener("click", saveMap, true);
+	document.body.appendChild(save);
+	
 	var load = document.createElement("BUTTON");
 	var text = document.createTextNode("Load");
 	load.appendChild(text);
@@ -194,8 +243,7 @@ Key 1 for BackGround<br>
 Key 2 for MiddleGround<br>
 Key 3 for ForeGround<br>
 <p id = "para">On BackGround</p>
-<button onclick="saveMap();">Save</button> 
-<p id = "demo" ></p>
+<div id = "demo" ></div>
 
 </body>
 </html>
