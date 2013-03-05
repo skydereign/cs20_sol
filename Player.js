@@ -150,6 +150,10 @@ Player.prototype.keyd_right = function () {
     case 3:
 	this.state = 2; // run right
 	break;
+
+    case 5:
+	this.state = 4;
+	break;
     }
     this.x_velocity = 3;;
     this.changeAnimation(this.state);
@@ -161,6 +165,10 @@ Player.prototype.keyd_left = function () {
     case 1:
     case 2:
 	this.state = 3; // run left
+	break;
+	
+    case 4:
+	this.state = 5; // jump left
 	break;
     }
     this.x_velocity = -3;
