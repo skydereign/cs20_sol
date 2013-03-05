@@ -30,12 +30,10 @@ Level.prototype.giveCamera = function(camera) {
 	this.camera = camera;
 	this.lightManager = new LightManager(camera.camera_width, camera.camera_height, this.tile_size);
 	this.lightManager.col_map = this.tile_array;
-	//this.lightManager.lights.push(new Light(100, 400, 270, 500, 45, 'rgba(255, 0, 0, 1)'));
+	this.lightManager.lights.push(new Light(100, 400, 270, 500, 45, 'rgba(255, 0, 0, 1)'));
 	//this.lightManager.lights.push(new Light(800, 400, 200, 500, 45, 'rgba(255, 0, 0, 1)'));
-        this.lightManager.lights.push(new Light(100, 200, 270, 200, 45, 'rgba(0, 0, 255, 1)'));
-        this.lightManager.lights.push(new Light(100, 1000, 90, 700, 45, 'rgba(0, 0, 255, 1)'));
+	this.lightManager.lights.push(new Light(1200, 500, 270, 600, 100, 'rgba(0, 255, 0, 1)'));
 	this.lightManager.lights.push(new Light(300, 1100, 45, 500, 45, 'rgba(0, 0, 255, 1)'));
-	this.lightManager.lights.push(new Light(1000, 400, 225, 500, 45, 'rgba(0, 0, 255, 1)'));
 }
 
 

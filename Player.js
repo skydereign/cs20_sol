@@ -50,6 +50,14 @@ Player.prototype.update = function(d) {
 			    this.y_velocity=-2;
 			    this.state = 4+this.state%2;
 			    break;
+			    
+			case "rgba(0, 255, 0, 1)":
+			    if (this.state == 2) {
+			        this.x_velocity = 12;
+			    } else if (this.state == 3) {
+			    	this.x_velocity = -12;
+			    }
+			    break;
 
 			case "rgba(0, 0, 255, 1)":
 			    var ang = DTR(this.level.lightManager.lights[i].angle);
@@ -61,7 +69,7 @@ Player.prototype.update = function(d) {
 	}		
 	if(gInput.escape) { end(); } // end the game (insert error...)
 	if(gInput.left || gInput.a) {
-	    this.keyd_left();
+		this.keyd_left();
 	}
 	if(gInput.right || gInput.d) {
 	    this.keyd_right();
@@ -150,8 +158,14 @@ Player.prototype.keyd_right = function () {
     case 3:
 	this.state = 2; // run right
 	break;
+
+    case 5:
+	this.state = 4; // jump right
+	break;
     }
-    this.x_velocity = 3;;
+    if (this.x_velocity <= 3) {
+        this.x_velocity = 3;
+    }
     this.changeAnimation(this.state);
 }
 
@@ -162,8 +176,14 @@ Player.prototype.keyd_left = function () {
     case 2:
 	this.state = 3; // run left
 	break;
+
+    case 4:
+	this.state = 5; // jump left
+	break;
     }
-    this.x_velocity = -3;
+    if (this.x_velocity >= -3) {
+        this.x_velocity = -3;
+    }
     this.changeAnimation(this.state);
 }
 
