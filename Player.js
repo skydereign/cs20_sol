@@ -42,6 +42,7 @@ gInput.addBool(32, "spacebar");
 gInput.addBool(27, "escape");
 
 Player.prototype.update = function(d) {
+	console.log("" + this.x + " " + this.y);
 	for(var i=0; i<this.level.lightManager.polygons.length; i++) {
 		var polygon = this.level.lightManager.polygons[i];
 		if(polygon.within(this.x+this.width/2, this.y+this.height/2)) {
