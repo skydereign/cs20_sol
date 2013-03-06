@@ -12,8 +12,8 @@ window.onload = function() {
 	var startX = 0;
 	var startY = 0;
 	var cellSize = 40;
-	gridRows = 30;
-	gridCols = 60;
+	gridRows = 60;
+	gridCols = 80;
 	
 	var background = new Array(gridCols);
 	for(i=0; i < background.length; i++){
@@ -80,9 +80,9 @@ window.onload = function() {
 		mouseFlag = true;
 		if(ground == "b"){
 			background[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)+startX][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)+startY] = i;
-		}else if(tileNum == i && ground == "f"){
+		}else if(ground == "f"){
 			foreground[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)+startX][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)+startY] = i;
-		}else if(tileNum == i && ground == "m"){
+		}else if(ground == "m"){
 			middleground[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)+startX][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)+startY] = i;
 		}
 	}
