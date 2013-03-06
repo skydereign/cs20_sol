@@ -9,6 +9,7 @@ window.onload = function() {
 	var ctx = canvas.getContext('2d');
 	var p = document.getElementById("para");
 	
+	var selectFlag = false;
 	var startX = 0;
 	var startY = 0;
 	var cellSize = 40;
@@ -67,23 +68,39 @@ window.onload = function() {
 			if(startY>gridRows-canvas.height/cellSize-1) {
 				startY = gridRows-canvas.height/cellSize-1;
 			}
+		}else if(event.keyCode === 16){ // shift
+			selectFlag = true;
 		}
 	});
 
-
+ 	window.addEventListener('keyup', function(event){
+		if(event.keyCode === 16){ // shift
+			selectFlag = false;
+		}
+	});
 	
 	//when mouse button is down, set grid cell to current tileNum
 	var mouseFlag = false;
 	var ground = "b";
 	
 	canvas.onmousedown = function(e){
-		mouseFlag = true;
-		if(ground == "b"){
-			background[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)+startX][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)+startY] = i;
-		}else if(ground == "f"){
-			foreground[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)+startX][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)+startY] = i;
-		}else if(ground == "m"){
-			middleground[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)+startX][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)+startY] = i;
+		if(!selectFlag){
+			mouseFlag = true;
+			if(ground == "b"){
+				background[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)+startX][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)+startY] = tileNum;
+			}else if(ground == "f"){
+				foreground[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)+startX][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)+startY] = tileNum;
+			}else if(ground == "m"){
+				middleground[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)+startX][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)+startY] = tileNum;
+			}
+		} else {
+			if(ground == "b"){
+				tileNum = background[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)+startX][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)+startY];
+			}else if(ground == "f"){
+				tileNum = foreground[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)+startX][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)+startY];
+			}else if(ground == "m"){
+				tileNum =middleground[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)+startX][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)+startY];
+			}
 		}
 	}
 	document.onmouseup = function(){
