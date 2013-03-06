@@ -9,9 +9,11 @@ window.onload = function() {
 	var ctx = canvas.getContext('2d');
 	var p = document.getElementById("para");
 	
+	var startX = 0;
+	var startY = 0;
 	var cellSize = 40;
-	gridRows = 60;
-	gridCols = 80;
+	gridRows = 30;
+	gridCols = 60;
 	
 	var background = new Array(gridCols);
 	for(i=0; i < background.length; i++){
@@ -34,27 +36,37 @@ window.onload = function() {
 		}
 	}
 	//tileNum corresponds to which tile within the tilesheet is being used.
-	var tileNum;
+	var tileNum = 0;
  	window.addEventListener('keydown', function(event){
 		if(event.keyCode === 49){
 			ground = "b";
 			p.innerHTML = "On BackGround";
-		}
-		else if(event.keyCode === 50){
+		}else if(event.keyCode === 50){
 			ground = "m";
 			p.innerHTML = "On MiddleGround";
-		}
-		else if(event.keyCode === 51){
+		}else if(event.keyCode === 51){
 			ground = "f";
 			p.innerHTML = "On ForeGround";
-		}else if(event.keyCode === 65){
-			//A
-		}else if(event.keyCode === 68){
-			//D
-		}else if(event.keyCode === 87){
-			//W
-		}else if(event.keyCode === 83){
-			//S
+		}else if(event.keyCode === 65){ // a - left
+			startX--;
+			if(startX<0) {
+				startX = 0;
+			}
+		}else if(event.keyCode === 68){ // d - right
+			startX++;
+			if(startX>gridCols-canvas.width/cellSize-1) {
+				startX = gridCols-canvas.width/cellSize-1;
+			}
+		}else if(event.keyCode === 87){ // w - up
+			startY--;
+			if(startY<0) {
+				startY = 0;
+			}
+		}else if(event.keyCode === 83){ // s - down
+			startY++;
+			if(startY>gridRows-canvas.height/cellSize-1) {
+				startY = gridRows-canvas.height/cellSize-1;
+			}
 		}
 	});
 
@@ -66,14 +78,12 @@ window.onload = function() {
 	
 	canvas.onmousedown = function(e){
 		mouseFlag = true;
-		for(i = 0; i < tileTotal; i++){
-			if(tileNum == i && ground == "b"){
-				background[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)] = i;
-			}else if(tileNum == i && ground == "f"){
-				foreground[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)] = i;
-			}else if(tileNum == i && ground == "m"){
-				middleground[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)] = i;
-			}
+		if(ground == "b"){
+			background[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)+startX][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)+startY] = i;
+		}else if(tileNum == i && ground == "f"){
+			foreground[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)+startX][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)+startY] = i;
+		}else if(tileNum == i && ground == "m"){
+			middleground[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)+startX][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)+startY] = i;
 		}
 	}
 	document.onmouseup = function(){
@@ -85,11 +95,11 @@ window.onload = function() {
 		if(mouseFlag){
 			for(i = 0; i < tileTotal; i++){
 				if(tileNum == i && ground == "b"){
-					background[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)] = i;
+					background[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)+startX][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)+startY] = i;
 				}else if(tileNum == i && ground == "f"){
-					foreground[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)] = i;				
+					foreground[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize+startX)][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)+startY] = i;				
 				}else if(tileNum == i && ground == "m"){
-					middleground[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)] = i;				
+					middleground[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)+startX][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)+startY] = i;				
 				}
 			}
 		}
@@ -105,10 +115,10 @@ window.onload = function() {
 		clickX = e.clientX-this.offsetLeft + document.body.scrollLeft;
 		clickY = e.clientY-this.offsetTop + document.body.scrollTop;
 
-		for(j = 0; j < image.height; j += 40){
-			for(i = 0; i < image.width; i += 40){
-				if(clickX >= i && clickX <= i + 40 && clickY >= j && clickY <= j + 40)
-					tileNum = (i+(j*image.width/40))/40;
+		for(j = 0; j < image.height; j += cellSize){
+			for(i = 0; i < image.width; i += cellSize){
+				if(clickX >= i && clickX <= i + cellSize && clickY >= j && clickY <= j + cellSize)
+					tileNum = (i+(j*image.width/cellSize))/cellSize;
 			}
 		}
 		console.log(tileNum);
@@ -117,26 +127,31 @@ window.onload = function() {
 	//Compares each grid cell with a possible tile number and if there is a match, draw that tile inside the the cell.
 	function drawLevel(){
 		ctx.clearRect(0,0,canvas.width,canvas.height);
-		for(i = 0; i < canvas.width/cellSize; i++){
-			for(j = 0; j < canvas.height/cellSize; j++){
+		for(i = startX; i < startX+canvas.width/cellSize; i++){
+			for(j = startY; j < startY+canvas.height/cellSize; j++){
 				if(background[i][j] != -1){
 					var t = background[i][j];
-					ctx.drawImage(image, 40*(t%tilesPerRow), Math.floor(t/tilesPerRow)*40, 40, 40, i*cellSize, j*cellSize, 40, 40);
+					var tx = i-startX;
+					var ty = j-startY;
+					ctx.drawImage(image, cellSize*(t%tilesPerRow), Math.floor(t/tilesPerRow)*cellSize, cellSize, cellSize, tx*cellSize, ty*cellSize, cellSize, cellSize);
 				}
 			}
 		}
 		ctx.fillStyle = "rgba(0, 0, 0, 0.4)";				       
 		ctx.fillRect(0,0,canvas.width,canvas.height);
 
-		for(i = 0; i < canvas.width/cellSize; i++){
-			for(j = 0; j < canvas.height/cellSize; j++){
+		for(i = startX; i < startX+canvas.width/cellSize; i++){
+			for(j = startY; j < startY+canvas.height/cellSize; j++){
+				var tx = i-startX;
+				var ty = j-startY;
+
 				if(middleground[i][j] != -1){
 					t = middleground[i][j];
-					ctx.drawImage(image, 40*(t%tilesPerRow), Math.floor(t/tilesPerRow)*40, 40, 40, i*cellSize, j*cellSize, 40, 40);
-			   }
+					ctx.drawImage(image, cellSize*(t%tilesPerRow), Math.floor(t/tilesPerRow)*cellSize, cellSize, cellSize, tx*cellSize, ty*cellSize, cellSize, cellSize);
+				}
 				if(foreground[i][j] != -1){
 					t = foreground[i][j];
-					ctx.drawImage(image, 40*(t%tilesPerRow), Math.floor(t/tilesPerRow)*40, 40, 40, i*cellSize, j*cellSize, 40, 40);
+					ctx.drawImage(image, cellSize*(t%tilesPerRow), Math.floor(t/tilesPerRow)*cellSize, cellSize, cellSize, tx*cellSize, ty*cellSize, cellSize, cellSize);
 				}			   
 			}
 		}
