@@ -55,8 +55,8 @@ window.onload = function() {
 			}
 		}else if(event.keyCode === 68){ // d - right
 			startX++;
-			if(startX>gridCols-canvas.width/cellSize-1) {
-				startX = gridCols-canvas.width/cellSize-1;
+			if(startX>gridCols-canvas.width/cellSize) {
+				startX = gridCols-canvas.width/cellSize;
 			}
 		}else if(event.keyCode === 87){ // w - up
 			startY--;
@@ -65,8 +65,8 @@ window.onload = function() {
 			}
 		}else if(event.keyCode === 83){ // s - down
 			startY++;
-			if(startY>gridRows-canvas.height/cellSize-1) {
-				startY = gridRows-canvas.height/cellSize-1;
+			if(startY>gridRows-canvas.height/cellSize) {
+				startY = gridRows-canvas.height/cellSize;
 			}
 		}else if(event.keyCode === 16){ // shift
 			selectFlag = true;
@@ -209,8 +209,8 @@ window.onload = function() {
 		var n = line.split(" ");
 		var gridWidth = parseInt(n[0]);
 		var gridHeight = parseInt(n[1]);
-		canvas.width = gridWidth * cellSize;
-		canvas.height = gridHeight * cellSize;
+		//canvas.width = gridWidth * cellSize;
+		//canvas.height = gridHeight * cellSize;
 
 		line = contents.substring(contents.indexOf('b'), contents.indexOf('m'));
 		n = line.split(" ");
