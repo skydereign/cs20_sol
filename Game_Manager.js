@@ -9,6 +9,7 @@ function Game_Manager() {
     //this.pause_menu;
     this.initGameElements();
     world.addChild(this.screen_manager);
+    var game_manager = this;
     //world.addChild(this.level_array[this.current_level]);
     //world.addChild(this.player);
     //world.addChild(this.level_array[0].lightManager);
@@ -22,10 +23,10 @@ Game_Manager.prototype.initGameElements = function() {
 	var cols = 80;
     var rows = 60;
     var tile_size = 40;
-    var x_player_start = 300;
-    var y_player_start = 250;
-    var x_camera_start = 1700;
-    var y_camera_start = 600;
+    var x_player_start = 120;
+    var y_player_start = 450;
+    var x_camera_start = 0;
+    var y_camera_start = 1700;
 	var first_level = new Level(cols, rows, tile_size, x_camera_start, y_camera_start, x_player_start, y_player_start);
 	this.level_array.push(first_level);
     this.camera = new Camera(canvas_width, canvas_height);
