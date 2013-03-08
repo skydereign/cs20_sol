@@ -3,11 +3,26 @@ function Polygon () {
     this.count = 0;
     this.color = "rgba(255, 255, 255, 0.0)";
     this.draw = true; // draw it unless stated otherwise
+    this.min_x;
+    this.min_y;
+    this.max_x;
+    this.max_y;
 }
 
 Polygon.prototype.add = function (x, y) {
+    if(this.count==0) {
+	this.min_x = x;
+	this.max_x = x;
+	this.min_y = y;
+	this.max_y = y;
+    }
     this.points.push({x:x, y:y});
     this.count++;
+
+    if(x < this.min_x) { this.min_x = x; }
+    if(x > this.max_x) { this.max_x = x; }
+    if(y < this.min_y) { this.min_y = y; }
+    if(y > this.max_y) { this.max_y = y; }
 }
 
 // gets point in polygon (uses % to allow loops along edges)
@@ -42,7 +57,7 @@ Polygon.prototype.draw_points = function (ctx) {
 Polygon.prototype.within = function (x, y) {
     var count = 0;
     var a = {x:x, y:y};
-    var b = {x:x, y:-10000}; // <- some outer bound
+    var b = {x:x, y:this.max_y+1}; // <- some outer bound
     var c = {x:this.get(this.count-1).x, y:this.get(this.count-1).y};
     var d = {x:this.get(0).x, y:this.get(0).y};
     

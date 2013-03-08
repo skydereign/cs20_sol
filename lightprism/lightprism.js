@@ -68,7 +68,7 @@ LightManager.prototype.update = function (d) {
 				if(this.drawAll || distance(xc, yc, this.x+xl, this.y+yl)<max_dist) {
 						var ang_start = light.angle-light.spread/2;
 						var ang_end = light.angle+light.spread/2;
-						var step = 0.1; // handles precision
+						var step = 0.8; // handles precision
 
 						var x_hit; // used to detect where collisions happen
 						var y_hit;
@@ -92,6 +92,7 @@ LightManager.prototype.update = function (d) {
 								var y = yl;
 								
 								if(onScreen) { // optimized to prevent calculations out of screen
+										this.polygons[idx].draw=true;
 										while(x>=x1 && x<x2 && y>=y1 && y<y2) {
 												var x_col = Math.floor(x);
 												var y_col = Math.floor(y);
@@ -105,11 +106,12 @@ LightManager.prototype.update = function (d) {
 														break;
 												}
 												while(x_col === Math.floor(x) && y_col === Math.floor(y)) {
-														x+=cos/this.tile_size;
-														y-=sin/this.tile_size;
+														x+=cos/this.tile_size*2;
+														y-=sin/this.tile_size*2;
 												}
 										}
 								} else { // the light was offscreen
+										this.polygons[idx].draw=false;
 										var t_dist = 0;
 										do {
 												var x_col = Math.floor(x);
@@ -128,8 +130,8 @@ LightManager.prototype.update = function (d) {
 														break;
 												}
 												while(x_col === Math.floor(x) && y_col === Math.floor(y)) {
-														x+=cos/this.tile_size;
-														y-=sin/this.tile_size;
+														x+=cos/this.tile_size*2;
+														y-=sin/this.tile_size*2;
 												}
 										} while(t_dist<=light.radius/this.tile_size);
 								}
@@ -146,8 +148,19 @@ LightManager.prototype.update = function (d) {
 
 LightManager.prototype.draw = function (ctx) {
 		ctx.globalCompositeOperation='lighter';
+		var count = 0;
 		for(var i=0; i<this.polygons.length; i++) {
-				if(this.polygons[i].draw) {
+				var vw = this.width/2;
+				var vh = this.height/2;
+				var vcx = this.width/2;
+				var vcy = this.height/2;
+
+				var pw = (this.polygons[i].max_x - this.polygons[i].min_x)/2;
+				var ph = (this.polygons[i].max_y - this.polygons[i].min_y)/2;
+				var pcx = this.polygons[i].min_x + pw;
+				var pcy = this.polygons[i].min_y + ph;
+				if(Math.abs(pcx-vcx)<=vw+pw && Math.abs(pcy-vcy)<=vh+ph) {
+						count++;
 						ctx.save();
 						ctx.fillStyle = this.polygons[i].color;
 						ctx.beginPath();
