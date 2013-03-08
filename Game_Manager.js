@@ -19,13 +19,13 @@ function Game_Manager() {
 }
 
 Game_Manager.prototype.initGameElements = function() {
-	var cols = 40;
-    var rows = 30;
+	var cols = 80;
+    var rows = 60;
     var tile_size = 40;
-    var x_player_start = 200;
-    var y_player_start = 0;
-    var x_camera_start = 0;
-    var y_camera_start = 300;
+    var x_player_start = 300;
+    var y_player_start = 250;
+    var x_camera_start = 1700;
+    var y_camera_start = 600;
 	var first_level = new Level(cols, rows, tile_size, x_camera_start, y_camera_start, x_player_start, y_player_start);
 	this.level_array.push(first_level);
     this.camera = new Camera(canvas_width, canvas_height);

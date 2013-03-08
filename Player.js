@@ -18,6 +18,8 @@ function Player() {
 	this.changeAnimation(2);
     this.initKeys();
     this.state = 0;
+    this.light = {r:0, g:0, b:0}; // r, g, b
+    this.gmult = 3; // green speed multiplier
 }
 
 Player.prototype = new Level_Object();
@@ -42,25 +44,25 @@ gInput.addBool(32, "spacebar");
 gInput.addBool(27, "escape");
 
 Player.prototype.update = function(d) {
-	//console.log("" + this.x + " " + this.y);
+	var prev_light = {r:this.light.r, g:this.light.g, b:this.light.b};
+	this.light = {r:0, g:this.light.g, b:0}; // r, g, b
+	// node g is preserved
 	for(var i=0; i<this.level.lightManager.polygons.length; i++) {
 		var polygon = this.level.lightManager.polygons[i];
 		if(polygon.within(this.x+this.width/2, this.y+this.height/2)) {
 			switch(polygon.color) {
 			case "rgba(255, 0, 0, 1)":
+			    this.light.r = 1;
 			    this.y_velocity=-2;
 			    this.state = 4+this.state%2;
 			    break;
 			    
 			case "rgba(0, 255, 0, 1)":
-			    if (this.state == 2 || this.state==4) {
-			        this.x_velocity = 12;
-			    } else if (this.state == 3 || this.state==5) {
-			    	this.x_velocity = -12;
-			    }
+			    this.light.g = 1;
 			    break;
 
 			case "rgba(0, 0, 255, 1)":
+			    this.lightb = 1;
 			    var ang = DTR(this.level.lightManager.lights[i].angle);
 			    this.x_velocity += Math.cos(ang)/3;
 			    this.y_velocity -= Math.sin(ang)/3;
@@ -68,7 +70,11 @@ Player.prototype.update = function(d) {
 			}
 		}
 	}		
-	//if(gInput.escape) { end(); } // end the game (insert error...)
+	if(this.light.g>0) {
+	    this.light.g-=0.025;
+	}
+
+	if(gInput.escape) { end(); } // end the game (insert error...)
 	if(gInput.left || gInput.a) {
 		this.keyd_left();
 	}
@@ -163,12 +169,19 @@ Player.prototype.initKeys = function () {
 		var polygon = player.level.lightManager.polygons[i];
 		if(polygon.color == "rgba(255, 255, 0, 0.8)") {
 		    if(polygon.within(player.x+player.width/2, player.y+player.height/2)) {
-			player.x_level = gInput.mouse.x-player.width/2 + player.camera.x;
-			player.y_level = gInput.mouse.y-player.height/2 + player.camera.y;
+			var ts = player.level.tile_size;
+			player.x_level = Math.round((gInput.mouse.x-player.width/2 + player.camera.x)/ts)*ts;
+			player.y_level = Math.round((gInput.mouse.y-player.height/2 + player.camera.y)/ts)*ts;
 			player.camera.x = player.x_level - player.camera.camera_width/2;
 			player.camera.y = player.y_level - player.camera.camera_height/2;
 			if(player.camera.x<0) { player.camera.x = 0; }
 			if(player.camera.y<0) { player.camera.y = 0; }
+			if(player.camera.x>player.level.cols*player.level.tile_size-player.camera.camera_width) {
+			    player.camera.x = player.level.cols*player.level.tile_size-player.camera.camera_width;
+			}
+			if(player.camera.y>player.level.rows*player.level.tile_size-player.camera.camera_height) {
+			    player.camera.y = player.level.rows*player.level.tile_size-player.camera.camera_height;
+			}
 			return;
 		    }
 		}
@@ -194,9 +207,7 @@ Player.prototype.keyd_right = function () {
 	this.state = 4; // jump right
 	break;
     }
-    if (this.x_velocity <= 3) {
-        this.x_velocity = 3;
-    }
+    this.x_velocity = 3 +3*this.gmult*this.light.g;
     this.changeAnimation(this.state);
 }
 
@@ -212,9 +223,7 @@ Player.prototype.keyd_left = function () {
 	this.state = 5; // jump left
 	break;
     }
-    if (this.x_velocity >= -3) {
-        this.x_velocity = -3;
-    }
+    this.x_velocity = -3-3*this.gmult*this.light.g;
     this.changeAnimation(this.state);
 }
 
@@ -254,14 +263,14 @@ Player.prototype.keyd_jump = function () {
     switch(this.state) {
     case 0:
     case 2:
-	this.y_velocity = -9;
+	this.y_velocity = -6;
 	this.state = 4;
 	this.changeAnimation(this.state);
 	break;
 
     case 1:
     case 3:
-	this.y_velocity = -9;
+	this.y_velocity = -6;
 	this.state = 5;
 	this.changeAnimation(this.state);
 	break;
