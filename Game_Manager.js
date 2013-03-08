@@ -4,9 +4,9 @@ function Game_Manager() {
 	this.camera;
     this.player;
     //this.screen_manager;
-    this.main_menu;
-    this.game_screen;
-    this.pause_screen;
+    //this.main_menu;
+    //this.game_screen;
+    //this.pause_menu;
     this.initGameElements();
     world.addChild(this.screen_manager);
     //world.addChild(this.level_array[this.current_level]);
@@ -51,8 +51,11 @@ Game_Manager.prototype.nextLevel = function() {
 
 gInput.addFunc(27, function(){
 	that = game_manager.screen_manager;
-    if(that.screens.find(that.game_menu)) {
+	console.log("foo");
+    if(that.screens.find(that.game_screen)) {
         that.push(that.pause_menu);   
+    } else if(that.screens.find(that.pause_menu)) {
+        that.remove(that.pause_menu);   
     }
 });
 

@@ -51,7 +51,7 @@ Screen_Manager.prototype.buildMainMenu = function() {
 }
 
 Screen_Manager.prototype.buildGameScreen = function() {
-	this.game_screen = new Screen(false, false);
+	this.game_screen = new Screen(false, true);
 	this.game_screen.width = canvas_width;
 	this.game_screen.height = canvas_height;
 }
@@ -77,8 +77,10 @@ Screen_Manager.prototype.buildPauseMenu = function() {
     resume_game.setLabelColors("#aaaaaa", "#ffffff", "#ff0000");
     this.pause_menu.gui.addChild(resume_game);
     
+    var that = this;
+    
     resume_game.func = function() {
-        this.remove(this.pause_menu);   
+        that.remove(that.pause_menu);   
     }
 }
 
@@ -90,7 +92,6 @@ Screen_Manager.prototype.update = function(d) {
             node.item.gui.visible = true;
         }
         if(node.item.always_update || node == this.screens.tail) {
-        	console.log("foo");
             node.item.update(d);
         }
     }
