@@ -57,7 +57,7 @@ Polygon.prototype.draw_points = function (ctx) {
 Polygon.prototype.within = function (x, y) {
     var count = 0;
     var a = {x:x, y:y};
-    var b = {x:x, y:this.max_y+1}; // <- some outer bound
+    var b = {x:this.max_x+1, y:this.max_y+1}; // <- some outer bound
     var c = {x:this.get(this.count-1).x, y:this.get(this.count-1).y};
     var d = {x:this.get(0).x, y:this.get(0).y};
     
