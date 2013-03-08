@@ -19,7 +19,7 @@ function Player() {
     this.initKeys();
     this.state = 0;
     this.light = {r:0, g:0, b:0}; // r, g, b
-    this.gmult = 3; // green speed multiplier
+    this.gmult = 2; // green speed multiplier
 }
 
 Player.prototype = new Level_Object();
@@ -66,6 +66,19 @@ Player.prototype.update = function(d) {
 			    var ang = DTR(this.level.lightManager.lights[i].angle);
 			    this.x_velocity += Math.cos(ang)/3;
 			    this.y_velocity -= Math.sin(ang)/3;
+			    if(this.y_velocity<0) {
+				if(this.state%2==0) {
+				    this.state=4;
+				} else {
+				    this.state=5;
+				}
+				this.changeAnimation(this.state);
+			    }
+			    break;
+
+			case "rgba(255, 255, 255, 1)":
+			    alert("Congrats, that's the end.\nRefresh to restart.");
+			    end();
 			    break;
 			}
 		}
