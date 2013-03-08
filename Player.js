@@ -66,7 +66,7 @@ Player.prototype.update = function(d) {
 			    var ang = DTR(this.level.lightManager.lights[i].angle);
 			    this.x_velocity += Math.cos(ang)/3;
 			    this.y_velocity -= Math.sin(ang)/3;
-			    if(this.y_velocity<0) {
+			    if(this.y_velocity<-2) {
 				if(this.state%2==0) {
 				    this.state=4;
 				} else {
