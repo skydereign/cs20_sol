@@ -8,7 +8,7 @@ function Light (x, y, a, r, s, c) {
 }
 
 
-function LightManager (w, h, ts) {
+function LightManager (w, h, ts, col_map, xs, ys) {
     Sprite.call(this);
     this.x = 0;
     this.y = 0;
@@ -18,7 +18,9 @@ function LightManager (w, h, ts) {
     this.width = w;
     this.height = h;
     this.drawAll = false; // used to determine if lights are drawn out of view
-    this.col_map = null;
+    this.col_map = col_map;
+		this.x_max = xs;
+		this.y_max = ys;
     this.tile_size = ts;
 		this.polygons = [];
 }
@@ -66,7 +68,7 @@ LightManager.prototype.update = function (d) {
 				if(this.drawAll || distance(xc, yc, this.x+xl, this.y+yl)<max_dist) {
 						var ang_start = light.angle-light.spread/2;
 						var ang_end = light.angle+light.spread/2;
-						var step = 0.1; // TODO: fix this, should be based off radius
+						var step = 0.1; // handles precision
 
 						var x_hit; // used to detect where collisions happen
 						var y_hit;
@@ -114,7 +116,7 @@ LightManager.prototype.update = function (d) {
 												var y_col = Math.floor(y);
 												t_dist = distance(xl, yl, x, y); // improve?
 												
-												if(x_col<0 || y_col<0) { // out of bounds
+												if(x_col<0 || y_col<0 || x_col>=this.x_max || y_col>=this.y_max) { // out of bounds
 														break;
 												}
 
@@ -145,16 +147,18 @@ LightManager.prototype.update = function (d) {
 LightManager.prototype.draw = function (ctx) {
 		ctx.globalCompositeOperation='lighter';
 		for(var i=0; i<this.polygons.length; i++) {
-				ctx.save();
-				ctx.fillStyle = this.polygons[i].color;
-				ctx.beginPath();
-				ctx.moveTo(this.polygons[i].get(0).x, this.polygons[i].get(0).y);
-				for(var j=1; j<this.polygons[i].count; j++) {
-						ctx.lineTo(this.polygons[i].get(j).x, this.polygons[i].get(j).y);
+				if(this.polygons[i].draw) {
+						ctx.save();
+						ctx.fillStyle = this.polygons[i].color;
+						ctx.beginPath();
+						ctx.moveTo(this.polygons[i].get(0).x, this.polygons[i].get(0).y);
+						for(var j=1; j<this.polygons[i].count; j++) {
+								ctx.lineTo(this.polygons[i].get(j).x, this.polygons[i].get(j).y);
+						}
+						ctx.closePath();
+						ctx.fill();
+						//could use this this.polygons[i].draw_fill(ctx);
+						ctx.restore();
 				}
-				ctx.closePath();
-				ctx.fill();
-				//could use this this.polygons[i].draw_fill(ctx);
-				ctx.restore();
 		}
 }

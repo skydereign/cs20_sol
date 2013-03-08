@@ -2,6 +2,7 @@ function Polygon () {
     this.points = [];
     this.count = 0;
     this.color = "rgba(255, 255, 255, 0.0)";
+    this.draw = true; // draw it unless stated otherwise
 }
 
 Polygon.prototype.add = function (x, y) {
