@@ -87,7 +87,7 @@ Player.prototype.update = function(d) {
 	    this.light.g-=0.025;
 	}
 
-	if(gInput.escape) {console.log("x: ", this.x_level, " y: ", this.y_level); end(); } // end the game (insert error...)
+	//sif(gInput.escape) {console.log("x: ", this.x_level, " y: ", this.y_level); end(); } // end the game (insert error...)
 	if(gInput.left || gInput.a) {
 		this.keyd_left();
 	}
