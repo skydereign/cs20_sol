@@ -8,9 +8,10 @@ function Camera(camera_width, camera_height) {
 	this.level_height;
 	this.camera_width = camera_width; //same as canvas width
 	this.camera_height = camera_height; //same as canvas height
-	this.camera_move_threshold_x = 9 * camera_width/20;
-	this.camera_move_threshold_y = 9 * camera_height/20;
-	
+	this.camera_move_threshold_x_right = 10 * camera_width/20;
+	this.camera_move_threshold_x_left = 10 * camera_width/20;
+	this.camera_move_threshold_y_up = 7 * camera_height/20;
+	this.camera_move_threshold_y_down = 12 * camera_height/20;
 }
 
 Camera.prototype.changeLevel = function(level) {
@@ -36,11 +37,11 @@ Camera.prototype.move = function(dx, dy) {
 Camera.prototype.checkToMovex = function(x, x_velocity) {
 	if(this.x + this.camera_width + x_velocity < this.level_width && this.x + x_velocity > 0) {
 		if(x_velocity > 0) {
-			if(x - this.camera_move_threshold_x > 0) {
+			if(x - this.camera_move_threshold_x_right > 0) {
 				return true;
 			}
 		} else if (x_velocity < 0) {
-			if(x < this.camera_width - this.camera_move_threshold_x) {
+			if(x < this.camera_width - this.camera_move_threshold_x_left) {
 				return true;
 			}
 		}
@@ -51,11 +52,11 @@ Camera.prototype.checkToMovex = function(x, x_velocity) {
 Camera.prototype.checkToMovey = function(y, y_velocity) {
 	if(this.y + this.camera_height + y_velocity < this.level_height && this.y + y_velocity > 0) {
 		if(y_velocity > 0) {
-			if(y - this.camera_move_threshold_y > 0) {
+			if(y - this.camera_move_threshold_y_down > 0) {
 				return true;
 			}
 		} else if (y_velocity < 0) {
-			if(y < this.camera_height - this.camera_move_threshold_y) {
+			if(y < this.camera_height - this.camera_move_threshold_y_up) {
 				return true;
 			}
 		}
