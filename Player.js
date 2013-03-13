@@ -7,6 +7,7 @@ function Player() {
 	this.image = Textures.load("images/Player_Example.png");
 	this.width = 40;
 	this.height = 65;
+	this.jump_lock = false;
 	this.grounded = false;
 	this.anims = [];
 	this.anims.push(new Animation("images/stand_r.png", 40, 65, 1, 0));
@@ -44,6 +45,7 @@ gInput.addBool(32, "spacebar");
 gInput.addBool(27, "escape");
 
 Player.prototype.update = function(d) {
+	var player = this;
 	var prev_light = {r:this.light.r, g:this.light.g, b:this.light.b};
 	this.light = {r:0, g:this.light.g, b:0}; // r, g, b
 	// node g is preserved
@@ -94,9 +96,25 @@ Player.prototype.update = function(d) {
 	if(gInput.right || gInput.d) {
 	    this.keyd_right();
 	}
-	if(gInput.spacebar || gInput.up || gInput.w) {
-	    this.keyd_jump();
-	}
+	document.addEventListener('keydown', function (e) {
+		switch(e.keyCode) {
+			case 32:
+			case 87:
+				if(player.jump_lock == true) {
+					player.keyd_jump();
+					player.jump_lock = false;
+				}
+	   			break;
+		}
+	}, true);
+	document.addEventListener('keyup', function (e) {
+		switch(e.keyCode) {
+			case 32:
+			case 87:
+				player.jump_lock = true;
+	   			break;
+		}
+	}, true);
 	if(this.y_velocity>this.y_acceleration && this.state!=4 && this.state!=5) {
 	    this.state = 4+this.state%2; // change to falling state
 	    this.changeAnimation(this.state);
