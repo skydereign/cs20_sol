@@ -150,28 +150,36 @@ LightManager.prototype.draw = function (ctx) {
 		ctx.globalCompositeOperation='lighter';
 		var count = 0;
 		for(var i=0; i<this.polygons.length; i++) {
-				var vw = this.width/2;
-				var vh = this.height/2;
-				var vcx = this.width/2;
-				var vcy = this.height/2;
-
-				var pw = (this.polygons[i].max_x - this.polygons[i].min_x)/2;
-				var ph = (this.polygons[i].max_y - this.polygons[i].min_y)/2;
-				var pcx = this.polygons[i].min_x + pw;
-				var pcy = this.polygons[i].min_y + ph;
-				if(Math.abs(pcx-vcx)<=vw+pw && Math.abs(pcy-vcy)<=vh+ph) {
-						count++;
-						ctx.save();
-						ctx.fillStyle = this.polygons[i].color;
-						ctx.beginPath();
-						ctx.moveTo(this.polygons[i].get(0).x, this.polygons[i].get(0).y);
-						for(var j=1; j<this.polygons[i].count; j++) {
-								ctx.lineTo(this.polygons[i].get(j).x, this.polygons[i].get(j).y);
+				if(this.polygons[i]) {
+						var vw = this.width/2;
+						var vh = this.height/2;
+						var vcx = this.width/2;
+						var vcy = this.height/2;
+						
+						var pw = (this.polygons[i].max_x - this.polygons[i].min_x)/2;
+						var ph = (this.polygons[i].max_y - this.polygons[i].min_y)/2;
+						var pcx = this.polygons[i].min_x + pw;
+						var pcy = this.polygons[i].min_y + ph;
+						if(Math.abs(pcx-vcx)<=vw+pw && Math.abs(pcy-vcy)<=vh+ph) {
+								count++;
+								ctx.save();
+								var x = this.polygons[i].get(0).x;
+								var y = this.polygons[i].get(0).y;
+								var lg = ctx.createRadialGradient(x, y, 30, x, y, this.lights[i].radius);
+								lg.addColorStop(0, "rgba(255, 0, 0, 1.0)");//this.polygons[i].color);
+								lg.addColorStop(1, "rgba(255, 0, 0, 0.3)");
+								
+								ctx.fillStyle = lg;//this.polygons[i].color;
+								ctx.beginPath();
+								ctx.moveTo(this.polygons[i].get(0).x, this.polygons[i].get(0).y);
+								for(var j=1; j<this.polygons[i].count; j++) {
+										ctx.lineTo(this.polygons[i].get(j).x, this.polygons[i].get(j).y);
+								}
+								ctx.closePath();
+								ctx.fill();
+								//could use this this.polygons[i].draw_fill(ctx);
+								ctx.restore();
 						}
-						ctx.closePath();
-						ctx.fill();
-						//could use this this.polygons[i].draw_fill(ctx);
-						ctx.restore();
 				}
 		}
 }

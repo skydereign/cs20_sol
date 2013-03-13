@@ -2,11 +2,14 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Level Editor</title>
-
+<script src="http://www.jar42.com/brine/engine/brine.js"></script>
+<script src="../lightprism/polygon.js"></script>
+<script src="../lightprism/lightprism.js"></script>
+<script src="lights.js"></script>
 <script>
 window.onload = function() {
 	var canvas = document.getElementById('canvas');
-	var ctx = canvas.getContext('2d');
+	//var ctx = canvas.getContext('2d');
 	var p = document.getElementById("para");
 	
 	var selectFlag = false;
@@ -36,41 +39,58 @@ window.onload = function() {
 			foreground[i][j] = -1;
 		}
 	}
+
+
+	start();
+	var editor_sprite = new Sprite();
+
+	game.addChild(editor_sprite);
+	game.lightManager.col_map = middleground;
+	editor_sprite.index = 5;
+
+
+
+
 	//tileNum corresponds to which tile within the tilesheet is being used.
 	var tileNum = 0;
  	window.addEventListener('keydown', function(event){
-		if(event.keyCode === 49){
-			ground = "b";
-			p.innerHTML = "On BackGround";
-		}else if(event.keyCode === 50){
-			ground = "m";
-			p.innerHTML = "On MiddleGround";
-		}else if(event.keyCode === 51){
-			ground = "f";
-			p.innerHTML = "On ForeGround";
-		}else if(event.keyCode === 65){ // a - left
-			startX--;
-			if(startX<0) {
-				startX = 0;
+		if(!keys[32]) {
+			if(event.keyCode === 49){
+				ground = "b";
+				p.innerHTML = "On BackGround";
+			}else if(event.keyCode === 50){
+				ground = "m";
+				p.innerHTML = "On MiddleGround";
+			}else if(event.keyCode === 51){
+				ground = "f";
+				p.innerHTML = "On ForeGround";
+			}else if(event.keyCode === 65){ // a - left
+				startX--;
+				if(startX<0) {
+					startX = 0;
+				}
+			}else if(event.keyCode === 68){ // d - right
+				startX++;
+				if(startX>gridCols-canvas.width/cellSize) {
+					startX = gridCols-canvas.width/cellSize;
+				}
+			}else if(event.keyCode === 87){ // w - up
+				startY--;
+				if(startY<0) {
+					startY = 0;
+				}
+			}else if(event.keyCode === 83){ // s - down
+				startY++;
+				if(startY>gridRows-canvas.height/cellSize) {
+					startY = gridRows-canvas.height/cellSize;
+				}
+			}else if(event.keyCode === 16){ // shift
+				selectFlag = true;
 			}
-		}else if(event.keyCode === 68){ // d - right
-			startX++;
-			if(startX>gridCols-canvas.width/cellSize) {
-				startX = gridCols-canvas.width/cellSize;
-			}
-		}else if(event.keyCode === 87){ // w - up
-			startY--;
-			if(startY<0) {
-				startY = 0;
-			}
-		}else if(event.keyCode === 83){ // s - down
-			startY++;
-			if(startY>gridRows-canvas.height/cellSize) {
-				startY = gridRows-canvas.height/cellSize;
-			}
-		}else if(event.keyCode === 16){ // shift
-			selectFlag = true;
 		}
+	        game.lightManager.x = -startX*cellSize;
+                game.lightManager.y = -startY*cellSize;
+                return true;
 	});
 
  	window.addEventListener('keyup', function(event){
@@ -84,22 +104,24 @@ window.onload = function() {
 	var ground = "b";
 	
 	canvas.onmousedown = function(e){
-		if(!selectFlag){
-			mouseFlag = true;
-			if(ground == "b"){
-				background[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)+startX][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)+startY] = tileNum;
-			}else if(ground == "f"){
-				foreground[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)+startX][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)+startY] = tileNum;
-			}else if(ground == "m"){
-				middleground[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)+startX][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)+startY] = tileNum;
-			}
-		} else {
-			if(ground == "b"){
-				tileNum = background[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)+startX][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)+startY];
-			}else if(ground == "f"){
-				tileNum = foreground[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)+startX][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)+startY];
-			}else if(ground == "m"){
-				tileNum =middleground[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)+startX][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)+startY];
+		if(!keys[32]) {
+			if(!selectFlag){
+				mouseFlag = true;
+				if(ground == "b"){
+					background[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)+startX][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)+startY] = tileNum;
+				}else if(ground == "f"){
+					foreground[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)+startX][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)+startY] = tileNum;
+				}else if(ground == "m"){
+					middleground[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)+startX][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)+startY] = tileNum;
+				}
+			} else {
+				if(ground == "b"){
+					tileNum = background[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)+startX][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)+startY];
+				}else if(ground == "f"){
+					tileNum = foreground[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)+startX][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)+startY];
+				}else if(ground == "m"){
+					tileNum =middleground[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)+startX][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)+startY];
+				}
 			}
 		}
 	}
@@ -152,10 +174,10 @@ window.onload = function() {
 
 		//console.log(tileNum);
 	}
-	setInterval(drawLevel, 50);
+	
 	//Compares each grid cell with a possible tile number and if there is a match, draw that tile inside the the cell.
-	function drawLevel(){
-		ctx.clearRect(0,0,canvas.width,canvas.height);
+	editor_sprite.draw = function (ctx) {
+
 		for(i = startX; i < startX+canvas.width/cellSize; i++){
 			for(j = startY; j < startY+canvas.height/cellSize; j++){
 				if(background[i][j] != -1){
@@ -210,7 +232,13 @@ window.onload = function() {
 			}
 			levelString += "]<br>"
 		}
-		levelString += "e";
+		levelString += "l<br>";
+
+		for(i in game.lightManager.lights){
+			light = game.lightManager.lights[i];
+			levelString += "" + light.x + " " + light.y + " " + light.angle + " " + light.radius + " " + light.spread + " " + light.color + "<br>"
+		}
+		levelString += "<br>e<br>";
 		//console.log(levelString);
 		document.getElementById("demo").innerHTML = levelString;
 	}
@@ -248,7 +276,7 @@ window.onload = function() {
 				middleground[i][j] = n[t++];
 			}
 		}
-		line = contents.substring(contents.indexOf('f'), contents.indexOf('e'));
+		line = contents.substring(contents.indexOf('f'), contents.indexOf('l'));
 		n = line.split(" ");
 		t = 1;
 		for(j=0; j < gridHeight; j++){
@@ -259,15 +287,24 @@ window.onload = function() {
 				foreground[i][j] = n[t++];
 			}
 		}
+
+		line = contents.substring(contents.indexOf('l'), contents.indexOf('e'));
+		n = line.split("\n");
+		for(var i=1; i<n.length; i++) {
+			var v = n[i].split(" ");
+			game.lightManager.lights.push(new Light(v[0], v[1], v[2], v[3], v[4], v[5]));
+		}
 	}
 	
 
 	function clickLoad(){
 		var level1 = new XMLHttpRequest();
 		level1.onreadystatechange = function(){
-			loadMap(level1.responseText);
+			if(this.readyState == this.DONE) {
+				loadMap(level1.responseText);
+			}
 		}
-		level1.open("GET", "level1.txt", true);
+		level1.open("GET", "level2.txt", true);
 		level1.send();
 	}
 	
