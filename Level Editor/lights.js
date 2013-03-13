@@ -3,6 +3,8 @@ use2D = true;
 var colGrid = [];
 var map_width = 100;
 var map_height = 30;
+var light_input = false;
+var released = true; 
 
 var size = 40;				
 var lastKey = 0; // used to determine what action
@@ -23,11 +25,21 @@ function Game () {
 		}
 
     document.addEventListener('keydown', function(e) {
+				if(e.keyCode===13) {
+						if(released == true) {
+								light_input = !light_input;
+						}
+						released = false;
+				}
+
 				lastKey = e.keyCode;
 				keys[e.keyCode] = true;
     }, true);
 		
     document.addEventListener('keyup', function(e) {
+				if(e.keyCode==13) {
+						released=true;
+				}
 				if(lastKey == e.keyCode) {
 						lastKey = 0;
 				}
@@ -42,7 +54,7 @@ function Game () {
 Game.prototype = new Sprite();
 
 Game.prototype.update = function (d) {
-		if(keys[32]) { // space needed for all light manipulations
+		if(light_input) { // space needed for all light manipulations
 				if(keys[74]) { // j - move screen left
 						lm.x-=2;
 						if(lm.x<0) {
@@ -143,7 +155,7 @@ Game.prototype.draw = function (ctx) {
 }
 
 gInput.addLBtnFunc(function() { 
-		if(keys[32]) { // space is pressed
+		if(light_input) {
 				switch(lastKey) {
 				case 49: // 1 - red
 						selectedLight = new Light(gInput.mouse.x+lm.x, gInput.mouse.y+lm.y, 0, 200, 45, 'rgba(255, 0, 0, 1)');

@@ -54,7 +54,7 @@ window.onload = function() {
 	//tileNum corresponds to which tile within the tilesheet is being used.
 	var tileNum = 0;
  	window.addEventListener('keydown', function(event){
-		if(!keys[32]) {
+		if(!light_input) {
 			if(event.keyCode === 49){
 				ground = "b";
 				p.innerHTML = "On BackGround";
@@ -104,7 +104,7 @@ window.onload = function() {
 	var ground = "b";
 	
 	canvas.onmousedown = function(e){
-		if(!keys[32]) {
+		if(!light_input) {
 			if(!selectFlag){
 				mouseFlag = true;
 				if(ground == "b"){
