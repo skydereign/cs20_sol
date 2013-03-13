@@ -132,12 +132,24 @@ window.onload = function() {
 		clickX = e.clientX-this.offsetLeft + document.body.scrollLeft;
 		clickY = e.clientY-this.offsetTop + document.body.scrollTop;
 
-		for(j = 0; j < image.height; j += cellSize){
-			for(i = 0; i < image.width; i += cellSize){
-				if(clickX >= i && clickX <= i + cellSize && clickY >= j && clickY <= j + cellSize)
-					tileNum = (i+(j*image.width/cellSize))/cellSize;
-			}
+		tileNum = (Math.floor(clickX/cellSize)*cellSize+(Math.floor(clickY/cellSize)*cellSize*image.width/cellSize))/cellSize;
+
+		// sets clear tiles to -1
+		switch(tileNum) {
+			case 33:
+			case 34:
+			case 35:
+			case 42:
+			case 43:
+			case 44:
+			case 51:
+			case 52:
+			case 53:
+			tileNum = -1;
+			break;
 		}
+         
+
 		//console.log(tileNum);
 	}
 	setInterval(drawLevel, 50);
