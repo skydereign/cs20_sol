@@ -33,33 +33,33 @@ Level.prototype.giveCamera = function(camera) {
 	this.camera = camera;
 	this.lightManager = new LightManager(camera.camera_width, camera.camera_height, this.tile_size, this.tile_array, this.cols, this.rows);
 	this.lightManager.col_map = this.tile_array;
-	this.lightManager.lights.push(new Light(580, 1400, 270, 1000, 45, 'rgba(255, 0, 0, 1)'));
-	this.lightManager.lights.push(new Light(1300, 1200, 300, 1000, 75, 'rgba(0, 255, 0, 1)'));
-	this.lightManager.lights.push(new Light(3000, 2300, 100, 600, 60, 'rgba(0, 0, 255, 1)'));
-	this.lightManager.lights.push(new Light(2570, 1550, 40, 300, 40, 'rgba(0, 0, 255, 1)'));
-	this.lightManager.lights.push(new Light(3070, 1350, 140, 500, 60, 'rgba(0, 0, 255, 1)'));
-	this.lightManager.lights.push(new Light(1483, 1079, 30, 800, 60, 'rgba(0, 255, 0, 1)'));
-	this.lightManager.lights.push(new Light(1072, 854, 330, 300, 30, 'rgba(0, 0, 255, 1)'));
-	this.lightManager.lights.push(new Light(1135, 1180, 150, 300, 60, 'rgba(0, 0, 255, 1)'));
-	this.lightManager.lights.push(new Light(360, 1200, 180, 400, 180, 'rgba(255, 255, 0, 0.8)'));
-	this.lightManager.lights.push(new Light(360, 540, 270, 400, 60, 'rgba(255, 255, 0, 0.8)'));
+	this.lightManager.lights.push(new Light(580, 1400, 270, 1000, 45, 0));
+	this.lightManager.lights.push(new Light(1300, 1200, 300, 1000, 75, 1));
+	this.lightManager.lights.push(new Light(3000, 2300, 100, 600, 60, 2));
+	this.lightManager.lights.push(new Light(2570, 1550, 40, 300, 40, 2));
+	this.lightManager.lights.push(new Light(3070, 1350, 140, 500, 60, 2));
+	this.lightManager.lights.push(new Light(1483, 1079, 30, 800, 60, 1));
+	this.lightManager.lights.push(new Light(1072, 854, 330, 300, 30, 2));
+	this.lightManager.lights.push(new Light(1135, 1180, 150, 300, 60, 2));
+	this.lightManager.lights.push(new Light(360, 1200, 180, 400, 180, 4));
+	this.lightManager.lights.push(new Light(360, 540, 270, 400, 60, 4));
 
-	this.lightManager.lights.push(new Light(580, 340, 270, 400, 30, 'rgba(255, 0, 0, 1)'));
-	this.lightManager.lights.push(new Light(1275, 370, 330, 400, 30, 'rgba(255, 255, 0, 0.8)'));
-	this.lightManager.lights.push(new Light(1100, 470, 90, 100, 30, 'rgba(0, 0, 255, 1)'));
-	this.lightManager.lights.push(new Light(1030, 315, 60, 100, 30, 'rgba(0, 0, 255, 1)'));
+	this.lightManager.lights.push(new Light(580, 340, 270, 400, 30, 0));
+	this.lightManager.lights.push(new Light(1275, 370, 330, 400, 30, 4));
+	this.lightManager.lights.push(new Light(1100, 470, 90, 100, 30, 2));
+	this.lightManager.lights.push(new Light(1030, 315, 60, 100, 30, 2));
 
-	this.lightManager.lights.push(new Light(1600, 140, 300, 300, 90, 'rgba(0, 255, 0, 1)'));
-	this.lightManager.lights.push(new Light(2070, 40, 270, 150, 30, 'rgba(255, 0, 0, 1)'));
+	this.lightManager.lights.push(new Light(1600, 140, 300, 300, 90, 1));
+	this.lightManager.lights.push(new Light(2070, 40, 270, 150, 30, 0));
 
-	this.lightManager.lights.push(new Light(2595, 412, 270, 60, 60, 'rgba(255, 255, 0, 0.8)'));
-	this.lightManager.lights.push(new Light(2625, 468, 270, 60, 60, 'rgba(255, 255, 0, 0.8)'));
-	this.lightManager.lights.push(new Light(2565, 468, 270, 60, 60, 'rgba(255, 255, 0, 0.8)'));
-	this.lightManager.lights.push(new Light(2595, 519,  90, 60, 60, 'rgba(255, 255, 255, 1)'));
+	this.lightManager.lights.push(new Light(2595, 412, 270, 60, 60, 4));
+	this.lightManager.lights.push(new Light(2625, 468, 270, 60, 60, 4));
+	this.lightManager.lights.push(new Light(2565, 468, 270, 60, 60, 4));
+	this.lightManager.lights.push(new Light(2595, 519,  90, 60, 60, 6));
 
-	this.lightManager.lights.push(new Light(2170, 668, 70, 300, 40, 'rgba(0, 0, 255, 1)'));
-	this.lightManager.lights.push(new Light(3020, 668, 110, 300, 40, 'rgba(0, 0, 255, 1)'));
-	this.lightManager.lights.push(new Light(2595, 200, 270, 600, 40, 'rgba(0, 255, 0, 1)'));
+	this.lightManager.lights.push(new Light(2170, 668, 70, 300, 40, 2));
+	this.lightManager.lights.push(new Light(3020, 668, 110, 300, 40, 2));
+	this.lightManager.lights.push(new Light(2595, 200, 270, 600, 40, 1));
 }
 
 
@@ -293,64 +293,6 @@ Level.prototype.draw = function(ctx) {
 	    }
 	}
     }
-}
-
-
-Level.prototype.loadLevel = function (filename) {
-    var level1 = new XMLHttpRequest();
-
-    var curLevel = this;
-    // calls editor's loadMap nested inside loadLevel for scope
-    level1.onreadystatechange = function () {
-	var contents = level1.responseText;
-	console.log(contents);
-	var line = contents.substr(0, contents.indexOf("\n"));
-	var n = line.split(" ");
-	var gridWidth = parseInt(n[0]);
-	var gridHeight = parseInt(n[1]);
-	curLevel.cols = gridWidth;
-	curLevel.rows = gridWidth;
-	curLevel.initArrays();
-	//canvas.width = gridWidth * cellSize;
-	//canvas.height = gridHeight * cellSize;
-	
-	line = contents.substring(contents.indexOf('b'), contents.indexOf('m'));
-	n = line.split(" ");
-	t = 1;
-	for(j=0; j < gridHeight; j++){
-	    for(i = 0; i < gridWidth; i++){
-		if(t%(gridWidth + 1) == 0){
-		    t++;
-		}
-		curLevel.tile_bg[i][j] = n[t++];
-	    }
-	}
-	line = contents.substring(contents.indexOf('m'), contents.indexOf('f'));
-	n = line.split(" ");
-	t = 1;
-	for(j=0; j < gridHeight; j++){
-	    for(i = 0; i < gridWidth; i++){
-		if(t%(gridWidth + 1) == 0){
-		    t++;
-		}
-		curLevel.tile_array[i][j] = n[t++];
-	    }
-	}
-	line = contents.substring(contents.indexOf('f'), contents.indexOf('e'));
-	n = line.split(" ");
-	t = 1;
-	for(j=0; j < gridHeight; j++){
-	    for(i = 0; i < gridWidth; i++){
-		if(t%(gridWidth + 1) == 0){
-		    t++;
-		}
-		curLevel.tile_fg[i][j] = n[t++];
-	    }
-	}
-    } // loadMap/onreadystate end
-
-    level1.open("GET", filename, true);
-    level1.send();
 }
 
 
