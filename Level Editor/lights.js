@@ -158,44 +158,44 @@ gInput.addLBtnFunc(function() {
 		if(light_input) {
 				switch(lastKey) {
 				case 49: // 1 - red
-						selectedLight = new Light(gInput.mouse.x+lm.x, gInput.mouse.y+lm.y, 0, 200, 45, 'rgba(255, 0, 0, 1)');
+						selectedLight = new Light(gInput.mouse.x+lm.x_off, gInput.mouse.y+lm.y_off, 0, 200, 45, 'rgba(255, 0, 0, 1)');
 						lm.lights.push(selectedLight);
 						break;
 						
 				case 50: // 2 - green
-						selectedLight = new Light(gInput.mouse.x+lm.x, gInput.mouse.y+lm.y, 0, 200, 45, 'rgba(0, 255, 0, 1)');
+						selectedLight = new Light(gInput.mouse.x+lm.x_off, gInput.mouse.y+lm.y_off, 0, 200, 45, 'rgba(0, 255, 0, 1)');
 						lm.lights.push(selectedLight);
 						break;
 						
 				case 51: // 3 - blue
-						selectedLight = new Light(gInput.mouse.x+lm.x, gInput.mouse.y+lm.y, 0, 200, 45, 'rgba(0, 0, 255, 1)')
+						selectedLight = new Light(gInput.mouse.x+lm.x_off, gInput.mouse.y+lm.y_off, 0, 200, 45, 'rgba(0, 0, 255, 1)')
 						lm.lights.push(selectedLight);
 						break;
 						
 				case 52: // 4 - magenta
-						selectedLight = new Light(gInput.mouse.x+lm.x, gInput.mouse.y+lm.y, 0, 200, 45, 'rgba(255, 0, 255, 1)')
+						selectedLight = new Light(gInput.mouse.x+lm.x_off, gInput.mouse.y+lm.y_off, 0, 200, 45, 'rgba(255, 0, 255, 1)')
 						lm.lights.push(selectedLight);
 						break;
 						
 				case 53: // 5 - yellow
-						selectedLight = new Light(gInput.mouse.x+lm.x, gInput.mouse.y+lm.y, 0, 200, 45, 'rgba(255, 255, 0, 1)');
+						selectedLight = new Light(gInput.mouse.x+lm.x_off, gInput.mouse.y+lm.y_off, 0, 200, 45, 'rgba(255, 255, 0, 1)');
 						lm.lights.push(selectedLight);
 						break;
 						
 				case 54: // 6 - cyan
-						selectedLight = new Light(gInput.mouse.x+lm.x, gInput.mouse.y+lm.y, 0, 200, 45, 'rgba(0, 255, 255, 1)');
+						selectedLight = new Light(gInput.mouse.x+lm.x_off, gInput.mouse.y+lm.y_off, 0, 200, 45, 'rgba(0, 255, 255, 1)');
 						lm.lights.push(selectedLight);
 						break;
 						
 				case 55: // 7 - white
-						selectedLight = new Light(gInput.mouse.x+lm.x, gInput.mouse.y+lm.y, 0, 200, 45, 'rgba(255, 255, 255, 1)');
+						selectedLight = new Light(gInput.mouse.x+lm.x_off, gInput.mouse.y+lm.y_off, 0, 200, 45, 'rgba(255, 255, 255, 1)');
 						lm.lights.push(selectedLight);
 						break;
 						
 				case 88: // x - delete local lights
 						for(var i=0; i<lm.lights.length; i++) {
 								var light = lm.lights[i];
-								if(Math.abs(light.x-gInput.mouse.x-lm.x)<30 && Math.abs(light.y-gInput.mouse.y-lm.y)<30) {
+								if(Math.abs(light.x-gInput.mouse.x-lm.x_off)<30 && Math.abs(light.y-gInput.mouse.y-lm.y_off)<30) {
 										lm.remove(i);
 										i--; // removed a light, so adjust
 								}
@@ -205,7 +205,7 @@ gInput.addLBtnFunc(function() {
 				case 90: // z - select local light
 						for(var i=0; i<lm.lights.length; i++) {
 								var light = lm.lights[i];
-								if(Math.abs(light.x-gInput.mouse.x-lm.x)<30 && Math.abs(light.y-gInput.mouse.y-lm.y)<30) {
+								if(Math.abs(light.x-gInput.mouse.x-lm.x_off)<30 && Math.abs(light.y-gInput.mouse.y-lm.y_off)<30) {
 										selectedLight = light;
 										break;
 								}

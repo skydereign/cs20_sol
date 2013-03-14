@@ -88,8 +88,8 @@ window.onload = function() {
 				selectFlag = true;
 			}
 		}
-	        game.lightManager.x = -startX*cellSize;
-                game.lightManager.y = -startY*cellSize;
+	        game.lightManager.x_off = startX*cellSize;
+                game.lightManager.y_off = startY*cellSize;
                 return true;
 	});
 
@@ -158,7 +158,6 @@ window.onload = function() {
 
 		// sets clear tiles to -1
 		switch(tileNum) {
-			case 33:
 			case 34:
 			case 35:
 			case 42:
