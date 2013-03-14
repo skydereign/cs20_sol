@@ -4,8 +4,25 @@ function Light (x, y, a, r, s, c) {
     this.angle = a; // direction of light
     this.radius = r; // length of light
     this.spread = s; // angle spread of light
-    this.color = c; // rgba
+    this.color = this.COLORS_A[c]; // rgba
+    this.color_end = this.COLORS_B[c]; // rgba
 }
+Light.prototype.COLORS_A = ["rgba(255, 0, 0, 1)",
+														"rgba(0, 255, 0, 1)",
+														"rgba(0, 0, 255, 1)",
+														"rgba(255, 0, 255, 1)",
+														"rgba(255, 255, 0, 0.8)",
+														"rgba(0, 255, 255, 1)",
+														"rgba(255, 255, 255, 1)"];
+Light.prototype.COLORS_B = ["rgba(255, 0, 0, 0.3)",
+														"rgba(0, 255, 0, 0.3)",
+														"rgba(0, 0, 255, 0.3)",
+														"rgba(255, 0, 255, 0.3)",
+														"rgba(255, 255, 0, 0.2)",
+														"rgba(0, 255, 255, 0.3)",
+														"rgba(255, 255, 255, 0.3)"];
+
+
 
 
 function LightManager (w, h, ts, col_map, xs, ys) {
@@ -31,6 +48,8 @@ function distance (x1, y1, x2, y2) {
     var y = y1-y2;
     return Math.sqrt(x*x+y*y);
 }
+
+
 
 LightManager.prototype.remove = function (idx) {
     if(idx > this.lights.length) {
@@ -166,8 +185,8 @@ LightManager.prototype.draw = function (ctx) {
 								var x = this.polygons[i].get(0).x;
 								var y = this.polygons[i].get(0).y;
 								var lg = ctx.createRadialGradient(x, y, 30, x, y, this.lights[i].radius);
-								lg.addColorStop(0, "rgba(255, 0, 0, 1.0)");//this.polygons[i].color);
-								lg.addColorStop(1, "rgba(255, 0, 0, 0.3)");
+								lg.addColorStop(0, this.lights[i].color);//this.polygons[i].color);
+								lg.addColorStop(1, this.lights[i].color_end);
 								
 								ctx.fillStyle = lg;//this.polygons[i].color;
 								ctx.beginPath();
