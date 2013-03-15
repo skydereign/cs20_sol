@@ -16,8 +16,8 @@ window.onload = function() {
 	var startX = 0;
 	var startY = 0;
 	var cellSize = 40;
-	gridRows = 60;
-	gridCols = 80;
+	gridRows = 28;
+	gridCols = 200;
 	
 	var background = new Array(gridCols);
 	for(i=0; i < background.length; i++){
@@ -235,9 +235,9 @@ window.onload = function() {
 
 		for(i in game.lightManager.lights){
 			light = game.lightManager.lights[i];
-			levelString += "" + light.x + " " + light.y + " " + light.angle + " " + light.radius + " " + light.spread + " " + light.color + "<br>"
+			levelString += "" + parseInt(light.x) + " " + parseInt(light.y) + " " + parseInt(light.angle) + " " + parseInt(light.radius) + " " + parseInt(light.spread) + " " + parseInt(light.color_idx) + "<br>"
 		}
-		levelString += "<br>e<br>";
+		levelString += "e<br>";
 		//console.log(levelString);
 		document.getElementById("demo").innerHTML = levelString;
 	}
@@ -248,6 +248,13 @@ window.onload = function() {
 		var n = line.split(" ");
 		var gridWidth = parseInt(n[0]);
 		var gridHeight = parseInt(n[1]);
+		gridRows = gridHeight;
+		gridCols = gridWidth;
+		game.lightManager.x_max = gridCols;
+		game.lightManager.y_max = gridRows;
+		map_width = gridCols;
+		map_height = gridRows;
+		game.lightManager.col_grid = middleground;
 		//canvas.width = gridWidth * cellSize;
 		//canvas.height = gridHeight * cellSize;
 
@@ -291,7 +298,7 @@ window.onload = function() {
 		n = line.split("\n");
 		for(var i=1; i<n.length; i++) {
 			var v = n[i].split(" ");
-			game.lightManager.lights.push(new Light(v[0], v[1], v[2], v[3], v[4], v[5]));
+			game.lightManager.lights.push(new Light(parseInt(v[0]), parseInt(v[1]), parseInt(v[2]), parseInt(v[3]), parseInt(v[4]), parseInt(v[5])));
 		}
 	}
 	

@@ -6,6 +6,7 @@ function Light (x, y, a, r, s, c) {
     this.spread = s; // angle spread of light
     this.color = this.COLORS_A[c]; // rgba
     this.color_end = this.COLORS_B[c]; // rgba
+		this.color_idx = c;
 }
 Light.prototype.COLORS_A = ["rgba(255, 0, 0, 1)",
 														"rgba(0, 255, 0, 1)",
