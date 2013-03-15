@@ -1,4 +1,4 @@
-function Player() {
+rfunction Player() {
 	Level_Object.call(this);
 	this.level;
 	this.camera;
@@ -21,6 +21,9 @@ function Player() {
     this.state = 0;
     this.light = {r:0, g:0, b:0}; // r, g, b
     this.gmult = 2; // green speed multiplier
+    this.cyan_jump = false;
+    this.cyan_last = -1; // holds index of the last light
+    this.speed = 5;
 }
 
 Player.prototype = new Level_Object();
@@ -45,9 +48,12 @@ gInput.addBool(32, "spacebar");
 gInput.addBool(27, "escape");
 
 Player.prototype.update = function(d) {
+	var blue_angles = []; // stores angles for blue light
+	var cyan_indexes = []; // stores indexes for cyan light
+
 	var player = this;
-	var prev_light = {r:this.light.r, g:this.light.g, b:this.light.b};
-	this.light = {r:0, g:this.light.g, b:0}; // r, g, b
+	var prev_light = {r:this.light.r, g:this.light.g, b:this.light.b, m:this.light.m, y:this.light.y, c:this.light.c, w:this.light.w};
+	this.light = {r:0, g:this.light.g, b:0, m:0, y:0, c:0, w:0}; // r, g, b
 	// node g is preserved
 	for(var i=0; i<this.level.lightManager.polygons.length; i++) {
 		var polygon = this.level.lightManager.polygons[i];
@@ -78,6 +84,12 @@ Player.prototype.update = function(d) {
 			    }
 			    break;
 
+			case "rgba(0, 255, 255, 1)":
+			    this.light.g = 1;
+			    this.light.b = 1;
+			    cyan_indexes.push(i);
+			    break;
+
 			case "rgba(255, 255, 255, 1)":
 				//TODO: NEXT_LEVEL()
 			    //alert("Congrats, that's the end.\nRefresh to restart.");
@@ -89,6 +101,66 @@ Player.prototype.update = function(d) {
 	}		
 	if(this.light.g>0) {
 	    this.light.g-=0.025;
+	}
+
+
+	switch(light_mod) {
+	case 0: // no light
+	    break;
+
+	case 1: // red
+	    this.y_velocity=-2;
+	    this.state = 4+this.state%2;
+	    break;
+
+	case 2: // green
+	    this.gspeed = 1;
+	    break;
+
+	case 3: // yellow
+	    break;
+
+	case 5: // blue
+	    for(var i=0; i<blue_angles.length; i++) {
+		var ang = blue_angles[i];
+		this.x_velocity += Math.cos(ang)/3;
+		this.y_velocity -= Math.sin(ang)/3;
+		if(this.y_velocity<-2) {
+		    if(this.state%2==0) {
+			this.state=4;
+		    } else {
+			this.state=5;
+		    }
+		    this.changeAnimation(this.state);
+		}
+	    }
+	    break;
+
+	case 6: // magenta
+	    break;
+
+	case 7: // cyan
+	    break;
+	}
+
+	// double jump maintenance
+	if(prev_light.c==0 && this.light.c==1) {
+	    var idx = -1;
+	    for(var i=0; i<cyan_indexes.length; i++) {
+		idx+=cyan_indexes[i];
+	    }
+	    if(this.cyan_last) {// != idx) { // <- FIXME
+		this.cyan_last = idx;
+		this.cyan_jump = true;
+	    }
+	} else if (prev_light.c==1 && this.light.c==0) {
+	    this.cyan_jump = false;
+	}
+
+
+
+	if(this.gspeed>0) {
+	    this.gspeed-=0.025;
 	}
 
 	//sif(gInput.escape) {console.log("x: ", this.x_level, " y: ", this.y_level); end(); } // end the game (insert error...)
@@ -240,7 +312,7 @@ Player.prototype.keyd_right = function () {
 	this.state = 4; // jump right
 	break;
     }
-    this.x_velocity = 3 +3*this.gmult*this.light.g;
+    this.x_velocity = this.speed +this.speed*this.gmult*this.gspeed;
     this.changeAnimation(this.state);
 }
 
@@ -256,7 +328,7 @@ Player.prototype.keyd_left = function () {
 	this.state = 5; // jump left
 	break;
     }
-    this.x_velocity = -3-3*this.gmult*this.light.g;
+    this.x_velocity = -this.speed-this.speed*this.gmult*this.gspeed;
     this.changeAnimation(this.state);
 }
 
@@ -296,22 +368,42 @@ Player.prototype.keyd_jump = function () {
     switch(this.state) {
     case 0:
     case 2:
-	this.y_velocity = -6;
+	this.y_velocity = -7;
 	this.state = 4;
 	this.changeAnimation(this.state);
 	break;
 
     case 1:
     case 3:
-	this.y_velocity = -6;
+	this.y_velocity = -7;
 	this.state = 5;
 	this.changeAnimation(this.state);
+	break;
+
+    case 4:
+	if(this.cyan_jump == true) {
+	    this.cyan_jump = false;
+	    this.y_velocity = -5;
+	    this.state = 4;
+	    this.changeAnimation(this.state);
+	}
+	break;
+	    
+    case 5:
+	if(this.cyan_jump == true) {
+	    this.cyan_jump = false;
+	    this.y_velocity = -5;
+	    this.state = 5;
+	    this.changeAnimation(this.state);
+	}
 	break;
     }
 }
 
 Player.prototype.jump_landing = function () {
     this.x_velocity = 0;
+    this.cyan_last = -1; // guarentee new double jump
+    this.cyan_jump = true;
     switch(this.state) {
     case 4:
 	this.state = 0;
