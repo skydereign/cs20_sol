@@ -1,4 +1,3 @@
-var textbox;
 function Player() {
 	Level_Object.call(this);
 	this.level;
@@ -20,10 +19,8 @@ function Player() {
 	this.changeAnimation(2);
     this.initKeys();
     this.state = 0;
-    this.light = {r:0, g:0, b:0, m:0, y:0, c:0, w:0}; // r, g, b
+    this.light = {r:0, g:0, b:0}; // r, g, b
     this.gmult = 2; // green speed multiplier
-    this.gspeed = 0;
-    this.jump_lock = true;
 }
 
 Player.prototype = new Level_Object();
@@ -48,7 +45,6 @@ gInput.addBool(32, "spacebar");
 gInput.addBool(27, "escape");
 
 Player.prototype.update = function(d) {
-	var blue_angles = [];
 	var player = this;
 	var prev_light = {r:this.light.r, g:this.light.g, b:this.light.b};
 	this.light = {r:0, g:this.light.g, b:0}; // r, g, b
@@ -59,99 +55,40 @@ Player.prototype.update = function(d) {
 			switch(polygon.color) {
 			case "rgba(255, 0, 0, 1)":
 			    this.light.r = 1;
+			    this.y_velocity=-2;
+			    this.state = 4+this.state%2;
 			    break;
 			    
 			case "rgba(0, 255, 0, 1)":
 			    this.light.g = 1;
-			    this.gspeed = 1;
 			    break;
 
 			case "rgba(0, 0, 255, 1)":
-			    this.light.b = 1;
-			    blue_angles.push(DTR(this.level.lightManager.lights[i].angle));
-			    break;
-
-			case "rgba(0, 255, 255, 1)":
-			    this.light.g = 1;
-			    this.light.b = 1;
+			    this.lightb = 1;
+			    var ang = DTR(this.level.lightManager.lights[i].angle);
+			    this.x_velocity += Math.cos(ang)/3;
+			    this.y_velocity -= Math.sin(ang)/3;
+			    if(this.y_velocity<-2) {
+				if(this.state%2==0) {
+				    this.state=4;
+				} else {
+				    this.state=5;
+				}
+				this.changeAnimation(this.state);
+			    }
 			    break;
 
 			case "rgba(255, 255, 255, 1)":
-			    alert("Congrats, that's the end.\nRefresh to restart.");
-			    end();
+				//TODO: NEXT_LEVEL()
+			    //alert("Congrats, that's the end.\nRefresh to restart.");
+			    //end();
+			    game_manager.nextLevel();
 			    break;
 			}
 		}
 	}		
-	var light_mod = this.light.r + this.light.g*2 + this.light.b*5; // <-- improve, not perfect
-	switch(light_mod) {
-	case 3: // red and green = yellow
-	    this.light.r = 0;
-	    this.light.g = 0;
-	    this.light.y = 1;
-	    break;
-
-	case 6: // red and blue = magenta
-	    this.light.r = 0;
-	    this.light.b = 0;
-	    this.light.m = 1;
-	    if(textbox==undefined) {
-		textbox = new TextBox("PURPLE");
-		textbox.drawBG = true;
-		textbox.borderColor = "rgba(127, 127, 127, 1.0)"
-		textbox.border = 4;
-		textbox.bgColor = "rgba(255, 255, 255, 1.0)";
-		this.addChild(textbox);
-	    }
-	    break;
-
-	case 7: // green and blue = cyan
-	    this.light.g = 0;
-	    this.light.b = 0;
-	    this.light.c = 1;
-	    break;
-
-	case 9: // red and green and blue = white
-	    this.light.r = this.light.g = this.light.b = 0;
-	    this.light.w = 1;
-	    break;
-	}
-
-
-	switch(light_mod) {
-	case 0: // no light
-	    break;
-
-	case 1: // red
-	    this.y_velocity=-2;
-	    this.state = 4+this.state%2;
-	    break;
-
-	case 2: // green
-	    break;
-
-	case 3: // yellow
-	    break;
-
-	case 5: // blue
-	    for(var i=0; i<blue_angles.length; i++) {
-		var ang = blue_angles[i];
-		this.x_velocity += Math.cos(ang)/3;
-		this.y_velocity -= Math.sin(ang)/3;
-		if(this.y_velocity<-2) {
-		    if(this.state%2==0) {
-			this.state=4;
-		    } else {
-			this.state=5;
-		    }
-		    this.changeAnimation(this.state);
-		}
-	    }
-	    break;
-	}
-
-	if(this.gspeed>0) {
-	    this.gspeed-=0.025;
+	if(this.light.g>0) {
+	    this.light.g-=0.025;
 	}
 
 	//sif(gInput.escape) {console.log("x: ", this.x_level, " y: ", this.y_level); end(); } // end the game (insert error...)
@@ -303,7 +240,7 @@ Player.prototype.keyd_right = function () {
 	this.state = 4; // jump right
 	break;
     }
-    this.x_velocity = 3 +3*this.gmult*this.gspeed;
+    this.x_velocity = 3 +3*this.gmult*this.light.g;
     this.changeAnimation(this.state);
 }
 
@@ -319,7 +256,7 @@ Player.prototype.keyd_left = function () {
 	this.state = 5; // jump left
 	break;
     }
-    this.x_velocity = -3-3*this.gmult*this.gspeed;
+    this.x_velocity = -3-3*this.gmult*this.light.g;
     this.changeAnimation(this.state);
 }
 

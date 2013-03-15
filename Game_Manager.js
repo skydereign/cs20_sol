@@ -1,18 +1,20 @@
 function Game_Manager() {
+	this.cols = 80;
+    this.rows = 60;
+    this.tile_size = 40;
+    this.x_player_start = 120;
+    this.y_player_start = 450;
+    this.x_camera_start = 0;
+    this.y_camera_start = 1700;
 	this.current_level = 0;
-    this.level_array = new Array();
+	this.screen_manager;
+	this.level_array;
+	this.level;
 	this.camera;
     this.player;
-    //this.screen_manager;
-    //this.main_menu;
-    //this.game_screen;
-    //this.pause_menu;
     this.initGameElements();
     world.addChild(this.screen_manager);
     var game_manager = this;
-    //world.addChild(this.level_array[this.current_level]);
-    //world.addChild(this.player);
-    //world.addChild(this.level_array[0].lightManager);
     world.init = function() {}
 	world.update = function(d) {
 		this.updateChildren(d);
@@ -20,39 +22,43 @@ function Game_Manager() {
 }
 
 Game_Manager.prototype.initGameElements = function() {
-	var cols = 80;
-    var rows = 60;
-    var tile_size = 40;
-    var x_player_start = 120;
-    var y_player_start = 450;
-    var x_camera_start = 0;
-    var y_camera_start = 1700;
-	var first_level = new Level(cols, rows, tile_size, x_camera_start, y_camera_start, x_player_start, y_player_start);
-	this.level_array.push(first_level);
+	var that = this;
+	var request = new XMLHttpRequest();
+	request.open("GET", "levels.json", false);
+	request.overrideMimeType("text/json");
+	request.onreadystatechange = function () {
+		//shamelessly taken from wikipedia
+    	var done = 4;
+   		if (request.readyState == done) {
+   			that.level_array = JSON.parse(request.responseText);
+    	}
+	};
+	
+	request.send(null);
+	
+	this.level = new Level(this.cols, this.rows, this.tile_size, this.x_camera_start, this.y_camera_start, this.x_player_start, this.y_player_start, this.level_array.levels[this.current_level]);
     this.camera = new Camera(canvas_width, canvas_height);
-    //initializing Player here is placeholder. The entire object array for the level will eventually get initalized here.
     this.player = new Player();
-    this.camera.changeLevel(first_level);
-    first_level.giveCamera(this.camera);
-    this.player.changeLevel(first_level);
+    
+    this.camera.changeLevel(this.level);
+    this.level.giveCamera(this.camera);
+    this.player.changeLevel(this.level);
     
     this.screen_manager = new Screen_Manager();
     this.screen_manager.updateGameScreen(this.player);
 }
 
 Game_Manager.prototype.nextLevel = function() {
-	if(this.current_level+1 != level_array.length) {
-		var level = level_array[this.currentLevel+1];
-	}
-	this.camera.changeLevel();
-	level.giveCamera(this.camera);
-	this.player.changeLevel();
-	current_level++;
+	this.current_level++;
+	this.level = new Level(this.cols, this.rows, this.tile_size, this.x_camera_start, this.y_camera_start, this.x_player_start, this.y_player_start, this.level_array.levels[this.current_level]);
+	this.camera.changeLevel(this.level);
+	this.level.giveCamera(this.camera);
+	this.player.changeLevel(this.level);
+	this.screen_manager.nextLevel(this.player);
 }
 
 gInput.addFunc(27, function(){
 	that = game_manager.screen_manager;
-	console.log("foo");
     if(that.screens.find(that.game_screen)) {
         that.push(that.pause_menu);   
     } else if(that.screens.find(that.pause_menu)) {

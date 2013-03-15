@@ -10,8 +10,8 @@ function Camera(camera_width, camera_height) {
 	this.camera_height = camera_height; //same as canvas height
 	this.camera_move_threshold_x_right = 10 * camera_width/20;
 	this.camera_move_threshold_x_left = 10 * camera_width/20;
-	this.camera_move_threshold_y_up = 7 * camera_height/20;
-	this.camera_move_threshold_y_down = 12 * camera_height/20;
+	this.camera_move_threshold_y_up = 10 * camera_height/20;
+	this.camera_move_threshold_y_down = 15 * camera_height/20;
 }
 
 Camera.prototype.changeLevel = function(level) {

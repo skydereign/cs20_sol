@@ -84,6 +84,16 @@ Screen_Manager.prototype.buildPauseMenu = function() {
     }
 }
 
+Screen_Manager.prototype.nextLevel = function(player) {
+	var next_game_screen = new Screen(false, true);
+	next_game_screen.width = canvas_width;
+	next_game_screen.height = canvas_height;
+	this.remove(this.game_screen);
+	this.game_screen = next_game_screen;
+	this.updateGameScreen(player);
+	this.push(this.game_screen);
+}
+
 Screen_Manager.prototype.update = function(d) {
     for (var node = this.screens.head; node != null; node = node.link) {        
         if(node != this.screens.tail) {
