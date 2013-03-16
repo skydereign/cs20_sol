@@ -184,11 +184,11 @@ LightManager.prototype.draw = function (ctx) {
 								ctx.save();
 								var x = this.polygons[i].get(0).x;
 								var y = this.polygons[i].get(0).y;
-								var lg = ctx.createRadialGradient(x, y, 30, x, y, this.lights[i].radius);
-								lg.addColorStop(0, this.lights[i].color);//this.polygons[i].color);
-								lg.addColorStop(1, this.lights[i].color_end);
+								//var lg = ctx.createRadialGradient(x, y, 30, x, y, this.lights[i].radius);
+								//lg.addColorStop(0, this.lights[i].color);//this.polygons[i].color);
+								//lg.addColorStop(1, this.lights[i].color_end);
 								
-								ctx.fillStyle = lg;//this.polygons[i].color;
+								ctx.fillStyle = this.polygons[i].color;
 								ctx.beginPath();
 								ctx.moveTo(this.polygons[i].get(0).x, this.polygons[i].get(0).y);
 								for(var j=1; j<this.polygons[i].count; j++) {
