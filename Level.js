@@ -1,4 +1,4 @@
-function Level(cols, rows, tile_size, x_start_camera, y_start_camera, x_start_player, y_start_player, tile_array) {
+function Level(cols, rows, tile_size, x_start_camera, y_start_camera, x_start_player, y_start_player, level_data) {
 	Sprite.call(this);
 	this.cols = cols;
 	this.rows = rows;
@@ -7,8 +7,9 @@ function Level(cols, rows, tile_size, x_start_camera, y_start_camera, x_start_pl
 	this.y_start_camera = y_start_camera;
 	this.x_start_player = x_start_player;
 	this.y_start_player = y_start_player;
+	this.level_data = level_data;
 	this.tile_size = tile_size;
-	this.tile_array = tile_array;
+	this.tile_array = level_data.tile_array;
 	this.alterLevel();
 	this.tile_bg; // used for display
 	this.tile_fg; // used for display
@@ -32,34 +33,10 @@ Level.prototype.giveCamera = function(camera) {
 	this.camera = camera;
 	this.lightManager = new LightManager(camera.camera_width, camera.camera_height, this.tile_size, this.tile_array, this.cols, this.rows);
 	this.lightManager.col_map = this.tile_array;
-	this.lightManager.lights.push(new Light(580, 1400, 270, 1000, 45, 0));
-	//this.lightManager.lights.push(new Light(580, 1400, 270, 1000, 45, 2));
-	this.lightManager.lights.push(new Light(1300, 1200, 300, 1000, 75, 1));
-	this.lightManager.lights.push(new Light(3000, 2300, 100, 600, 60, 2));
-	this.lightManager.lights.push(new Light(2570, 1550, 40, 300, 40, 2));
-	this.lightManager.lights.push(new Light(3070, 1350, 140, 500, 60, 2));
-	this.lightManager.lights.push(new Light(1483, 1079, 30, 800, 60, 1));
-	this.lightManager.lights.push(new Light(1072, 854, 330, 300, 30, 2));
-	this.lightManager.lights.push(new Light(1135, 1180, 150, 300, 60, 2));
-	this.lightManager.lights.push(new Light(360, 1200, 180, 400, 180, 4));
-	this.lightManager.lights.push(new Light(360, 540, 270, 400, 60, 4));
-
-	this.lightManager.lights.push(new Light(580, 340, 270, 400, 30, 0));
-	this.lightManager.lights.push(new Light(1275, 370, 330, 400, 30, 4));
-	this.lightManager.lights.push(new Light(1100, 470, 90, 100, 30, 2));
-	this.lightManager.lights.push(new Light(1030, 315, 60, 100, 30, 2));
-
-	this.lightManager.lights.push(new Light(1600, 140, 300, 300, 90, 1));
-	this.lightManager.lights.push(new Light(2070, 40, 270, 150, 30, 0));
-
-	this.lightManager.lights.push(new Light(2595, 412, 270, 60, 60, 4));
-	this.lightManager.lights.push(new Light(2625, 468, 270, 60, 60, 4));
-	this.lightManager.lights.push(new Light(2565, 468, 270, 60, 60, 4));
-	this.lightManager.lights.push(new Light(2595, 519,  90, 60, 60, 6));
-
-	this.lightManager.lights.push(new Light(2170, 668, 70, 300, 40, 2));
-	this.lightManager.lights.push(new Light(3020, 668, 110, 300, 40, 2));
-	this.lightManager.lights.push(new Light(2595, 200, 270, 600, 40, 1));
+	var light_array = this.level_data.light_array;
+	for(var i = 0; i < light_array.length; i++) {
+		this.lightManager.lights.push(new Light(light_array[i][0], light_array[i][1], light_array[i][2], light_array[i][3], light_array[i][4], light_array[i][5]))
+	}
 }
 
 

@@ -27,7 +27,7 @@ Game_Manager.prototype.initGameElements = function() {
 	request.open("GET", "levels.json", false);
 	request.overrideMimeType("text/json");
 	request.onreadystatechange = function () {
-		//shamelessly taken from wikipedia
+		// http://127.0.0.1:8020/Light/levels.json for web hosting. Chrome hates that it is referenced as a local file.
     	var done = 4;
    		if (request.readyState == done) {
    			that.level_array = JSON.parse(request.responseText);
