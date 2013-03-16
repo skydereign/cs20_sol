@@ -1,6 +1,4 @@
 function Game_Manager() {
-	this.cols = 80;
-    this.rows = 60;
     this.tile_size = 40;
     this.x_player_start = 120;
     this.y_player_start = 450;
@@ -35,8 +33,7 @@ Game_Manager.prototype.initGameElements = function() {
 	};
 	
 	request.send(null);
-	
-	this.level = new Level(this.cols, this.rows, this.tile_size, this.x_camera_start, this.y_camera_start, this.x_player_start, this.y_player_start, this.level_array.levels[this.current_level]);
+	this.level = new Level(this.tile_size, this.level_array.levels[this.current_level]);
     this.camera = new Camera(canvas_width, canvas_height);
     this.player = new Player();
     
@@ -50,7 +47,7 @@ Game_Manager.prototype.initGameElements = function() {
 
 Game_Manager.prototype.nextLevel = function() {
 	this.current_level++;
-	this.level = new Level(this.cols, this.rows, this.tile_size, this.x_camera_start, this.y_camera_start, this.x_player_start, this.y_player_start, this.level_array.levels[this.current_level]);
+	this.level = new Level(this.tile_size, this.level_array.levels[this.current_level]);
 	this.camera.changeLevel(this.level);
 	this.level.giveCamera(this.camera);
 	this.player.changeLevel(this.level);

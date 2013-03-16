@@ -1,12 +1,14 @@
-function Level(cols, rows, tile_size, x_start_camera, y_start_camera, x_start_player, y_start_player, level_data) {
+function Level(tile_size, level_data) {
 	Sprite.call(this);
-	this.cols = cols;
-	this.rows = rows;
+	console.log(level_data);
+	console.log(level_data.x_start_camera);
+	this.cols = level_data.tile_array[0].length;
+	this.rows = level_data.tile_array.length;
 	this.camera;
-	this.x_start_camera = x_start_camera;
-	this.y_start_camera = y_start_camera;
-	this.x_start_player = x_start_player;
-	this.y_start_player = y_start_player;
+	this.x_start_camera = level_data.x_start_camera;
+	this.y_start_camera = level_data.y_start_camera;
+	this.x_start_player = level_data.x_start_player;
+	this.y_start_player = level_data.y_start_player;
 	this.level_data = level_data;
 	this.tile_size = tile_size;
 	this.tile_array = level_data.tile_array;
