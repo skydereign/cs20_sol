@@ -46,7 +46,7 @@ function Game () {
 				keys[e.keyCode] = false;
     }, true);
 		
-    this.lightManager = new LightManager(canvas.width, canvas.height, size); // <- FIXME
+    this.lightManager = new LightManager(canvas.width, canvas.height, size);
 		
     this.lightManager.col_map = colGrid;
     lm = this.lightManager;
@@ -140,6 +140,17 @@ Game.prototype.update = function (d) {
 Game.prototype.draw = function (ctx) {
 		ctx.fillStyle = "rgba(0, 0, 0, 1.0)";
 		ctx.fillRect(0, 0, lm.width, lm.height);
+
+		for(var i = 0; i<map_width; i++) {
+				for(var j=0; j<map_height; j++) {
+						var x = i*20;
+						var y = j*20;
+						if(colGrid[i][j]===0) {
+								ctx.fillStyle = 'rgba(255, 255, 255, 1.0)';
+								ctx.fillRect(x-lm.x, y-lm.y, 20, 20);
+						}
+				}
+		}
 		this.drawChildren(ctx);
 }
 
