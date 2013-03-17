@@ -350,7 +350,7 @@ Player.prototype.keyd_right = function () {
 						this.state = 4; // jump right
 						break;
 				}
-				this.x_velocity = 3 +3*this.gmult*this.light.g;
+				this.x_velocity = 3 +3*this.gmult*this.light.gspeed;
 				this.changeAnimation(this.state);
 		}
 }
@@ -368,7 +368,7 @@ Player.prototype.keyd_left = function () {
 						this.state = 5; // jump left
 						break;
 				}
-				this.x_velocity = -3-3*this.gmult*this.light.g;
+				this.x_velocity = -3-3*this.gmult*this.light.gspeed;
 				this.changeAnimation(this.state);
 		} else {
 				this.x_velocity-=0.25;
