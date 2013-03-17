@@ -6,6 +6,7 @@ function Light (x, y, a, r, s, c, m_b, m_a, m_s, m_t, r_b, r_k, r_s, r_r) {
     this.spread = s; // angle spread of light
     this.color = this.COLORS_A[c]; // rgba
     this.color_end = this.COLORS_B[c]; // rgba
+		this.color_idx = c;
 
 		this.move_bool = m_b; // sets if light moves
 		this.move_delta = 0; // timer variable for movement
