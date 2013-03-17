@@ -27,6 +27,8 @@ function Level(tile_size, level_data) {
 	this.tile = tile;
 	this.addChild(this.tile);
 	this.lightManager;
+	this.sign_texts = [];
+	this.sign_texts.push(new SignInfo(5, 56, "where is this?"));
 }
 
 Level.prototype = new Sprite();

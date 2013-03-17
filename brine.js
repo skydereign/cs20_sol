@@ -500,10 +500,10 @@ Vector.arrayVector = function(arr){
  * @property {number} leftToLoad The number of items that are still loading.
  */
 function ResourceMonitor(){
-	if(this.__proto__.instance){
-		return this.__proto__.instance;
+	if(ResourceMonitor.prototype.instance){
+		return ResourceMonitor.prototype.instance;
 	}
-	this.__proto__.instance = this;
+	ResourceMonitor.prototype.instance = this;
 	this.loadList = new List();
 	this.totalItems = 0;
 	this.leftToLoad = 0;
@@ -559,10 +559,10 @@ var Resources = new ResourceMonitor();
  * @property {Array<Images>} imgs Array of loaded images indexed by their src.
  */
 function TextureManager(){
-	if(this.__proto__.instance){
-		return this.__proto__.instance;
+	if(TextureManager.prototype.instance){
+		return TextureManager.prototype.instance;
 	}
-	this.__proto__.instance = this;
+	TextureManager.prototype.instance = this;
 	this.imgs = new Array();
 	this.waitingList = new List();
 }
@@ -657,10 +657,10 @@ var Textures = new TextureManager();
  * @property {bool} muted The muted state of all sounds. Use toggleMuted() to change state.
  */
 function SoundManager(){
-	if(this.__proto__.instance){
-		return this.__proto__.instance;
+	if(SoundManager.prototype.instance){
+		return SoundManager.prototype.instance;
 	}
-	this.__proto__.instance = this;
+	SoundManager.prototype.instance = this;
 	this.snds = new Array();
 	this.muted = false;
 }
@@ -680,6 +680,7 @@ SoundManager.prototype.load = function(src){
 		var snd = node.item;
 		//if(!snd.isPlaying){
 		if(!snd.isPlaying || snd.currentTime == snd.duration){
+			snd.src = src;
 			return snd;
 		}
 	}
@@ -702,13 +703,14 @@ SoundManager.prototype.makeNewAudio = function(src, loading){
 	}
 	, false);
 	
+	var audioProto = newAudio.constructor.prototype;
 	newAudio.play = function(){
 		this.isPlaying = true;
-		this.__proto__.play.call(this);
+		audioProto.play.call(this);
 	}
 	newAudio.pause = function(){
 		this.isPlaying = false;
-		this.__proto__.pause.call(this);
+		audioProto.pause.call(this);
 	}
 	newAudio.ended = function(){
 		this.isPlaying = false;
@@ -730,7 +732,12 @@ SoundManager.prototype.play = function(src){
 
 SoundManager.prototype.loop = function(src){
 	var audio = this.load(src);
-	audio.loop = true;
+	//audio.loop = true;
+	audio.addEventListener('ended', function(){
+		//audio.currentTime = 0;
+		this.src = this.src;
+		this.play();
+	});
 	audio.play();
 	return audio;
 }
@@ -757,10 +764,10 @@ var Sounds = new SoundManager();
  * @property {Array<Div>} fonts Array of divs where the div's font is set to each loaded font indexed by font name.
  */
 function FontManager(){
-	if(this.__proto__.instance){
-		return this.__proto__.instance;
+	if(FontManager.prototype.instance){
+		return FontManager.prototype.instance;
 	}
-	this.__proto__.instance = this;
+	FontManager.prototype.instance = this;
 	this.fonts = new Array();
 }
 
@@ -815,10 +822,10 @@ var Fonts = new FontManager();
  * @property {Array<Object{text,xml}>} files Array of objects. Each object has a plain text (.text) version of the file as well as an XML (.xml) version.
  */
 function FileManager(){
-	if(this.__proto__.instance){
-		return this.__proto__.instance;
+	if(FileManager.prototype.instance){
+		return FileManager.prototype.instance;
 	}
-	this.__proto__.instance = this;
+	FileManager.prototype.instance = this;
 	this.files = new Array();
 }
 
@@ -1278,6 +1285,7 @@ function Sprite(){
 	this.blendFunction = {a:"SRC_ALPHA", b:"ONE_MINUS_SRC_ALPHA"};
 	this.multColor = new Vector(1,1,1);
 	//this.parent = undefined;
+	this.animations = new Array();
 }
 
 Sprite.prototype = {
@@ -1347,6 +1355,8 @@ Sprite.prototype.childindex = 0;
 Sprite.prototype.index = 0;
 Sprite.prototype.children = new List();
 Sprite.prototype.shader = null;
+Sprite.prototype.animations = new Array();
+Sprite.prototype.animation = null;
 
 //When inheriting from sprite, call this in the new object's constructor
 /**
@@ -1386,6 +1396,7 @@ Sprite.prototype.removeChild = function(child){
  * @param {Drawing Context} ctx
  */
 Sprite.prototype.transform = function(ctx){
+	ctx.save();
 	this.preAlpha = ctx.alpha;
 	ctx.alpha *= this.alpha;
 
@@ -1447,22 +1458,24 @@ Sprite.prototype.drawChildren = function(ctx){
  * @param {Object} ctx
  */
 Sprite.prototype.unTransform = function(ctx){
-	var xpos = this.x;
+	ctx.restore();
+	/*var xpos = this.x;
 	var ypos = this.y;
 	
 	var scaleX = this.scaleX == 0 ? 0.0000001 : this.scaleX;
 	var scaleY = this.scaleY == 0 ? 0.0000001 : this.scaleY;
 	
+	ctx.translate(-this.offsetX,-this.offsetY);
 	ctx.scale(1/scaleX,1/scaleY);
 	ctx.rotate(-this.rotation);
-	ctx.translate(-xpos,-ypos);
+	ctx.translate(-xpos,-ypos);*/
 	
 	ctx.alpha = this.preAlpha;
 }
 
-//If overriding update make sure to call either Sprite.update.call(this, ctx) or this.__proto__.update.call(this, ctx) or just call updateChildren(ctx)
+//If overriding update make sure to call either Sprite.update.call(this, ctx) or this.prototype.update.call(this, ctx) or just call updateChildren(ctx)
 /**
- * The default update function called every update. Does nothing by default except call updateChildren. When overriding make sure to call Sprite.update.call(this, ctx), this.__proto__.update.call(this, ctx), or this.updateChildren(ctx).
+ * The default update function called every update. Does nothing by default except call updateChildren. When overriding make sure to call Sprite.update.call(this, ctx), this.prototype.update.call(this, ctx), or this.updateChildren(ctx).
  * 
  * @param {number} delta Time since the last update.
  */
@@ -1489,16 +1502,65 @@ Sprite.prototype.updateChild = function(child, params){
 }
 
 /**
+ * Adds a new animation that is a range of frames in the sprite's spritesheet.
+ * 
+ * @param {string} name The name of the animation.
+ * @param {number} first The first frame of the animation. 
+ * @param {number} length The length of the animation
+ */
+Sprite.prototype.addAnimation = function(name, first, length){
+	this.animations[name] = {first:first, last:Math.max(0, first+length-1)};
+}
+
+/**
+ * Removes an animation.
+ * 
+ * @param {string} name The name of the animation.
+ */
+Sprite.prototype.removeAnimation = function(name){
+	this.animations[name] = null;
+}
+
+/**
+ * Automatically associates frames with animations
+ * 
+ * @param {Array<string>} names An array of the names of the animations.
+ * @param {Array<number>} lengths An array of the lengths of each animation.
+ */
+Sprite.prototype.addAnimations = function(names, lengths){
+	var first = 0;
+	for(var i = 0; i < names.length; i++){
+		this.animations[names[i]] = {first:first, last:first+lengths[i]-1};
+		first = first+lengths[i];
+	}
+}
+
+
+/**
  * Increments the sprite's frame according to the specified frameRate
  *  
  * @param {number} delta Time since the last update.
  */
 Sprite.prototype.animate = function(d){
 	this.frame = this.frame+(this.frameRate/FPS)*d;
-	var sign = this.frame == 0 ? 0 : this.frame/Math.abs(this.frame);
-	this.frame = sign*(Math.abs(this.frame)%this.frameCount);
+	if(this.frame != 0){
+		this.frame = (this.frame/Math.abs(this.frame))*(Math.abs(this.frame)%this.frameCount);
+	}
 	if(this.frame < 0){
 		this.frame += this.frameCount;
+	}
+	
+	if(exists(this.animation)){
+		var animation = this.animations[this.animation];
+		if(exists(animation)){
+			var first = animation.first;
+			var last = animation.last;
+			if(this.frame > last){
+				this.frame = first;
+			}else if(this.frame < first){
+				this.frame = last;
+			}
+		}
 	}
 }
 
@@ -1974,8 +2036,13 @@ Input.prototype.blur = function(){
 Input.prototype.addBool = function(keyCode, boolName){
 	this.keys[keyCode] = boolName;
 	this.bools[boolName] = false;
-	this.__defineGetter__(boolName, function(){
+	/*this.__defineGetter__(boolName, function(){
 		return this.bools[boolName];
+	});*/
+	Object.defineProperty(this, boolName, {
+		get: function(){
+			return this.bools[boolName];
+		}
 	});
 }
 
@@ -2160,6 +2227,19 @@ Input.prototype.removeMouseMoveListener = function(obj){
 	}
 }
 
+Input.prototype.setMouse = function(x, y){
+	this.mouse.x = x-canvas.offsetLeft;
+	this.mouse.y = y-canvas.offsetTop;
+	
+	if(display != undefined && display.style.position == "relative"){
+		this.mouse.x -= display.offsetLeft;
+		this.mouse.y -= display.offsetTop;
+	}
+	
+	this.mouse.x /= canvas.scaleX;
+	this.mouse.y /= canvas.scaleY;
+}
+
 /**
  * Adds an object to be notified when a key is pressed. The object must have the function onKeyDown(key).
  * 
@@ -2185,14 +2265,7 @@ Input.prototype.removeMouseMoveListener = function(obj){
 
 Input.prototype.mouseMove = function(e){
 	if(!e) e = window.event;
-	//println(e.pageY);
-	this.mouse.x = e.pageX-canvas.offsetLeft;
-	this.mouse.y = e.pageY-canvas.offsetTop;
-	
-	if(display != undefined && display.style.position == "relative"){
-		this.mouse.x -= display.offsetLeft;
-		this.mouse.y -= display.offsetTop;
-	}
+	this.setMouse(e.pageX, e.pageY);
 	
 	//for(var obj in this.mmListens){
 	for(var obj = 0; obj < this.mmListens.length; obj++){
@@ -2216,12 +2289,7 @@ Input.prototype.mouseDown = function(e){
 		default:
 			break;
 	}
-	this.mouse.x = e.pageX-canvas.offsetLeft;
-	this.mouse.y = e.pageY-canvas.offsetTop;
-	if(display != undefined && display.style.position == "relative"){
-		this.mouse.x -= display.offsetLeft;
-		this.mouse.y -= display.offsetTop;
-	}
+	this.setMouse(e.pageX, e.pageY);
 	//for(var obj in this.mdListens){
 	for(var obj = 0; obj < this.mdListens.length; obj++){
 		if(this.mdListens[obj] != null){
@@ -2265,13 +2333,7 @@ Input.prototype.mouseUp = function(e){
 		default:
 			break;
 	}
-	this.mouse.x = e.pageX-canvas.offsetLeft;
-	this.mouse.y = e.pageY-canvas.offsetTop;
-	
-	if(display != undefined && display.style.position == "relative"){
-		this.mouse.x -= display.offsetLeft;
-		this.mouse.y -= display.offsetTop;
-	}
+	this.setMouse(e.pageX, e.pageY);
 	
 	//for(var obj in this.muListens){
 	for(var obj = 0; obj < this.muListens.length; obj++){
@@ -2603,18 +2665,30 @@ TextBox.prototype.oldText = "";
  * @return {Vector} A vector containing the text box's dimensions. 
  */
 TextBox.prototype.getDims = function(){
-	/*var context = document.createElement("canvas").getContext("2d");
-	context.font = this.fontSize+"px "+this.font;
-	context.textBaseline = "middle";
-	var textWidth = context.measureText(this.text).width;
-	//return new Vector(textWidth+this.padLeft+this.padRight, this.padTop+this.padBottom+this.fontSize, 0);
-	return new Vector(Math.max(this.minWidth, textWidth+this.padLeft+this.padRight), this.padTop+this.padBottom+this.fontSize, 0);*/
-	
 	this.bctx.font = this.fontSize+"px "+this.font;
 	this.bctx.textBaseline = "middle";
-	var textWidth = this.bctx.measureText(this.text).width;
+	var textWidth = this.maxLineWidth();//this.bctx.measureText(this.text).width;
+	var textHeight = this.numLines()*this.fontSize;
 	//return new Vector(textWidth+this.padLeft+this.padRight, this.padTop+this.padBottom+this.fontSize, 0);
-	return new Vector(Math.max(this.minWidth, textWidth+this.padLeft+this.padRight), this.padTop+this.padBottom+this.fontSize, 0);
+	//return new Vector(Math.max(this.minWidth, textWidth+this.padLeft+this.padRight), this.padTop+this.padBottom+this.fontSize, 0);
+	return new Vector(Math.max(this.minWidth, textWidth+this.padLeft+this.padRight), this.padTop+this.padBottom+textHeight, 0);
+}
+
+TextBox.prototype.maxLineWidth = function(){
+	this.bctx.font = this.fontSize+"px "+this.font;
+	this.bctx.textBaseline = "middle";
+	var lines = (""+this.text).split("\n");
+	var maxWidth = 0;
+	for(var line in lines){
+		line = lines[line];
+		maxWidth = Math.max(maxWidth, this.bctx.measureText(line).width);
+	}
+	return maxWidth;
+}
+
+TextBox.prototype.numLines = function(){
+	var lines = (""+this.text).split("\n");
+	return lines.length;
 }
 
 TextBox.prototype.onMouseDown = function(){
@@ -2688,9 +2762,7 @@ TextBox.prototype.redraw = function(dims){
 	if(this.center){
 		textXOff = -(textWidth+this.padLeft+this.padRight)/2;
 		xoff = -dims.x/2;
-		//xoff = -(textWidth+this.padLeft+this.padRight)/2;
 		yoff = -dims.y/2;
-		//yoff = -this.fontSize/2;
 		
 		this.xoffset = -dims.x/2;
 		this.yoffset = -dims.y/2;
@@ -2711,7 +2783,7 @@ TextBox.prototype.redraw = function(dims){
 	if(this.border > 0){
 		bctx.lineWidth = this.border;
 		bctx.strokeStyle = this.borderDrawColor;
-		bctx.strokeRect(xoff, yoff, dims.x, dims.y);
+		bctx.strokeRect(0, 0, dims.x, dims.y);
 		bctx.lineWidth = 1;
 	}
 	if(this.dropShadow){
@@ -2720,7 +2792,17 @@ TextBox.prototype.redraw = function(dims){
 	}
 	bctx.fillStyle = this.color;
 	//bctx.fillText(this.text, this.padLeft, this.padTop-this.fontSize*(0.094-(this.fontSize/(this.fontSize*this.fontSize))));
-	bctx.fillText(this.text, this.padLeft, this.padTop+this.fontSize/2);
+	//bctx.fillText(this.text, this.padLeft, this.padTop+this.fontSize/2);
+	var lines = (""+this.text).split("\n");
+	var textXOff = this.padLeft;
+	var textYoff = this.padTop+this.fontSize*0.5;
+	for(var i = 0; i < lines.length; i++){
+		var line = lines[i];
+		if(this.center){
+			textXOff = (dims.x-bctx.measureText(line).width)/2;
+		}
+		bctx.fillText(line, textXOff, textYoff+this.fontSize*i);
+	}
 	bctx.shadowBlur = 0;
 	
 	this.image = this.buffer;
@@ -2836,11 +2918,12 @@ Button.prototype.draw = function(context){
 		context.shadowColor = "#000000";
 	}
 	context.fillStyle = this.drawColor;
-	if(this.drawBG && (this.image.loaded == undefined || !this.image.loaded)){
-		//context.fillRect(xoff, yoff, this.width, this.height);
+	if(this.drawBG && use2D && (this.image.loaded == undefined || !this.image.loaded)){
+		context.fillRect(xoff, yoff, this.width, this.height);
 	}
 	context.shadowBlur = 0;
-	this.drawChildren(ctx);
+	Sprite.prototype.draw.call(this,ctx);
+	//this.drawChildren(ctx);
 }
 
 /**
@@ -2865,6 +2948,7 @@ function TextButton(label, func){
 	this.height = this.label.getDims().y;
 	this.bbox = new BRect(0, 0, this.width, this.height);
 	this.func = func;
+	this.drawBG = false;
 	
 	this.labelColor = "#000000";
 	this.labelUpColor = "#000000";
@@ -2930,6 +3014,7 @@ var FPS = 60;
 var canvas;
 var aspectRatio;
 var ctx;
+var matrixStack = new List();
 var clearColor = [1,1,1,1];
 var effects = new PostFXChain();
 var log = new List();
@@ -2956,6 +3041,11 @@ function initGame(canvasId){
 	canvas.radius = Math.sqrt(canvas.width*canvas.width+canvas.height*canvas.height)/2;
 	canvas.pos = [canvas.width/2, canvas.height/2, 0];
 	aspectRatio = canvas.width/canvas.height;
+	canvas.initialWidth = canvas.width;
+	canvas.initialHeight = canvas.height;
+	canvas.scaleX = canvas.offsetWidth/canvas.width;
+	canvas.scaleY = canvas.offsetHeight/canvas.height;
+	canvas.focus();
 	
 	display = document.getElementById("display");
 	if(display != undefined){
@@ -2963,6 +3053,7 @@ function initGame(canvasId){
 		display.style.height = canvas.height;
 		display.style.overflow = "hidden";
 		display.style.position = "relative";
+		display.style.backgroundColor = document.body.bgColor;
 		
 		display.style.webkitTouchCallout = "none";
 		display.style.webkitUserSelect = "none";
@@ -3125,6 +3216,9 @@ function togglePrintKey(){
   * as well as the world object's update.
   */
 function update(time){
+	canvas.scaleX = canvas.offsetWidth/canvas.width;
+	canvas.scaleY = canvas.offsetHeight/canvas.height;
+	
 	if(!oldTime){ oldTime = time; }
 	var delta = (time-oldTime)/MSPF;
 	oldTime = time;
@@ -3238,7 +3332,90 @@ Textures.load(brinePixelData);
  * Rewrites the default canvas context functions so that they work the same for 2D and 3D contexts
  */
 function rewriteCTXFunctions(){
-	var ctxProto = ctx.__proto__;
+	//Add a fullscreen function to the canvas
+	var prefixes = ["moz","webkit","o","ms"];
+	canvas.matchScreenRes = false;
+	
+	canvas.enterFullScreen = function(resize){
+		if(exists(this.requestFullScreen)){
+			this.requestFullScreen();
+		}else{
+			for(var prefix in prefixes){
+				prefix = prefixes[prefix];
+				if(exists(this[prefix+"RequestFullScreen"])){
+					this[prefix+"RequestFullScreen"]();
+				}
+			}
+		}
+		
+		this.matchScreenRes = resize;
+	}
+	
+	canvas.exitFullScreen = function(){
+		if(exists(this.cancelFullScreen)){
+			this.cancelFullScreen();
+		}else{
+			for(var prefix in prefixes){
+				prefix = prefixes[prefix];
+				if(exists(canvas[prefix+"CancelFullScreen"])){
+					canvas[prefix+"CancelFullScreen"]();
+				}
+			}
+		}
+	}
+	
+	canvas.onFullScreenChange = function(e){
+		if(document.webkitIsFullScreen || document.mozFullScreen){
+			console.log("enter full")
+			if(canvas.matchScreenRes){
+				canvas.width = screen.width;
+				canvas.height = screen.height;
+			}
+			canvas.style.width = screen.width+"px";
+			canvas.style.height = screen.height+"px";
+		}else{
+			console.log("exit full")
+			if(exists(canvas.initialWidth)){
+				canvas.width = canvas.initialWidth;
+			}
+			
+			if(exists(canvas.initialHeight)){
+				canvas.height = canvas.initialHeight;
+			}
+			
+			canvas.style.width = "";
+			canvas.style.height = "";
+		}
+		aspectRatio = canvas.width/canvas.height;
+		ctx.viewportWidth = canvas.width;
+		ctx.viewportHeight = canvas.height;
+	}
+	
+	document.addEventListener("fullscreenchange", canvas.onFullScreenChange, false);
+	document.addEventListener("mozfullscreenchange", canvas.onFullScreenChange, false);
+	document.addEventListener("webkitfullscreenchange", canvas.onFullScreenChange, false);
+	
+	//var ctxProto = ctx.__proto__;
+	var ctxProto = ctx.constructor.prototype;
+	
+	var identityMat = mat4.create();
+	mat4.identity(identityMat);
+	ctx.save = function(){
+		var tempMat = mat4.create();
+		mat4.multiply(mvMatrix, identityMat, tempMat);
+		ctx.matrix = tempMat;
+		matrixStack.push_back(tempMat);
+		if(use2D){
+			ctxProto.save.call(ctx);
+		}
+	}
+	
+	ctx.restore = function(){
+		mvMatrix = matrixStack.pop_back();
+		if(use2D){
+			ctxProto.restore.call(ctx);
+		}
+	}
 	
 	ctx.curDrawPos = new Vector(0,0,0);
 	
@@ -3507,10 +3684,19 @@ function rewriteCTXFunctions(){
 					this.spriteBuffer.height = height;
 					
 					//Draw to this buffer so we can tile the sprite lots without having to draw it four times for each tile to get the scrolling effect
-					this.spriteBCTX.drawImage(image, frameXOff+adscrollX, frameYOff+adscrollY, q0Width, q0Height, x, y, (q0Width/frameWidth)*width, (q0Height/frameHeight)*height);
-					this.spriteBCTX.drawImage(image, frameXOff, frameYOff+adscrollY, q1Width, q1Height, (x+(width-scrollX)), y, (q1Width/frameWidth)*width, (q1Height/frameHeight)*height);
-					this.spriteBCTX.drawImage(image, frameXOff, frameYOff, q2Width, q2Height, (x+(width-scrollX)), (y+(height-scrollY)), (q2Width/frameWidth)*width, (q2Height/frameHeight)*height);
-					this.spriteBCTX.drawImage(image, frameXOff+adscrollX, frameYOff, q3Width, q3Height, x, (y+(height-scrollY)), (q3Width/frameWidth)*width, (q3Height/frameHeight)*height);
+					
+					if(q0Width > 0 && q0Height > 0){
+						this.spriteBCTX.drawImage(image, frameXOff+adscrollX, frameYOff+adscrollY, q0Width, q0Height, 0, 0, (q0Width/frameWidth)*width, (q0Height/frameHeight)*height);
+					}
+					if(q1Width > 0 && q1Height > 0){
+						this.spriteBCTX.drawImage(image, frameXOff, frameYOff+adscrollY, q1Width, q1Height, (0+(width-scrollX)), 0, (q1Width/frameWidth)*width, (q1Height/frameHeight)*height);
+					}
+					if(q2Width > 0 && q2Height > 0){
+						this.spriteBCTX.drawImage(image, frameXOff, frameYOff, q2Width, q2Height, (0+(width-scrollX)), (0+(height-scrollY)), (q2Width/frameWidth)*width, (q2Height/frameHeight)*height);
+					}
+					if(q3Width > 0 && q3Height > 0){
+						this.spriteBCTX.drawImage(image, frameXOff+adscrollX, frameYOff, q3Width, q3Height, 0, (0+(height-scrollY)), (q3Width/frameWidth)*width, (q3Height/frameHeight)*height);
+					}
 					
 					//Set the current image (not the sprite's) to the buffer we just drew to
 					image = this.spriteBuffer;
@@ -3562,6 +3748,8 @@ function rewriteCTXFunctions(){
 				ctx.uniform2f(renderShader.frameDims, 1, 1);
 				ctx.uniform2f(renderShader.tiles, 1, 1);
 				ctx.uniform2f(renderShader.scroll, 0, 0);
+				
+				ctx.uniform3f(renderShader.multColor, 1, 1, 1);
 			}
 			
 			ctx.globalAlpha = 1.0;
@@ -3641,6 +3829,16 @@ function rgbComp(value){
 }
 
 /**
+ * Checks to see that variable is not undefined and not null
+ * 
+ * @param {variable} variable The variable to check.
+ * @return {bool} True if not undefined and not null.
+ */
+function exists(variable){
+	return typeof variable != "undefined" && variable != null;
+}
+
+/**
  * Creates or sets the value of a browser cookie.
  * 
  * @param {string} name The name of the cookie. Can be generic since browsers store cookies based on the page that created them.
@@ -3691,7 +3889,7 @@ function createGameCanvas(width, height, color){
 // http://paulirish.com/2011/requestanimationframe-for-smart-animating/
 // http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
 
-// requestAnimationFrame polyfill by Erik MÃƒÂ¶ller
+// requestAnimationFrame polyfill by Erik MÃ¶ller
 // fixes from Paul Irish and Tino Zijdel
 
 (function() {

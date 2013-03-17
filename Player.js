@@ -1,3 +1,4 @@
+var sign;
 function Player() {
 	Level_Object.call(this);
 	this.level;
@@ -179,19 +180,36 @@ Player.prototype.update = function(d) {
 	    break;
 	}
 
+	// checks for signs
+	for(var i=0; i<this.level.sign_texts.length; i++) {
+		var xt = Math.round(this.x_level/40) - this.level.sign_texts[i].x;
+		var yt = Math.round(this.y_level/40) - this.level.sign_texts[i].y;
+
+		if(this.level.sign_texts[i].sprite == undefined) {
+			if(Math.abs(xt)<=2 && Math.abs(yt)<=1) {
+				var sign_x = this.level.sign_texts[i].x*this.level.tile_size;
+				var sign_y = this.level.sign_texts[i].y*this.level.tile_size;
+				this.level.sign_texts[i].sprite = new Sign(this.level.sign_texts[i].text, sign_x, sign_y, this.camera);
+				world.addChild(this.level.sign_texts[i].sprite);
+			}
+		} else {
+			if(Math.abs(xt)>2 || Math.abs(yt)>1) {
+					this.level.sign_texts[i].sprite.remove();
+					this.level.sign_texts[i].sprite = undefined;
+			}
+		}
+	}
 
 	if(this.gspeed>0) {
 	    this.gspeed-=0.025;
 	}
-
-
 
 	if(prev_light.m==1 && this.light.m==0) { // left the magenta light
 			this.y_acceleration = 0.22;
 	}
 
 
-	//sif(gInput.escape) {console.log("x: ", this.x_level, " y: ", this.y_level); end(); } // end the game (insert error...)
+	if(gInput.escape) {console.log("x: ", this.x_level/49, " y: ", this.y_level/40); end(); } // end the game (insert error...)
 	if(gInput.a) {
 		this.keyd_left();
 	}
