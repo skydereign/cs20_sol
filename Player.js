@@ -283,40 +283,53 @@ Player.prototype.initKeys = function () {
 		});
 				
     gInput.addLBtnFunc(function() {
-	var warp = false;
-	for(var i=0; i<player.level.lightManager.polygons.length; i++) {
-	    var polygon = player.level.lightManager.polygons[i];
-	    if(polygon.color == "rgba(255, 255, 0, 0.8)") {
-		if(polygon.within(gInput.mouse.x, gInput.mouse.y)) {
-		    warp = true;
-		    break;
-		}
-	    }
-	}
-	if(warp) {
-	    for(var i=0; i<player.level.lightManager.polygons.length; i++) {
-		var polygon = player.level.lightManager.polygons[i];
-		if(polygon.color == "rgba(255, 255, 0, 0.8)") {
-		    if(polygon.within(player.x+player.width/2, player.y+player.height/2)) {
-			var ts = player.level.tile_size;
-			player.x_level = Math.round((gInput.mouse.x-player.width/2 + player.camera.x)/ts)*ts;
-			player.y_level = Math.round((gInput.mouse.y-player.height/2 + player.camera.y)/ts)*ts;
-			player.camera.x = player.x_level - player.camera.camera_width/2;
-			player.camera.y = player.y_level - player.camera.camera_height/2;
-			if(player.camera.x<0) { player.camera.x = 0; }
-			if(player.camera.y<0) { player.camera.y = 0; }
-			if(player.camera.x>player.level.cols*player.level.tile_size-player.camera.camera_width) {
-			    player.camera.x = player.level.cols*player.level.tile_size-player.camera.camera_width;
-			}
-			if(player.camera.y>player.level.rows*player.level.tile_size-player.camera.camera_height) {
-			    player.camera.y = player.level.rows*player.level.tile_size-player.camera.camera_height;
-			}
-			return;
-		    }
-		}
-	    }
-	}
+				var warp = false;
+				var colors = {r:0, g:0, b:0};
+				for(var i=0; i<player.level.lightManager.polygons.length; i++) {
+						var polygon = player.level.lightManager.polygons[i];
+						if(polygon.within(gInput.mouse.x, gInput.mouse.y)) {
+								switch(polygon.color) {
+								case "rgba(255, 255, 0, 0.8)":
+										colors.r = 1;
+										colors.g = 1;
+										break;
+										
+								case "rgba(255, 0, 0, 1)":
+										colors.r = 1;
+										break;
+										
+								case "rgba(0, 255, 0, 1)":
+										colors.g = 1;
+										break;
+										
+								case "rgba(255, 255, 255, 1)":
+										colors.r = 1;
+										colors.g = 1;
+										colors.b = 1;
+										break;
+								}
+						}
+				}
+				if(colors.r==1 && colors.g==1 && colors.b===0) { // mouse in yellow light
 
+						if(player.light.y == 1) {
+								var ts = player.level.tile_size;
+								player.x_level = Math.round((gInput.mouse.x-player.width/2 + player.camera.x)/ts)*ts;
+								player.y_level = Math.round((gInput.mouse.y-player.height/2 + player.camera.y)/ts)*ts;
+								player.camera.x = player.x_level - player.camera.camera_width/2;
+								player.camera.y = player.y_level - player.camera.camera_height/2;
+								if(player.camera.x<0) { player.camera.x = 0; }
+								if(player.camera.y<0) { player.camera.y = 0; }
+								if(player.camera.x>player.level.cols*player.level.tile_size-player.camera.camera_width) {
+										player.camera.x = player.level.cols*player.level.tile_size-player.camera.camera_width;
+								}
+								if(player.camera.y>player.level.rows*player.level.tile_size-player.camera.camera_height) {
+										player.camera.y = player.level.rows*player.level.tile_size-player.camera.camera_height;
+								}
+								player.y_velocity = 0;
+						}
+						
+		    }
     });
 }
 
