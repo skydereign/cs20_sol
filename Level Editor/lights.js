@@ -164,7 +164,7 @@ gInput.addLBtnFunc(function() {
 				case 53: // 5 - yellow
 				case 54: // 6 - cyan
 				case 55: // 7 - white
-						selectedLight = new Light(gInput.mouse.x+lm.x_off, gInput.mouse.y+lm.y_off, 0, 200, 45, lastKey-49);
+						selectedLight = new Light(gInput.mouse.x+lm.x_off, gInput.mouse.y+lm.y_off, 0, 200, 45, lastKey-49, false, 0, 0, 0, false, 0, 0, 0);
 						lm.lights.push(selectedLight);
 						break;
 						

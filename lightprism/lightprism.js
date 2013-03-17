@@ -1,4 +1,4 @@
-function Light (x, y, a, r, s, c) {
+function Light (x, y, a, r, s, c, m_b, m_a, m_s, m_t, r_b, r_k, r_s, r_r) {
     this.x = x; // x position
     this.y = y; // y position
     this.angle = a; // direction of light
@@ -6,6 +6,19 @@ function Light (x, y, a, r, s, c) {
     this.spread = s; // angle spread of light
     this.color = this.COLORS_A[c]; // rgba
     this.color_end = this.COLORS_B[c]; // rgba
+
+		this.move_bool = m_b; // sets if light moves
+		this.move_delta = 0; // timer variable for movement
+		this.move_angle = DTR(m_a); // angle to move in
+		this.move_speed = m_s; // speed to move at
+		this.move_time  = m_t; // time to move for
+
+		this.rotate_bool = r_b; // sets if the light rotates
+		this.rotate_type = r_k; // 0 = full rotation, 1 = min/max rotate
+		this.rotate_speed = r_s; // speed at which it rotates
+		this.rotate_range = r_r; // range for rotation (not used in full)
+		this.rotate_start = a; // hold the original position
+
 }
 Light.prototype.COLORS_A = ["rgba(255, 0, 0, 1)",
 														"rgba(0, 255, 0, 1)",
@@ -75,6 +88,33 @@ LightManager.prototype.update = function (d) {
 
     for(var idx=0; idx<this.lights.length; idx++) {
 				var light = this.lights[idx];
+
+
+				if(light.move_bool) { // handle movement
+						light.move_delta+=1;
+						light.x += Math.cos(light.move_angle)*light.move_speed;
+						light.y -= Math.sin(light.move_angle)*light.move_speed;
+						if(light.move_delta>light.move_time) {
+								light.move_angle=(light.move_angle+Math.PI)%(2*Math.PI); // reverse direction
+								light.move_delta = 0;
+						}
+				}
+
+				if(light.rotate_bool) { // handle rotation
+						switch(light.rotate_type) {
+						case 0: // full rotation
+								light.angle+=light.rotate_speed;
+								break;
+
+						case 1: // partial rotation
+								light.angle+=light.rotate_speed;
+								if(light.angle<light.rotate_start || light.angle>light.rotate_start+light.rotate_range) {
+										light.rotate_speed*=-1; // reverse direction
+								}
+								break;
+						}
+				}
+
 				var radius = light.radius;
 				var xl = light.x/this.tile_size;
 				var yl = light.y/this.tile_size;
