@@ -154,7 +154,7 @@ window.onload = function() {
 		clickY = e.clientY-this.offsetTop + document.body.scrollTop;
 
 		tileNum = (Math.floor(clickX/cellSize)*cellSize+(Math.floor(clickY/cellSize)*cellSize*image.width/cellSize))/cellSize;
-    console.log(tileNum);
+
 		// sets clear tiles to -1
 		switch(tileNum) {
 			case 34:
