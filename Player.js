@@ -246,7 +246,7 @@ Player.prototype.update = function(d) {
 			this.camera.move(this.x_velocity, 0);
 		}
 	}
-	if(collisions.y == -1 && this.grounded == false) {
+	if(collisions.y == -1 && this.grounded == false && Math.abs(this.y_velocity) > this.y_acceleration) {
 		if(this.camera.checkToMovey(this.y_velocity + this.y, this.y_velocity)) {
 			this.camera.move(0, this.y_velocity);
 		} 
