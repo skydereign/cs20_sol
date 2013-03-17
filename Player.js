@@ -7,7 +7,7 @@ function Player() {
 	this.image = Textures.load("images/Player_Example.png");
 	this.width = 40;
 	this.height = 65;
-	this.jump_lock = false;
+	this.jump_lock = true;
 	this.grounded = false;
 	this.anims = [];
 	this.anims.push(new Animation("images/stand_r.png", 40, 65, 1, 0));
@@ -21,12 +21,12 @@ function Player() {
     this.state = 0;
     this.light = {r:0, g:0, b:0}; // r, g, b
     this.gmult = 2; // green speed multiplier
+    this.gspeed = 0.0; // used current green multiplier
 
     var player = this;
 	document.addEventListener('keydown', function (e) {
 		switch(e.keyCode) {
 			case 32:
-			case 87:
 				if(player.jump_lock == true) {
 					player.keyd_jump();
 					player.jump_lock = false;
@@ -37,7 +37,6 @@ function Player() {
 	document.addEventListener('keyup', function (e) {
 		switch(e.keyCode) {
 			case 32:
-			case 87:
 				player.jump_lock = true;
 	   			break;
 		}
@@ -60,9 +59,6 @@ Player.prototype.changeLevel = function(level) {
 	this.y_level = this.y + this.camera.y;
 }
 
-gInput.addBool(37, "left");
-gInput.addBool(38, "up");
-gInput.addBool(39, "right");
 gInput.addBool(65, "a"); //a key
 gInput.addBool(87, "w"); //w key
 gInput.addBool(68, "d"); //d key
@@ -72,17 +68,17 @@ gInput.addBool(27, "escape");
 
 Player.prototype.update = function(d) {
 	var player = this;
+	var blue_angles = []; // holds all angles to process for blue
+
 	var prev_light = {r:this.light.r, g:this.light.g, b:this.light.b};
-	this.light = {r:0, g:this.light.g, b:0}; // r, g, b
-	// node g is preserved
+	this.light = {r:0, g:0, b:0, m:0, y:0, c:0, w:0};
+
 	for(var i=0; i<this.level.lightManager.polygons.length; i++) {
 		var polygon = this.level.lightManager.polygons[i];
 		if(polygon.within(this.x+this.width/2, this.y+this.height/2)) {
 			switch(polygon.color) {
 			case "rgba(255, 0, 0, 1)":
 			    this.light.r = 1;
-			    this.y_velocity=-2;
-			    this.state = 4+this.state%2;
 			    break;
 			    
 			case "rgba(0, 255, 0, 1)":
@@ -90,18 +86,8 @@ Player.prototype.update = function(d) {
 			    break;
 
 			case "rgba(0, 0, 255, 1)":
-			    this.lightb = 1;
-			    var ang = DTR(this.level.lightManager.lights[i].angle);
-			    this.x_velocity += Math.cos(ang)/3;
-			    this.y_velocity -= Math.sin(ang)/3;
-			    if(this.y_velocity<-2) {
-				if(this.state%2==0) {
-				    this.state=4;
-				} else {
-				    this.state=5;
-				}
-				this.changeAnimation(this.state);
-			    }
+			    blue_angles.push(this.level.lightManager.lights[i].angle);
+			    this.light.b = 1;
 			    break;
 
 			case "rgba(255, 255, 255, 1)":
@@ -113,15 +99,57 @@ Player.prototype.update = function(d) {
 			}
 		}
 	}		
-	if(this.light.g>0) {
-	    this.light.g-=0.025;
+
+	var cur_light = this.light.r + this.light.g*2 + this.light.b*5;
+	switch(cur_light) {
+	case 1: // red
+	    this.y_velocity=-2;
+	    this.state = 4+this.state%2;
+	    break;
+
+	case 2: // green
+	    this.gspeed = 1.0;
+	    break;
+
+	case 3: // yellow
+	    break;
+
+	case 5: // blue
+	    for(var i=0; i<blue_angles.length; i++) {
+		var ang = blue_angles[i];
+		this.x_velocity += Math.cos(ang)/3;
+		this.y_velocity -= Math.sin(ang)/3;
+		if(this.y_velocity<-2) {
+		    if(this.state%2==0) {
+			this.state=4;
+		    } else {
+			this.state=5;
+		    }
+		    this.changeAnimation(this.state);
+		}
+	    }
+	    break;
+
+	case 6: // magenta
+	    break;
+
+	case 7: // cyan
+	    break;
+
+	case 8: // white
+	    break;
+	}
+
+
+	if(this.light.gspeed>0) {
+	    this.gspeed-=0.025;
 	}
 
 	//sif(gInput.escape) {console.log("x: ", this.x_level, " y: ", this.y_level); end(); } // end the game (insert error...)
-	if(gInput.left || gInput.a) {
+	if(gInput.a) {
 		this.keyd_left();
 	}
-	if(gInput.right || gInput.d) {
+	if(gInput.d) {
 	    this.keyd_right();
 	}
 
@@ -137,6 +165,10 @@ Player.prototype.update = function(d) {
 	if(collisions.y == -1) {
 		this.y_level += this.y_velocity;
 		this.y_velocity += this.y_acceleration;
+		if(this.y_velocity>this.y_acceleration) {
+		    this.state = this.state%2==0 ? 4 : 5;
+		    this.changeAnimation(this.state);
+		}
 	} else {
 		//console.log(collisions.y);
 		if(this.y_velocity>0 && (this.state==4 || this.state==5)) {
