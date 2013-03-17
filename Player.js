@@ -19,33 +19,9 @@ function Player() {
 	this.changeAnimation(2);
     this.initKeys();
     this.state = 0;
-    this.light = {r:0, g:0, b:0}; // r, g, b
+    this.light = {r:0, g:0, b:0, m:0, y:0, c:0, w:0};
     this.gmult = 2; // green speed multiplier
     this.gspeed = 0.0; // used current green multiplier
-
-    var player = this;
-	document.addEventListener('keydown', function (e) {
-		switch(e.keyCode) {
-			case 32:
-				if(player.jump_lock == true) {
-					player.keyd_jump();
-					player.jump_lock = false;
-				}
-	   			break;
-		}
-	}, true);
-	document.addEventListener('keyup', function (e) {
-		switch(e.keyCode) {
-			case 32:
-				player.jump_lock = true;
-	   			break;
-		}
-	}, true);
-	if(this.y_velocity>this.y_acceleration && this.state!=4 && this.state!=5) {
-	    this.state = 4+this.state%2; // change to falling state
-	    this.changeAnimation(this.state);
-	}
-
 }
 
 Player.prototype = new Level_Object();
@@ -70,30 +46,43 @@ Player.prototype.update = function(d) {
 	var player = this;
 	var blue_angles = []; // holds all angles to process for blue
 
-	var prev_light = {r:this.light.r, g:this.light.g, b:this.light.b};
+	var prev_light = {r:this.light.r, g:this.light.g, b:this.light.b, m:this.light.m, y:this.light.y, c:this.light.c, w:this.light.w};
 	this.light = {r:0, g:0, b:0, m:0, y:0, c:0, w:0};
 
 	for(var i=0; i<this.level.lightManager.polygons.length; i++) {
 		var polygon = this.level.lightManager.polygons[i];
 		if(polygon.within(this.x+this.width/2, this.y+this.height/2)) {
 			switch(polygon.color) {
-			case "rgba(255, 0, 0, 1)":
+			case "rgba(255, 0, 0, 1)": // red
 			    this.light.r = 1;
 			    break;
 			    
-			case "rgba(0, 255, 0, 1)":
+			case "rgba(0, 255, 0, 1)": // green
 			    this.light.g = 1;
 			    break;
 
-			case "rgba(0, 0, 255, 1)":
+			case "rgba(0, 0, 255, 1)": // blue
 			    blue_angles.push(this.level.lightManager.lights[i].angle);
 			    this.light.b = 1;
 			    break;
 
+			case "rgba(255, 0, 255, 1)": // magenta
+					this.light.r = 1;
+					this.light.b = 1;
+					break;
+
+			case "rgba(255, 255, 0, 0.8": // yellow
+					this.light.r = 1;
+					this.light.g = 1;
+					break;
+
+			case "rgba(0, 255, 255, 1)": // cyan
+					this.light.g = 1;
+					this.light.b = 1;
+					break;
+
 			case "rgba(255, 255, 255, 1)":
 				//TODO: NEXT_LEVEL()
-			    //alert("Congrats, that's the end.\nRefresh to restart.");
-			    //end();
 			    game_manager.nextLevel();
 			    break;
 			}
@@ -112,31 +101,80 @@ Player.prototype.update = function(d) {
 	    break;
 
 	case 3: // yellow
+			this.light.r = 0;
+			this.light.g = 0;
+			this.light.y = 1;
 	    break;
 
 	case 5: // blue
 	    for(var i=0; i<blue_angles.length; i++) {
-		var ang = blue_angles[i];
-		this.x_velocity += Math.cos(ang)/3;
-		this.y_velocity -= Math.sin(ang)/3;
-		if(this.y_velocity<-2) {
-		    if(this.state%2==0) {
-			this.state=4;
-		    } else {
-			this.state=5;
-		    }
-		    this.changeAnimation(this.state);
-		}
+					var ang = blue_angles[i];
+					this.x_velocity += Math.cos(ang)/3;
+					this.y_velocity -= Math.sin(ang)/3;
+					if(this.y_velocity<-2) {
+							if(this.state%2==0) {
+									this.state=4;
+							} else {
+									this.state=5;
+							}
+							this.changeAnimation(this.state);
+					}
 	    }
 	    break;
-
+			
 	case 6: // magenta
+			this.light.r = 0;
+			this.light.b = 0;
+			this.light.m = 1;
+
+			this.y_acceleration = 0;
+			this.state = 4+this.state%2;
+			this.changeAnimation(this.state);
+			if(gInput.d) {
+					this.x_velocity+=0.5;
+					if(this.x_velocity>6) {
+							this.x_velocity = 6;
+					}
+					if(this.state==5) {
+							this.state = 4;
+							this.changeAnimation(this.state);
+					}
+			}
+			if(gInput.a) {
+					this.x_velocity-=0.5;
+					if(this.x_velocity<-6) {
+							this.x_velocity = -6;
+					}
+					if(this.state==4) {
+							this.state = 5;
+							this.changeAnimation(this.state);
+					}
+			}
+			if(gInput.w) {
+					this.y_velocity-=0.5;
+					if(this.y_velocity<-6) {
+							this.y_velocity = -6;
+					}
+			}
+			if(gInput.s) {
+					this.y_velocity+=0.5;
+					if(this.y_velocity>6) {
+							this.y_velocity = 6;
+					}
+			}
 	    break;
 
 	case 7: // cyan
+			this.light.g = 0;
+			this.light.b = 0;
+			this.light.c = 1;
 	    break;
 
 	case 8: // white
+			this.light.r = 0;
+			this.light.g = 0;
+			this.light.b = 0;
+			this.light.w = 1;
 	    break;
 	}
 
@@ -144,6 +182,13 @@ Player.prototype.update = function(d) {
 	if(this.light.gspeed>0) {
 	    this.gspeed-=0.025;
 	}
+
+
+
+	if(prev_light.m==1 && this.light.m==0) { // left the magenta light
+			this.y_acceleration = 0.22;
+	}
+
 
 	//sif(gInput.escape) {console.log("x: ", this.x_level, " y: ", this.y_level); end(); } // end the game (insert error...)
 	if(gInput.a) {
@@ -208,19 +253,35 @@ Player.prototype.changeAnimation = function (index) {
 Player.prototype.initKeys = function () {
     var player = this;
     document.addEventListener('keyup', function (e) {
-	switch(e.keyCode) {
-	case 37: // left
-	case 65: // a
-	    player.keyu_left();
-	    break;
-
-	case 39: // right
-	case 68: // d
-	    player.keyu_right();
-	    break;
-	}
+				switch(e.keyCode) {
+				case 37: // left
+				case 65: // a
+						player.keyu_left();
+						break;
+						
+				case 39: // right
+				case 68: // d
+						player.keyu_right();
+						break;
+						
+				case 32:
+				case 87:
+						player.jump_lock = true;
+	   				break;
+				}
     }, true);
 
+		document.addEventListener('keydown', function (e) {
+				switch(e.keyCode) {
+				case 32:
+				case 87:
+						if(player.jump_lock == true) {
+								player.keyd_jump();
+								player.jump_lock = false;
+						}
+				}
+		});
+				
     gInput.addLBtnFunc(function() {
 	var warp = false;
 	for(var i=0; i<player.level.lightManager.polygons.length; i++) {
@@ -264,37 +325,45 @@ Player.prototype.initKeys = function () {
 
 // functions that handle state/animation changes
 Player.prototype.keyd_right = function () {
-    switch(this.state) {
-    case 0:
-    case 1:
-    case 3:
-	this.state = 2; // run right
-	break;
-
-    case 5:
-	this.state = 4; // jump right
-	break;
-    }
-    this.x_velocity = 3 +3*this.gmult*this.light.g;
-    this.changeAnimation(this.state);
+		if(this.light.m==0) {
+				switch(this.state) {
+				case 0:
+				case 1:
+				case 3:
+						this.state = 2; // run right
+						break;
+						
+				case 5:
+						this.state = 4; // jump right
+						break;
+				}
+				this.x_velocity = 3 +3*this.gmult*this.light.g;
+				this.changeAnimation(this.state);
+		}
 }
 
 Player.prototype.keyd_left = function () {
-    switch(this.state) {
-    case 0:
-    case 1:
-    case 2:
-	this.state = 3; // run left
-	break;
-
-    case 4:
-	this.state = 5; // jump left
-	break;
-    }
-    this.x_velocity = -3-3*this.gmult*this.light.g;
-    this.changeAnimation(this.state);
+		if(this.light.m==0) {
+				switch(this.state) {
+				case 0:
+				case 1:
+				case 2:
+						this.state = 3; // run left
+						break;
+						
+				case 4:
+						this.state = 5; // jump left
+						break;
+				}
+				this.x_velocity = -3-3*this.gmult*this.light.g;
+				this.changeAnimation(this.state);
+		} else {
+				this.x_velocity-=0.25;
+				if(this.x_velocity<-4) {
+						this.x_velocity = -4;
+				}
+		}
 }
-
 
 Player.prototype.keyu_right = function () {
     switch(this.state) {
@@ -328,21 +397,28 @@ Player.prototype.keyu_left = function () {
 
 
 Player.prototype.keyd_jump = function () {
-    switch(this.state) {
-    case 0:
-    case 2:
-	this.y_velocity = -6;
-	this.state = 4;
-	this.changeAnimation(this.state);
-	break;
+		if(this.light.m==0) {
+				switch(this.state) {
+				case 0:
+				case 2:
+						this.y_velocity = -6;
+						this.state = 4;
+						this.changeAnimation(this.state);
+						break;
 
-    case 1:
-    case 3:
-	this.y_velocity = -6;
-	this.state = 5;
-	this.changeAnimation(this.state);
-	break;
-    }
+				case 1:
+				case 3:
+						this.y_velocity = -6;
+						this.state = 5;
+						this.changeAnimation(this.state);
+						break;
+				}
+		} else {
+				this.y_velocity-=-.25;
+				if(this.y_velocity<-4) {
+						this.y_velocity = -4;
+				}
+		}
 }
 
 Player.prototype.jump_landing = function () {
