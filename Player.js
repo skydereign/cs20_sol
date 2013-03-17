@@ -22,6 +22,7 @@ function Player() {
     this.light = {r:0, g:0, b:0, m:0, y:0, c:0, w:0};
     this.gmult = 2; // green speed multiplier
     this.gspeed = 0.0; // used current green multiplier
+		this.cjump_point = undefined;
 }
 
 Player.prototype = new Level_Object();
@@ -414,16 +415,29 @@ Player.prototype.keyd_jump = function () {
 				switch(this.state) {
 				case 0:
 				case 2:
-						this.y_velocity = -6;
-						this.state = 4;
-						this.changeAnimation(this.state);
-						break;
-
 				case 1:
 				case 3:
 						this.y_velocity = -6;
-						this.state = 5;
+						this.state = 4+this.state%2;
 						this.changeAnimation(this.state);
+						break;
+
+				case 4:
+				case 5:
+						if(this.light.c==1) {
+								if(this.cjump_point == undefined) {
+										this.y_velocity = -5;
+										this.cjump_point = {x:this.x, y:this.y};
+								} else {
+										var xd = this.x-this.cjump_point.x;
+										var yd = this.y-this.cjump_point.y;
+										var dist = Math.sqrt(Math.pow(xd, 2)+Math.pow(yd, 2));
+										if(dist>60) {
+												this.y_velocity = -5;
+												this.cjump_point = {x:this.x, y:this.y};
+										}
+								}
+						}
 						break;
 				}
 		} else {
@@ -436,6 +450,7 @@ Player.prototype.keyd_jump = function () {
 
 Player.prototype.jump_landing = function () {
     this.x_velocity = 0;
+		this.cjump_point = undefined; // reset for cjump
     switch(this.state) {
     case 4:
 	this.state = 0;
