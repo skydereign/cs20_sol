@@ -231,13 +231,13 @@ window.onload = function() {
 			}
 			levelString += "]<br>"
 		}
-		levelString += "l<br>";
+		levelString += "x<br>";
 
 		for(i in game.lightManager.lights){
 			light = game.lightManager.lights[i];
 			levelString += "" + parseInt(light.x) + " " + parseInt(light.y) + " " + parseInt(light.angle) + " " + parseInt(light.radius) + " " + parseInt(light.spread) + " " + light.color + " " + (light.move_bool ? "true" : "false") + " " + parseInt(light.move_angle) + " " + parseInt(light.move_speed) + " " + parseInt(light.move_time) + " " + (light.rotate_bool ? "true" : "false") + " " + parseInt(light.rotate_type) + " " + parseInt(light.rotate_speed) + " " + parseInt(light.rotate_range) + "<br>"
 		}
-		levelString += "e<br>";
+		levelString += "z<br>";
 		//console.log(levelString);
 		document.getElementById("demo").innerHTML = levelString;
 	}
@@ -253,8 +253,6 @@ window.onload = function() {
 
 		line = contents.substring(contents.indexOf('b'), contents.indexOf('m'));
 		n = line.split(" ");
-		//console.log(line);
-		//console.log(n);
 		t = 1;
 		for(j=0; j < gridHeight; j++){
 			for(i = 0; i < gridWidth; i++){
@@ -275,7 +273,7 @@ window.onload = function() {
 				middleground[i][j] = n[t++];
 			}
 		}
-		line = contents.substring(contents.indexOf('f'), contents.indexOf('l'));
+		line = contents.substring(contents.indexOf('f'), contents.indexOf('x'));
 		n = line.split(" ");
 		t = 1;
 		for(j=0; j < gridHeight; j++){
@@ -287,11 +285,12 @@ window.onload = function() {
 			}
 		}
 
-		line = contents.substring(contents.indexOf('l'), contents.indexOf('e'));
+		line = contents.substring(contents.indexOf('x'), contents.indexOf('z'));
 		n = line.split("\n");
 		for(var i=1; i<n.length; i++) {
-			var v = n[i].split(" ");
-			game.lightManager.lights.push(new Light(v[0], v[1], v[2], v[3], v[4], v[5], (v[6]=="true"? true : false), v[7], v[8], v[9], (v[10]=="true"? true : false), v[11], v[12], v[13]));
+			var v = n[i].split(",");
+      console.log(n[i]);
+			game.lightManager.lights.push(new Light(parseInt(v[0]), parseInt(v[1]), parseInt(v[2]), parseInt(v[3]), parseInt(v[4]), parseInt(v[5]), (v[6]=="true"? true : false), parseFloat(v[7]), parseFloat(v[8]), parseInt(v[9]), (v[10]=="true"? true : false), parseFloat(v[11]), parseFloat(v[12]), parseFloat(v[13])));
 		}
 	}
 	
@@ -303,7 +302,7 @@ window.onload = function() {
 				loadMap(level1.responseText);
 			}
 		}
-		level1.open("GET", "level2.txt", true);
+		level1.open("GET", "level1.txt", true);
 		level1.send();
 	}
 	
