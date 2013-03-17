@@ -12,12 +12,11 @@ function Level(tile_size, level_data) {
 	this.level_data = level_data;
 	this.tile_size = tile_size;
 	this.tile_array = level_data.tile_array;
+	this.tile_bg = level_data.tile_bg;
+	this.tile_fg = level_data.tile_fg;
 	this.alterLevel();
-	this.tile_bg; // used for display
-	this.tile_fg; // used for display
 	this.image_array;
 	this.object_array;
-	this.initArrays();
 	var tile = new Sprite();
 	tile.width = this.tile_size;
 	tile.height = this.tile_size;
@@ -75,37 +74,26 @@ Level.prototype.insertTile = function(x, y, type) {
 	}
 }
 
-Level.prototype.initArrays = function() {
-	tile_fg = new Array();
-	tile_bg = new Array();
-	object_arr = new Array();
-	image_arr = new Array();
-	//image_arr.push(Textures.load("images/Black_Tile.png"));
-	for(var i = 0; i < this.cols; i++) {
-		tile_fg.push(new Array());
-		tile_bg.push(new Array());
-		for(var j = 0; j < this.rows; j++) {
-			tile_fg[i].push(-1);
-			tile_bg[i].push(-1);
-		}
-	}
-	this.tile_fg = tile_fg;
-	this.tile_bg = tile_bg;
-	this.object_array = object_arr;
-	this.image_array = image_arr;
-}
 Level.prototype.alterLevel = function() {
 	//Will build based on files
 	//in additon to inserting the various objects
 
     var new_tiles = [];
-    for(var i=0; i<80; i++) {
+    var new_bg = [];
+    var new_fg = [];
+    for(var i=0; i<this.cols; i++) {
 		new_tiles[i] = [];
-		for(var j=0; j<60; j++) {
+		new_bg[i] = [];
+		new_fg[i] = [];
+		for(var j=0; j<this.rows; j++) {
 	 	   new_tiles[i][j] = this.tile_array[j][i];
+	 	   new_bg[i][j] = this.tile_bg[j][i];
+	 	   new_fg[i][j] = this.tile_fg[j][i];
 		}
     }
     this.tile_array = new_tiles;
+    this.tile_bg = new_bg;
+    this.tile_fg = new_fg;
 }
 
 
@@ -185,17 +173,16 @@ Level.prototype.draw = function(ctx) {
 		var idx = this.tile_bg[i][j];
 		this.tile.x = Math.floor(i*this.tile_size - this.camera.x);
 		this.tile.y = Math.floor(j*this.tile_size - this.camera.y);
-		this.tile.sliceX = (idx%9)*this.tile_size; // <- don't hardcoe
+		this.tile.sliceX = (idx%9)*this.tile_size; // <- don't hardcode
 		this.tile.sliceY = Math.floor(idx/9)*this.tile_size;
 		this.drawChildren(ctx);
-		ctx.fillRect(i*this.tile_size, j*this.tile_size, this.tile_size, this.tile_size);
+		//ctx.fillRect(i*this.tile_size, j*this.tile_size, this.tile_size, this.tile_size);
 	    }
 	    if(this.tile_array[i][j] > -1) {
-		count++;
 		var idx = this.tile_array[i][j];
 		this.tile.x = Math.floor(i*this.tile_size - this.camera.x);
 		this.tile.y = Math.floor(j*this.tile_size - this.camera.y);
-		this.tile.sliceX = (idx%9)*this.tile_size; // <- don't hardcoe
+		this.tile.sliceX = (idx%9)*this.tile_size; // <- don't hardcode
 		this.tile.sliceY = Math.floor(idx/9)*this.tile_size;
 		this.drawChildren(ctx);
 	    }
@@ -203,7 +190,7 @@ Level.prototype.draw = function(ctx) {
 		var idx = this.tile_fg[i][j];
 		this.tile.x = Math.floor(i*this.tile_size - this.camera.x);
 		this.tile.y = Math.floor(j*this.tile_size - this.camera.y);
-		this.tile.sliceX = (idx%9)*this.tile_size; // <- don't hardcoe
+		this.tile.sliceX = (idx%9)*this.tile_size; // <- don't hardcode
 		this.tile.sliceY = Math.floor(idx/9)*this.tile_size;
 		this.drawChildren(ctx);
 	    }

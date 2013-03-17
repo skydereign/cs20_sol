@@ -209,7 +209,7 @@ Player.prototype.update = function(d) {
 	}
 
 
-	if(gInput.escape) {console.log("x: ", this.x_level/49, " y: ", this.y_level/40); end(); } // end the game (insert error...)
+	//if(gInput.escape) {console.log("x: ", this.x_level/40, " y: ", this.y_level/40); end(); } // end the game (insert error...)
 	if(gInput.a) {
 		this.keyd_left();
 	}
