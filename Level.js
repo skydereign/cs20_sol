@@ -37,7 +37,7 @@ Level.prototype.giveCamera = function(camera) {
 	this.lightManager.col_map = this.tile_array;
 	var light_array = this.level_data.light_array;
 	for(var i = 0; i < light_array.length; i++) {
-		this.lightManager.lights.push(new Light(light_array[i][0], light_array[i][1], light_array[i][2], light_array[i][3], light_array[i][4], light_array[i][5]))
+		this.lightManager.lights.push(new Light(light_array[i][0], light_array[i][1], light_array[i][2], light_array[i][3], light_array[i][4], light_array[i][5], light_array[i][6], light_array[i][7], light_array[i][8], light_array[i][9], light_array[i][10], light_array[i][11], light_array[i][12], light_array[i][13]));
 	}
 }
 

@@ -62,7 +62,7 @@ Player.prototype.update = function(d) {
 			    break;
 
 			case "rgba(0, 0, 255, 1)": // blue
-			    blue_angles.push(this.level.lightManager.lights[i].angle);
+			    blue_angles.push(DTR(this.level.lightManager.lights[i].angle));
 			    this.light.b = 1;
 			    break;
 
