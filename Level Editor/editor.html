@@ -258,7 +258,7 @@ window.onload = function() {
 
 		for(i in game.lightManager.lights){
 			light = game.lightManager.lights[i];
-			levelString += "" + parseInt(light.x) + "," + parseInt(light.y) + "," + parseInt(light.angle) + "," + parseInt(light.radius) + "," + parseInt(light.spread) + "," + light.color + "," + (light.move_bool ? "true" : "false") + "," + parseInt(light.move_angle) + "," + parseFloat(light.move_speed) + "," + parseInt(light.move_time) + "," + (light.rotate_bool ? "true" : "false") + "," + parseInt(light.rotate_type) + "," + parseFloat(light.rotate_speed) + "," + parseInt(light.rotate_range) + "<br>"
+			levelString += "" + parseInt(light.x) + "," + parseInt(light.y) + "," + parseInt(light.angle) + "," + parseInt(light.radius) + "," + parseInt(light.spread) + "," + light.color_idx + "," + (light.move_bool ? "true" : "false") + "," + parseInt(light.move_angle) + "," + parseFloat(light.move_speed) + "," + parseInt(light.move_time) + "," + (light.rotate_bool ? "true" : "false") + "," + parseInt(light.rotate_type) + "," + parseFloat(light.rotate_speed) + "," + parseInt(light.rotate_range) + "<br>"
 		}
 		levelString += "z<br>";
 		//console.log(levelString);
@@ -312,7 +312,6 @@ window.onload = function() {
 		n = line.split("\n");
 		for(var i=1; i<n.length; i++) {
 			var v = n[i].split(",");
-      console.log(n[i]);
 			game.lightManager.lights.push(new Light(parseInt(v[0]), parseInt(v[1]), parseInt(v[2]), parseInt(v[3]), parseInt(v[4]), parseInt(v[5]), (v[6]=="true"? true : false), parseFloat(v[7]), parseFloat(v[8]), parseInt(v[9]), (v[10]=="true"? true : false), parseFloat(v[11]), parseFloat(v[12]), parseFloat(v[13])));
 		}
 	}
