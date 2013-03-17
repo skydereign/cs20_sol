@@ -158,7 +158,7 @@ LightManager.prototype.update = function (d) {
 												var t_dist = distance(xl, yl, x, y); // improve?
 												
 												// can be optimized to prevent checking radius
-												if(t_dist<=light.radius/this.tile_size && this.col_map[x_col][y_col]!=undefined && this.col_map[x_col][y_col]!=-1) { // hit a wall
+												if(t_dist<=light.radius/this.tile_size && this.col_map[x_col][y_col]!=undefined && this.col_map[x_col][y_col]!=-1 && this.col_map[x_col][y_col]<104) { // hit a wall
 														dist = t_dist;
 														x_hit = x;
 														y_hit = y;
@@ -182,7 +182,7 @@ LightManager.prototype.update = function (d) {
 												}
 
 												// can be optimized to prevent checking radius
-												if(t_dist<=light.radius/this.tile_size && this.col_map[x_col][y_col]!=undefined && this.col_map[x_col][y_col]!=-1) {
+												if(t_dist<=light.radius/this.tile_size && this.col_map[x_col][y_col]!=undefined && this.col_map[x_col][y_col]!=-1 && this.col_map[x_col][y_col]<104) {
 														dist = t_dist;
 														x_hit = x;
 														y_hit = y;
