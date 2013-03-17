@@ -71,7 +71,7 @@ Player.prototype.update = function(d) {
 					this.light.b = 1;
 					break;
 
-			case "rgba(255, 255, 0, 0.8": // yellow
+			case "rgba(255, 255, 0, 0.8)": // yellow
 					this.light.r = 1;
 					this.light.g = 1;
 					break;
