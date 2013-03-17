@@ -132,14 +132,12 @@ window.onload = function() {
 	//if mouse is dragged, then change all grid cells that the mouse touches to current tileNum
 	canvas.onmousemove = function(e){
 		if(mouseFlag){
-			for(i = 0; i < tileTotal; i++){
-				if(tileNum == i && ground == "b"){
-					background[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)+startX][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)+startY] = i;
-				}else if(tileNum == i && ground == "f"){
-					foreground[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize+startX)][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)+startY] = i;				
-				}else if(tileNum == i && ground == "m"){
-					middleground[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)+startX][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)+startY] = i;				
-				}
+			if(ground == "b"){
+				background[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)+startX][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)+startY] = tileNum;
+			}else if(ground == "f"){
+				foreground[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize+startX)][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)+startY] = tileNum;				
+			}else if(ground == "m"){
+				middleground[Math.floor((e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft - 11)/cellSize)+startX][Math.floor((e.clientY + document.body.scrollTop + document.documentElement.scrollTop - 11)/cellSize)+startY] = tileNum;				
 			}
 		}
 	}
@@ -235,7 +233,7 @@ window.onload = function() {
 
 		for(i in game.lightManager.lights){
 			light = game.lightManager.lights[i];
-			levelString += "" + parseInt(light.x) + " " + parseInt(light.y) + " " + parseInt(light.angle) + " " + parseInt(light.radius) + " " + parseInt(light.spread) + " " + light.color + " " + (light.move_bool ? "true" : "false") + " " + parseInt(light.move_angle) + " " + parseInt(light.move_speed) + " " + parseInt(light.move_time) + " " + (light.rotate_bool ? "true" : "false") + " " + parseInt(light.rotate_type) + " " + parseInt(light.rotate_speed) + " " + parseInt(light.rotate_range) + "<br>"
+			levelString += "" + parseInt(light.x) + "," + parseInt(light.y) + "," + parseInt(light.angle) + "," + parseInt(light.radius) + "," + parseInt(light.spread) + "," + light.color + "," + (light.move_bool ? "true" : "false") + "," + parseInt(light.move_angle) + "," + parseFloat(light.move_speed) + "," + parseInt(light.move_time) + "," + (light.rotate_bool ? "true" : "false") + "," + parseInt(light.rotate_type) + "," + parseFloat(light.rotate_speed) + "," + parseInt(light.rotate_range) + "<br>"
 		}
 		levelString += "z<br>";
 		//console.log(levelString);
