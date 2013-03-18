@@ -461,7 +461,7 @@ Player.prototype.keyd_jump = function () {
 						var sm = new SoundManager();
 						sm.load("sounds/jump.wav");
 						sound = sm.play("sounds/jump.wav");
-						sound.volume = 0.5;
+						sound.volume = 0.25;
 						this.y_velocity = -6;
 						this.state = 4+this.state%2;
 						this.changeAnimation(this.state);
@@ -474,7 +474,7 @@ Player.prototype.keyd_jump = function () {
 										var sm = new SoundManager();
 										sm.load("sounds/jump.wav");
 										sound = sm.play("sounds/jump.wav");
-										sound.volume = 0.5;
+										sound.volume = 0.25;
 										this.y_velocity = -5;
 										this.cjump_point = {x:this.x, y:this.y};
 								} else {
@@ -485,7 +485,7 @@ Player.prototype.keyd_jump = function () {
 												var sm = new SoundManager();
 												sm.load("sounds/jump.wav");
 												sound = sm.play("sounds/jump.wav");
-												sound.volume = 0.5;
+												sound.volume = 0.25;
 												this.y_velocity = -5;
 												this.cjump_point = {x:this.x, y:this.y};
 										}
