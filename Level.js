@@ -175,8 +175,13 @@ Level.prototype.draw = function(ctx) {
 		this.tile.sliceX = (idx%9)*this.tile_size; // <- don't hardcode
 		this.tile.sliceY = Math.floor(idx/9)*this.tile_size;
 		this.drawChildren(ctx);
-		//ctx.fillRect(i*this.tile_size, j*this.tile_size, this.tile_size, this.tile_size);
 	    }
+	}
+    }
+    ctx.fillRect(0, 0, 920, 600);
+
+    for(var i = start_x; i < end_x; i++) {
+	for(var j = start_y; j < end_y; j++) {
 	    if(this.tile_array[i][j] > -1) {
 		var idx = this.tile_array[i][j];
 		this.tile.x = Math.floor(i*this.tile_size - this.camera.x);
@@ -185,10 +190,7 @@ Level.prototype.draw = function(ctx) {
 		this.tile.sliceY = Math.floor(idx/9)*this.tile_size;
 		this.drawChildren(ctx);
 	    }
-	}
-    }
-    for(var i = start_x; i < end_x; i++) {
-	for(var j = start_y; j < end_y; j++) {
+
 	    if(this.tile_fg[i][j] > -1) {
 		var idx = this.tile_fg[i][j];
 		this.tile.x = Math.floor(i*this.tile_size - this.camera.x);

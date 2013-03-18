@@ -93,7 +93,7 @@ Player.prototype.update = function(d) {
 	var cur_light = this.light.r + this.light.g*2 + this.light.b*5;
 	switch(cur_light) {
 	case 1: // red
-	    this.y_velocity=-2;
+	    this.y_velocity=-3;
 	    this.state = 4+this.state%2;
 	    break;
 
@@ -481,7 +481,7 @@ Player.prototype.keyd_jump = function () {
 										var xd = this.x-this.cjump_point.x;
 										var yd = this.y-this.cjump_point.y;
 										var dist = Math.sqrt(Math.pow(xd, 2)+Math.pow(yd, 2));
-										if(dist>50) {
+										if(dist>35) {
 												var sm = new SoundManager();
 												sm.load("sounds/jump.wav");
 												sound = sm.play("sounds/jump.wav");
