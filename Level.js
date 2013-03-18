@@ -14,6 +14,8 @@ function Level(tile_size, level_data) {
 	this.tile_array = level_data.tile_array;
 	this.tile_bg = level_data.tile_bg;
 	this.tile_fg = level_data.tile_fg;
+	this.sign_texts = level_data.signs;
+
 	this.alterLevel();
 	this.image_array;
 	this.object_array;
@@ -26,8 +28,11 @@ function Level(tile_size, level_data) {
 	this.tile = tile;
 	this.addChild(this.tile);
 	this.lightManager;
-	this.sign_texts = [];
-	this.sign_texts.push(new SignInfo(5, 56, "where is this?"));
+	this.player;
+	var sm = new SoundManager();
+	sm.load("sounds/ShowYourMoves.ogg");
+	sm.play("sounds/ShowYourMoves.ogg").volume=0.75;
+
 }
 
 Level.prototype = new Sprite();
@@ -144,6 +149,8 @@ Level.prototype.checkTilesDown = function(x, y, width, height) {
 }
 
 Level.prototype.update = function (d) {
+	this.player.update(d);
+	this.lightManager.update(d);
 	this.lightManager.x_off = Math.floor(this.camera.x); // TODO: put in Level.update
 	this.lightManager.y_off = Math.floor(this.camera.y);    
 	this.updateChildren(d);
@@ -186,6 +193,10 @@ Level.prototype.draw = function(ctx) {
 		this.tile.sliceY = Math.floor(idx/9)*this.tile_size;
 		this.drawChildren(ctx);
 	    }
+	}
+    }
+    for(var i = start_x; i < end_x; i++) {
+	for(var j = start_y; j < end_y; j++) {
 	    if(this.tile_fg[i][j] > -1) {
 		var idx = this.tile_fg[i][j];
 		this.tile.x = Math.floor(i*this.tile_size - this.camera.x);
