@@ -211,7 +211,7 @@ Player.prototype.update = function(d) {
 	}
 
 
-	if(gInput.escape) {console.log("x: ", this.x_level/40, " y: ", this.y_level/40); }
+	//if(gInput.escape) {console.log("x: ", this.x_level/40, " y: ", this.y_level/40); }
 	if(gInput.a) {
 		this.keyd_left();
 	}

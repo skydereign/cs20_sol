@@ -29,10 +29,6 @@ function Level(tile_size, level_data) {
 	this.addChild(this.tile);
 	this.lightManager;
 	this.player;
-	var sm = new SoundManager();
-	sm.load("sounds/ShowYourMoves.ogg");
-	sm.play("sounds/ShowYourMoves.ogg").volume=0.75;
-
 }
 
 Level.prototype = new Sprite();
@@ -149,8 +145,6 @@ Level.prototype.checkTilesDown = function(x, y, width, height) {
 }
 
 Level.prototype.update = function (d) {
-	this.player.update(d);
-	this.lightManager.update(d);
 	this.lightManager.x_off = Math.floor(this.camera.x); // TODO: put in Level.update
 	this.lightManager.y_off = Math.floor(this.camera.y);    
 	this.updateChildren(d);

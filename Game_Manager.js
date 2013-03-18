@@ -43,9 +43,14 @@ Game_Manager.prototype.initGameElements = function() {
     
     this.screen_manager = new Screen_Manager();
     this.screen_manager.updateGameScreen(this.player);
+    var sm = new SoundManager();
+    sm.load("sounds/KickShock.ogg");
+    this.song = sm.loop("sounds/KickShock.ogg");
+    this.song.volume = 0.5;
 }
 
 Game_Manager.prototype.nextLevel = function() {
+    this.stopSong();
 	this.level.remove();
 	this.level.lightManager.remove();
 	this.current_level++;
@@ -65,5 +70,3 @@ gInput.addFunc(27, function(){
         that.remove(that.pause_menu);   
     }
 });
-
-
