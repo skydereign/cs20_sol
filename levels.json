@@ -68,10 +68,13 @@
 				[4421, 320, -88, 224, 45, 6, false, 0, 0, 0, false, 0, 0, 0]
 			],
 			"signs": [
-				[8, 10, "This is a really large sign\nI'm not kidding...\nthis will probably make it weird to display"],
+				[8, 10, "Red Light pulls you up.\n Resistance is futile."],
 				[23, 8, "Blue light pushes you.\nLet the force guide you."],
 				[26, 2, "Green lights are awesome.\nSuper speed for the win."],
-				[48, 11, "Yellow lights allow you to teleport\nto other locations within yellow lights.\nUse the mouse Luke."]
+				[48, 11, "Yellow lights allow you to teleport\nto other locations within yellow lights.\nUse the mouse Luke."],
+				[61, 11, "You can jump in the air with cyan lights.\n Try it, and jump to new heights!"],
+				[65, 8, "Purple light lets you fly.\n All you have to do is believe!"],
+				[105, 11, "White light lets you explore new worlds!."]
 			]
 		},
 
