@@ -181,21 +181,23 @@ Player.prototype.update = function(d) {
 	}
 
 	// checks for signs
-	for(var i=0; i<this.level.sign_texts.length; i++) {
-		var xt = Math.round(this.x_level/40) - this.level.sign_texts[i][0];
-		var yt = Math.round(this.y_level/40) - this.level.sign_texts[i][1];
-
-		if(this.level.sign_texts[i].sprite == undefined) {
-			if(Math.abs(xt)<=2 && Math.abs(yt)<=1) {
-				var sign_x = this.level.sign_texts[i][0]*this.level.tile_size;
-				var sign_y = this.level.sign_texts[i][1]*this.level.tile_size;
-				this.level.sign_texts[i].sprite = new Sign(this.level.sign_texts[i][2], sign_x, sign_y-30, this.camera);
-				world.addChild(this.level.sign_texts[i].sprite);
-			}
-		} else {
-			if(Math.abs(xt)>2 || Math.abs(yt)>1) {
-					this.level.sign_texts[i].sprite.remove();
-					this.level.sign_texts[i].sprite = undefined;
+	if(this.level.sign_texts!=undefined) {
+		for(var i=0; i<this.level.sign_texts.length; i++) {
+			var xt = Math.round(this.x_level/40) - this.level.sign_texts[i][0];
+			var yt = Math.round(this.y_level/40) - this.level.sign_texts[i][1];
+	
+			if(this.level.sign_texts[i].sprite == undefined) {
+				if(Math.abs(xt)<=2 && Math.abs(yt)<=1) {
+					var sign_x = this.level.sign_texts[i][0]*this.level.tile_size;
+					var sign_y = this.level.sign_texts[i][1]*this.level.tile_size;
+					this.level.sign_texts[i].sprite = new Sign(this.level.sign_texts[i][2], sign_x, sign_y-30, this.camera);
+					world.addChild(this.level.sign_texts[i].sprite);
+				}
+			} else {
+				if(Math.abs(xt)>2 || Math.abs(yt)>1) {
+						this.level.sign_texts[i].sprite.remove();
+						this.level.sign_texts[i].sprite = undefined;
+				}
 			}
 		}
 	}
@@ -209,7 +211,7 @@ Player.prototype.update = function(d) {
 	}
 
 
-	if(gInput.escape) {console.log("x: ", this.x_level/40, " y: ", this.y_level/40); end(); } // end the game (insert error...)
+	if(gInput.escape) {console.log("x: ", this.x_level/40, " y: ", this.y_level/40); }
 	if(gInput.a) {
 		this.keyd_left();
 	}
