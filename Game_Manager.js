@@ -50,7 +50,6 @@ Game_Manager.prototype.initGameElements = function() {
 }
 
 Game_Manager.prototype.nextLevel = function() {
-    this.stopSong();
 	this.level.remove();
 	this.level.lightManager.remove();
 	this.current_level++;
