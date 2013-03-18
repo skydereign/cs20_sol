@@ -446,6 +446,10 @@ Player.prototype.keyd_jump = function () {
 				case 2:
 				case 1:
 				case 3:
+						var sm = new SoundManager();
+						sm.load("sounds/jump.wav");
+						sound = sm.play("sounds/jump.wav");
+						sound.volume = 0.5;
 						this.y_velocity = -6;
 						this.state = 4+this.state%2;
 						this.changeAnimation(this.state);
@@ -455,13 +459,21 @@ Player.prototype.keyd_jump = function () {
 				case 5:
 						if(this.light.c==1) {
 								if(this.cjump_point == undefined) {
+										var sm = new SoundManager();
+										sm.load("sounds/jump.wav");
+										sound = sm.play("sounds/jump.wav");
+										sound.volume = 0.5;
 										this.y_velocity = -5;
 										this.cjump_point = {x:this.x, y:this.y};
 								} else {
 										var xd = this.x-this.cjump_point.x;
 										var yd = this.y-this.cjump_point.y;
 										var dist = Math.sqrt(Math.pow(xd, 2)+Math.pow(yd, 2));
-										if(dist>60) {
+										if(dist>50) {
+												var sm = new SoundManager();
+												sm.load("sounds/jump.wav");
+												sound = sm.play("sounds/jump.wav");
+												sound.volume = 0.5;
 												this.y_velocity = -5;
 												this.cjump_point = {x:this.x, y:this.y};
 										}
