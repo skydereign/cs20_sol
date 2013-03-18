@@ -16,8 +16,8 @@ window.onload = function() {
 	var startX = 0;
 	var startY = 0;
 	var cellSize = 40;
-	gridRows = 60;
-	gridCols = 150;
+	gridRows = 15;
+	gridCols = 23;
 	map_width = gridCols;
 	map_height = gridRows;
 	var background = new Array(gridCols);
@@ -324,7 +324,7 @@ window.onload = function() {
 				loadMap(level1.responseText);
 			}
 		}
-		level1.open("GET", "level1.txt", true);
+		level1.open("GET", "rotationlevel.txt", true);
 		level1.send();
 	}
 	
