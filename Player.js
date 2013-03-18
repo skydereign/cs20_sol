@@ -211,7 +211,7 @@ Player.prototype.update = function(d) {
 	}
 
 
-	//if(gInput.escape) {console.log("x: ", this.x_level/40, " y: ", this.y_level/40); }
+	if(gInput.escape) {console.log("x: ", this.x_level/40, " y: ", this.y_level/40); }
 	if(gInput.a) {
 		this.keyd_left();
 	}
@@ -334,20 +334,29 @@ Player.prototype.initKeys = function () {
 				if(colors.r==1 && colors.g==1 && colors.b===0) { // mouse in yellow light
 
 						if(player.light.y == 1) {
+								var old_x = player.x_level;
+								var old_y = player.y_level;
 								var ts = player.level.tile_size;
 								player.x_level = Math.round((gInput.mouse.x-player.width/2 + player.camera.x)/ts)*ts;
 								player.y_level = Math.round((gInput.mouse.y-player.height/2 + player.camera.y)/ts)*ts;
-								player.camera.x = player.x_level - player.camera.camera_width/2;
-								player.camera.y = player.y_level - player.camera.camera_height/2;
-								if(player.camera.x<0) { player.camera.x = 0; }
-								if(player.camera.y<0) { player.camera.y = 0; }
-								if(player.camera.x>player.level.cols*player.level.tile_size-player.camera.camera_width) {
-										player.camera.x = player.level.cols*player.level.tile_size-player.camera.camera_width;
+								warp_collision = player.detectCollisionTile();
+								if(!(warp_collision.x_collide != -1 && warp_collision.y_collide != -1 && player.level.getTile(player.x_level, player.y_level) != -1))  {
+									player.camera.x = player.x_level - player.camera.camera_width/2;
+									player.camera.y = player.y_level - player.camera.camera_height/2;
+									if(player.camera.x<0) { player.camera.x = 0; }
+									if(player.camera.y<0) { player.camera.y = 0; }
+									if(player.camera.x>player.level.cols*player.level.tile_size-player.camera.camera_width) {
+											player.camera.x = player.level.cols*player.level.tile_size-player.camera.camera_width;
+									}
+									if(player.camera.y>player.level.rows*player.level.tile_size-player.camera.camera_height) {
+											player.camera.y = player.level.rows*player.level.tile_size-player.camera.camera_height;
+									}
+									player.y_velocity = -2;
+								} else {
+									console.log("foo");
+									player.x_level = old_x;
+									player.y_level = old_y;
 								}
-								if(player.camera.y>player.level.rows*player.level.tile_size-player.camera.camera_height) {
-										player.camera.y = player.level.rows*player.level.tile_size-player.camera.camera_height;
-								}
-								player.y_velocity = -2;
 						}
 						
 		    }
