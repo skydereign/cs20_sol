@@ -1,4 +1,3 @@
-var sign;
 function Player() {
 	Level_Object.call(this);
 	this.level;
@@ -185,13 +184,26 @@ Player.prototype.update = function(d) {
 		for(var i=0; i<this.level.sign_texts.length; i++) {
 			var xt = Math.round(this.x_level/40) - this.level.sign_texts[i][0];
 			var yt = Math.round(this.y_level/40) - this.level.sign_texts[i][1];
-	
+
 			if(this.level.sign_texts[i].sprite == undefined) {
 				if(Math.abs(xt)<=2 && Math.abs(yt)<=1) {
 					var sign_x = this.level.sign_texts[i][0]*this.level.tile_size;
 					var sign_y = this.level.sign_texts[i][1]*this.level.tile_size;
-					this.level.sign_texts[i].sprite = new Sign(this.level.sign_texts[i][2], sign_x, sign_y-30, this.camera);
-					world.addChild(this.level.sign_texts[i].sprite);
+					if(game_manager.victory==false || game_manager.current_level!=0) {
+					    this.level.sign_texts[i].sprite = new Sign(this.level.sign_texts[i][2], sign_x, sign_y-30, this.camera);
+					    world.addChild(this.level.sign_texts[i].sprite);
+					} else {
+					    if(this.level.sign_texts[i][0]==6) {
+						this.level.sign_texts[i].sprite = new Sign("And you thought you\naccomplished something.", sign_x, sign_y-30, this.camera);
+						world.addChild(this.level.sign_texts[i].sprite);
+					    } else {
+						this.level.sign_texts[i].sprite = new Sign("Developed by 6Ten\nMusic from incompotech.com", sign_x, sign_y-30, this.camera);
+						world.addChild(this.level.sign_texts[i].sprite);
+					    }
+					}
+
+					    
+
 				}
 			} else {
 				if(Math.abs(xt)>2 || Math.abs(yt)>1) {

@@ -1,4 +1,5 @@
 function Game_Manager() {
+    this.victory = false;
     this.tile_size = 40;
     this.x_player_start = 120;
     this.y_player_start = 450;
@@ -53,6 +54,10 @@ Game_Manager.prototype.nextLevel = function() {
 	this.level.remove();
 	this.level.lightManager.remove();
 	this.current_level++;
+	if(this.current_level==6) {
+		this.current_level=0;
+		this.victory = true;
+	}
 	this.level = new Level(this.tile_size, this.level_array.levels[this.current_level]);
 	this.camera.changeLevel(this.level);
 	this.level.giveCamera(this.camera);
