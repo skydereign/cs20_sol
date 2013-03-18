@@ -66,6 +66,12 @@
 				[2418, 460, 180, 558, 45, 4, false, 0, 0, 0, false, 0, 0, 0],
 				[2538, 309, -92, 244, 23, 5, false, 0, 0, 0, false, 0, 0, 0],
 				[4421, 320, -88, 224, 45, 6, false, 0, 0, 0, false, 0, 0, 0]
+			],
+			"signs": [
+				[8, 10, "This is a really large sign\nI'm not kidding...\nthis will probably make it weird to display"],
+				[23, 8, "Blue light pushes you.\nLet the force guide you."],
+				[26, 2, "Green lights are awesome.\nSuper speed for the win."],
+				[48, 11, "Yellow lights allow you to teleport\nto other locations within yellow lights.\nUse the mouse Luke."]
 			]
 		},
 

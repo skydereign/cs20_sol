@@ -36,7 +36,7 @@ Game_Manager.prototype.initGameElements = function() {
 	this.level = new Level(this.tile_size, this.level_array.levels[this.current_level]);
     this.camera = new Camera(canvas_width, canvas_height);
     this.player = new Player();
-    
+    this.level.player = this.player;
     this.camera.changeLevel(this.level);
     this.level.giveCamera(this.camera);
     this.player.changeLevel(this.level);
@@ -46,12 +46,15 @@ Game_Manager.prototype.initGameElements = function() {
 }
 
 Game_Manager.prototype.nextLevel = function() {
+	this.level.remove();
+	this.level.lightManager.remove();
 	this.current_level++;
 	this.level = new Level(this.tile_size, this.level_array.levels[this.current_level]);
 	this.camera.changeLevel(this.level);
 	this.level.giveCamera(this.camera);
 	this.player.changeLevel(this.level);
 	this.screen_manager.nextLevel(this.player);
+	this.level.player = this.player;
 }
 
 gInput.addFunc(27, function(){
