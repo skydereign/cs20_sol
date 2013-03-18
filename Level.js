@@ -1,7 +1,5 @@
 function Level(tile_size, level_data) {
 	Sprite.call(this);
-	console.log(level_data);
-	console.log(level_data.x_start_camera);
 	this.cols = level_data.tile_array[0].length;
 	this.rows = level_data.tile_array.length;
 	this.camera;

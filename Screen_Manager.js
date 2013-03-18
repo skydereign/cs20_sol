@@ -8,6 +8,8 @@ function Screen_Manager() {
 	this.buildGameScreen();
 	this.buildPauseMenu();
 	this.push(this.main_menu);
+        this.push(this.game_screen);
+
 }
 
 
@@ -46,7 +48,6 @@ Screen_Manager.prototype.buildMainMenu = function() {
     var that = this;
         
     new_game.func = function() {
-        that.push(that.game_screen);
     }
 }
 
