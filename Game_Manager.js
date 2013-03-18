@@ -18,6 +18,14 @@ function Game_Manager() {
 	world.update = function(d) {
 		this.updateChildren(d);
 	}
+    var fm = new FontManager();
+    this.title = new TextBox("Shades of Light");
+    this.title.fontSize = 40;
+    this.title.font="\'Press Start 2P\'";
+    this.title.x = 160;
+    this.title.y = 90;
+    world.addChild(this.title);
+
 }
 
 Game_Manager.prototype.initGameElements = function() {
@@ -51,6 +59,7 @@ Game_Manager.prototype.initGameElements = function() {
 }
 
 Game_Manager.prototype.nextLevel = function() {
+    this.title.remove();
 	this.level.remove();
 	this.level.lightManager.remove();
 	this.current_level++;
@@ -64,6 +73,14 @@ Game_Manager.prototype.nextLevel = function() {
 	this.player.changeLevel(this.level);
 	this.screen_manager.nextLevel(this.player);
 	this.level.player = this.player;
+    if(game_manager.current_level==0) {
+	this.title = new TextBox("Shades of Light");
+	this.title.fontSize = 40;
+	this.title.font="\'Press Start 2P\'";
+	this.title.x = 160;
+	this.title.y = 90;
+	world.addChild(this.title);
+    }
 }
 
 gInput.addFunc(27, function(){
