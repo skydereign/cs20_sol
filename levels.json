@@ -68,13 +68,10 @@
 				[4421, 320, -88, 224, 45, 6, false, 0, 0, 0, false, 0, 0, 0]
 			],
 			"signs": [
-				[8, 10, "Red Light pulls you up.\n Resistance is futile."],
+				[8, 10, "This is a really large sign\nI'm not kidding...\nthis will probably make it weird to display"],
 				[23, 8, "Blue light pushes you.\nLet the force guide you."],
 				[26, 2, "Green lights are awesome.\nSuper speed for the win."],
-				[48, 11, "Yellow lights allow you to teleport\nto other locations within yellow lights.\nUse the mouse Luke."],
-				[61, 11, "You can jump in the air with cyan lights.\n Try it, and jump to new heights!"],
-				[65, 8, "Purple light lets you fly.\n All you have to do is believe!"],
-				[105, 11, "White light lets you explore new worlds!."]
+				[48, 11, "Yellow lights allow you to teleport\nto other locations within yellow lights.\nUse the mouse Luke."]
 			]
 		},
 
@@ -295,7 +292,7 @@
 				[2914,1878,-270,156,59,5,false,0,0,0,false,0,0,0],
 				[3131,1718,-90,138,45,4,false,0,0,0,false,0,0,0],
 				[3339,1721,-90,138,45,4,false,0,0,0,false,0,0,0],
-				[2606,2225,-80,114,45,0,false,0,0,0,false,0,0,0],
+				[2656,2345,100,114,45,0,false,0,0,0,false,0,0,0],
 				[2588,2188,52,158,45,2,false,0,0,0,false,0,0,0],
 				[2901,2086,90,190,127,3,false,0,0,0,false,0,0,0],
 				[3183,1916,-90,104,45,4,false,0,0,0,false,0,0,0],
@@ -305,15 +302,12 @@
 				[4385,1984,46,220,45,2,false,0,0,0,false,0,0,0],
 				[4580,1873,52,160,60,5,false,0,0,0,false,0,0,0],
 				[4771,1655,-90,200,30,0,false,0,0,0,false,0,0,0],
-				[5042,1619,-90,98,45,4,false,0,0,0,false,0,0,0],
-				[4967,1597,90,94,45,4,false,0,0,0,false,0,0,0],
-				[4867,1404,-92,90,45,4,false,0,0,0,false,0,0,0],
-				[4779,1405,90,92,45,4,false,0,0,0,false,0,0,0],
+				[5042,1619,-90,135,45,4,false,0,0,0,false,0,0,0],
+				[4967,1597,90,135,45,4,false,0,0,0,false,0,0,0],
+				[4867,1404,-92,135,45,4,false,0,0,0,false,0,0,0],
+				[4779,1405,90,135,45,4,false,0,0,0,false,0,0,0],
 				[4836,1095,-90,110,45,4,false,0,0,0,false,0,0,0],
 				[4841,1276,12,224,89,3,false,0,0,0,false,0,0,0],
-				[5535,1337,68,118,45,5,false,0,0,0,false,0,0,0],
-				[5626,1115,-110,118,45,5,false,0,0,0,false,0,0,0],
-				[5634,1145,62,120,45,5,false,0,0,0,false,0,0,0],
 				[5739,2029,90,132,55,6,false,0,0,0,false,0,0,0]
 			]
 		},
