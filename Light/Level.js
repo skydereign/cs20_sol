@@ -20,7 +20,7 @@ function Level(tile_size, level_data) {
 	var tile = new Sprite();
 	tile.width = this.tile_size;
 	tile.height = this.tile_size;
-	tile.image = Textures.load("../../trunk/Level Editor/tiles_concept_01.png");
+	tile.image = Textures.load("../Level Editor/tiles_concept_01.png");
         tile.sliceWidth = 40;
         tile.sliceHeight = 40;
 	this.tile = tile;
